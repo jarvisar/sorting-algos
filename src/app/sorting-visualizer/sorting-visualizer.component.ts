@@ -356,17 +356,19 @@ export class SortingVisualizerComponent implements OnInit {
     const sleep = (ms: number) => {
       return new Promise(resolve => setTimeout(resolve, ms));
     };
-  
     const parent = (i: number) => Math.floor((i - 1) / 2);
     const left = (i: number) => 2 * i + 1;
     const right = (i: number) => 2 * i + 2;
+  
+    // Set initial color of all bars to red
+    for (let i = 0; i < n; i++) {
+      this.setBarColor(i, 'red');
+    }
   
     const heapify = async (size: number, i: number) => {
       let largest = i;
       const l = left(i);
       const r = right(i);
-  
-      this.setBarColor(i, 'blue');
   
       if (l < size) {
         this.setBarColor(l, 'yellow');
@@ -376,7 +378,6 @@ export class SortingVisualizerComponent implements OnInit {
         }
         this.setBarColor(l, 'red');
       }
-  
       if (r < size) {
         this.setBarColor(r, 'yellow');
         await sleep(delay);
@@ -387,15 +388,21 @@ export class SortingVisualizerComponent implements OnInit {
       }
   
       if (largest !== i) {
+        // Set the color of the largest bar to blue before swapping
+
+        // blue if not in final position, else green
+        this.setBarColor(largest, 'blue');
+        this.setBarColor(i, 'yellow');
+  
         // Swap the bars
         let temp = this.barHeights[i];
         this.barHeights[i] = this.barHeights[largest];
         this.barHeights[largest] = temp;
   
-        this.setBarColor(largest, 'red');
+        // Set the color of the current index to yellow after the swap
+        this.setBarColor(i, 'yellow');
         await heapify(size, largest);
       }
-  
       this.setBarColor(i, 'red');
     };
   
@@ -412,16 +419,22 @@ export class SortingVisualizerComponent implements OnInit {
       if (this.stopSorting) {
         return;
       }
+
+      // Set the color of the largest bar to blue before swapping
+      this.setBarColor(0, 'blue');
+      this.setBarColor(i, 'yellow');
+
       // Swap the bars
       let temp = this.barHeights[0];
       this.barHeights[0] = this.barHeights[i];
       this.barHeights[i] = temp;
-  
+
+      // Set the color of the bar at index i to green (final position)
       this.setBarColor(i, 'green');
       await heapify(i, 0);
     }
-  
     this.inProgress = false;
+  
     // Mark all as green
     for (let i = 0; i < this.barHeights.length; i++) {
       this.setBarColor(i, 'green');
