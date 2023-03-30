@@ -438,8 +438,6 @@ export class SortService {
           this.setBarColor(0, '#32CD32');
         }
       }
-      
-      
 
       // Swap the bars
       let temp = this.barHeights[0];
