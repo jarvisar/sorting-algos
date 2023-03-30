@@ -343,6 +343,10 @@ export class SortService {
       }
       [this.barHeights[i + 1], this.barHeights[high]] = [this.barHeights[high], this.barHeights[i + 1]];
       this.setBarColor(high, '#AA3939');
+      // set all to red
+      for (let i = 0; i < this.barHeights.length; i++) {
+        this.setBarColor(i, '#AA3939');
+      }
       return i + 1;
     };
     if (left < right && !this.stopSorting) {
