@@ -14,20 +14,12 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
   delay = 200;
 
   ngAfterViewInit() {
-    // get bar-container height
-    console.log("test1")
-    const barContainer = document.getElementById('bar-container');
-    const barContainerHeight = barContainer!.clientHeight - 140;
-    // calculate bar heights based on bar-container height
-    const maxHeight = Math.max(...this.barHeights);
-    this.barHeights = this.barHeights.map(height => {
-      return Math.floor((height / maxHeight) * barContainerHeight);
-    });
+    this.generateBars();
   }
 
 
   ngOnInit() {
-    this.generateBars();
+
   }
 
   generateBars(){
@@ -42,6 +34,20 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
     // Generate an array of 100 random heights between 10 and 100
     for (let i = 0; i < numBars; i++) {
       this.barHeights.push(Math.floor(Math.random() * 91) + 10);
+    }
+    // get bar-container height
+    console.log("test1")
+    const barContainer = document.getElementById('bar-container');
+    const barContainerHeight = barContainer!.clientHeight - 140;
+    // calculate bar heights based on bar-container height
+    const maxHeight = Math.max(...this.barHeights);
+    this.barHeights = this.barHeights.map(height => {
+      return Math.floor((height / maxHeight) * barContainerHeight);
+    });
+    this.alreadySorted = false;
+    // set all to default color
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '');
     }
   }
 
@@ -481,13 +487,7 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
     this.stopSorting = false;
     this.alreadySorted = false;
     // reset all colors
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '');
-    }
-    this.barHeights = [];
-    for (let i = 0; i < 20; i++) {
-      this.barHeights.push(Math.floor(Math.random() * 91) + 10);
-    }
+    this.generateBars();
   }
   
   // reset on algo-select change
