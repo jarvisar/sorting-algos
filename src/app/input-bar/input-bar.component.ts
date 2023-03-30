@@ -44,11 +44,20 @@ export class InputBarComponent implements OnInit {
     this.sortService.stopSorting = true;
     this.sortService.inProgress = false;
     // reset colors AFTER async functions finish
-    setTimeout(() => {
-      for (let i = 0; i < this.sortService.barHeights.length; i++) {
-        this.sortService.setBarColor(i, '');
-      }
-    }, this.sortService.delay * 2);
+    // if heap sort, reset colors after 2x delay
+    if (this.sortService.selectedAlgo === 'heap') {
+      setTimeout(() => {
+        for (let i = 0; i < this.sortService.barHeights.length; i++) {
+          this.sortService.setBarColor(i, '');
+        };
+      }, this.sortService.delay * 3);
+    } else {
+      setTimeout(() => {
+        for (let i = 0; i < this.sortService.barHeights.length; i++) {
+          this.sortService.setBarColor(i, '');
+        };
+      }, this.sortService.delay);
+    }
   }
 
   reset(){
