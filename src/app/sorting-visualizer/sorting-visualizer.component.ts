@@ -480,15 +480,23 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
     }
   }
 
+  barColors: string[] = [];
   setBarColor(index: number, color: string) {
     let bar = document.querySelectorAll('.bar')[index] as HTMLElement;
     bar.style.backgroundColor = color;
+    this.barColors[index] = color;
   }
 
   stop(){
-    this.inProgress = false;
+    // stop sorting
     this.stopSorting = true;
-
+    this.inProgress = false;
+    // reset colors AFTER async functions finish
+    setTimeout(() => {
+      for (let i = 0; i < this.barHeights.length; i++) {
+        this.setBarColor(i, '');
+      }
+    }, this.delay);
   }
 
   reset(){
@@ -497,6 +505,11 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
     this.alreadySorted = false;
     // reset all colors
     this.generateBars();
+    setTimeout(() => {
+      for (let i = 0; i < this.barHeights.length; i++) {
+        this.setBarColor(i, '');
+      };
+    }, this.delay);
   }
   
   // reset on algo-select change
