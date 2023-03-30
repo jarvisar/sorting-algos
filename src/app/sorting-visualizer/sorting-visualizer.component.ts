@@ -10,10 +10,16 @@ export class SortingVisualizerComponent implements OnInit {
   inProgress = false;
   selectedAlgo = 'bubble';
   alreadySorted = false;
+  numBars = 25;
 
   ngOnInit() {
+    // calculate number of bars I can fit on screen
+    const barWidth = 80;
+    const barMargin = 10;
+    const screenWidth = window.innerWidth;
+    const numBars = Math.floor((screenWidth - 100) / (barWidth + barMargin));
     // Generate an array of 100 random heights between 10 and 100
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < numBars; i++) {
       this.barHeights.push(Math.floor(Math.random() * 91) + 10);
     }
   }
@@ -50,7 +56,7 @@ export class SortingVisualizerComponent implements OnInit {
     this.stopSorting = false;
     let n = this.barHeights.length;
     let swapped = true;
-    const delay = 100;
+    const delay = 75;
     const sleep = (ms: number) => {
       return new Promise(resolve => setTimeout(resolve, ms));
     };

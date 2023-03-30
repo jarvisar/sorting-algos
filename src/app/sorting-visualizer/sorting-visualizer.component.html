@@ -1,7 +1,7 @@
 <!-- Center div vertically -->
-<div class="buttons-container">
+<div class="buttons-container" style="margin: 80px 20px;" >
     <!-- Select box for algorithm type no material design -->
-    <select class="algo-select" [(ngModel)]="selectedAlgo" (change)="onAlgoSelectChange()">
+    <select class="algo-select" [(ngModel)]="selectedAlgo" (change)="onAlgoSelectChange()" style="margin: 5px">
         <option value="bubble">Bubble Sort</option>
         <option value="selection">Selection Sort</option>
         <option value="insertion">Insertion Sort</option>
@@ -9,9 +9,9 @@
         <option value="quick">Quick Sort</option>
         <option value="heap">Heap Sort</option>
     </select>
-    <button mat-raised-button (click)="sort()" style="margin: 80px 20px;" [disabled]="inProgress">Sort</button>
-    <button mat-raised-button (click)="reset()" style="margin: 80px 20px;" [disabled]="inProgress">Reset</button>
-    <button mat-raised-button (click)="stop()" style="margin: 80px 20px;" [disabled]="!inProgress">Stop</button>
+    <button mat-raised-button (click)="sort()" [disabled]="inProgress" style="margin: 5px">Sort</button>
+    <button mat-raised-button (click)="reset()" [disabled]="inProgress" style="margin: 5px">Reset</button>
+    <button mat-raised-button (click)="stop()" [disabled]="!inProgress" style="margin: 5px">Stop</button>
 </div>
 <div class="bar-container">
     <div class="bar" *ngFor="let height of barHeights" [style.height.px]="height">   <p class="bar-label">{{height}}</p> </div>
