@@ -204,7 +204,6 @@ export class SortService {
       }
       
       this.barHeights[j + 1] = key;
-      this.setBarColor(j + 1, '#32CD32');
       await sleep(this.delay, j + 1, 'blue');
   
       for (let k = 0; k <= n; k++) {
