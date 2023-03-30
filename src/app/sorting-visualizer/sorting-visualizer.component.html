@@ -1,5 +1,5 @@
 <button (click)="sort()" style="margin: 50px;">Sort</button>
 <button (click)="stop()" style="margin: 50px;">Stop</button>
 <div class="bar-container">
-    <div class="bar" *ngFor="let height of barHeights" [style.height.px]="height">   <p style="z-index: 10 !important;">{{height + "a"}}</p> </div>
+    <div class="bar" *ngFor="let height of barHeights" [style.height.px]="height">   <p class="bar-label">{{height}}</p> </div>
   </div>

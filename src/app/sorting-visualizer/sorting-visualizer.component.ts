@@ -10,16 +10,17 @@ export class SortingVisualizerComponent implements OnInit {
 
   ngOnInit() {
     // Generate an array of 100 random heights between 10 and 100
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 20; i++) {
       this.barHeights.push(Math.floor(Math.random() * 91) + 10);
     }
   }
 
   stopSorting = false;
   async sort() {
+    this.stopSorting = false;
     let n = this.barHeights.length;
     let swapped = true;
-    const delay = 500;
+    const delay = 100;
     const sleep = (ms: number) => {
       return new Promise(resolve => setTimeout(resolve, ms));
     };
@@ -38,9 +39,13 @@ export class SortingVisualizerComponent implements OnInit {
         if (this.stopSorting) {
           return;
         }
+        // if not very first bar
         // Set the color of the bars being compared to blue
         this.setBarColor(i + 1, 'blue');
         await sleep(delay);
+        if (i !== 0) {
+          this.setBarColor(i-1, 'red');
+          }
         // Swap the bars if they're out of order
         if (this.barHeights[i] > this.barHeights[i + 1]) {
           let temp = this.barHeights[i];
@@ -48,15 +53,13 @@ export class SortingVisualizerComponent implements OnInit {
           this.barHeights[i + 1] = temp;
           swapped = true;
           this.setBarColor(i, 'yellow');
-          this.setBarColor(i + 1, 'red');
-        } else {
-          // Set the color of the bars being compared back to red if they are not swapped
-          this.setBarColor(i, 'red');
-          this.setBarColor(i + 1, 'red');
         }
+        this.setBarColor(i + 1, 'red');
       }
-      // Set the bar in its final position to green
-      this.setBarColor(n - 1, 'green');
+      // Set the bar in its final position to green if not very first iteration
+      if (n !== this.barHeights.length) {
+      this.setBarColor(n, 'green');
+      }
       n--;
     }
     // Mark all bars as sorted

@@ -8,7 +8,7 @@
   }
   
   .bar {
-    width: 5px;
+    width: 20px;
     margin: 0 2px;
     background-color: #333;
     transition: height 0.2s ease-in-out;
@@ -18,4 +18,7 @@
   .bar-label {
     font-size: 12px;
     margin-top: 5px;
+    // white stroke
+    -webkit-text-stroke: 0.2px #fff;
+    margin-left: 3px;
   }
