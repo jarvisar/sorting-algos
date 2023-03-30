@@ -1,6 +1,6 @@
-<button (click)="sort()" style="margin: 50px;">Sort</button>
-<button (click)="stop()" style="margin: 50px;">Stop</button>
-<button (click)="reset()" style="margin: 50px;">Reset</button>
+<button mat-raised-button (click)="sort()" style="margin: 80px;" [disabled]="inProgress">Sort</button>
+<button mat-raised-button (click)="stop()" style="margin: 80px;" [disabled]="!inProgress">Stop</button>
+<button mat-raised-button (click)="reset()" style="margin: 80px;" [disabled]="inProgress">Reset</button>
 <div class="bar-container">
     <div class="bar" *ngFor="let height of barHeights" [style.height.px]="height">   <p class="bar-label">{{height}}</p> </div>
   </div>

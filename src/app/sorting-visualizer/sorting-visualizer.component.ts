@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SortingVisualizerComponent implements OnInit {
   barHeights: number[] = [];
+  inProgress = false;
 
   ngOnInit() {
     // Generate an array of 100 random heights between 10 and 100
@@ -17,6 +18,7 @@ export class SortingVisualizerComponent implements OnInit {
 
   stopSorting = false;
   async sort() {
+    this.inProgress = true;
     this.stopSorting = false;
     let n = this.barHeights.length;
     let swapped = true;
@@ -62,6 +64,7 @@ export class SortingVisualizerComponent implements OnInit {
       }
       n--;
     }
+    this.inProgress = false;
     // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
       this.setBarColor(i, 'green');
@@ -76,7 +79,7 @@ export class SortingVisualizerComponent implements OnInit {
   }
 
   stop(){
-    //toggle
+    this.inProgress = false;
     this.stopSorting = !this.stopSorting;
 
   }
