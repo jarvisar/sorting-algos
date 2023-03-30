@@ -29,6 +29,4 @@ To install and run this app on your local machine, follow these steps:
 
 ## Usage
 
-Currently this web application only supports bubble sort visualization. Additional sorting algorithms will be implemented in the coming days.
-
-###### Note: this project is very early in development and is subject to drastic design and feature changes
+Currently this web application supports bubble, selection, insertion, merge, quick, and heap sort. 
