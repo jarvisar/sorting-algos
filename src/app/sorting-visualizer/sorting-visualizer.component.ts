@@ -309,9 +309,10 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
           return;
         }
         this.barHeights[k] = temp[k - left];
-        this.setBarColor(k, 'green');
+        this.setBarColor(k, 'red');
         await sleep(this.delay);
       }
+
     };
   
     const mergeSortHelper = async (left: number, right: number) => {
