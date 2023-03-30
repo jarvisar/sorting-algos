@@ -39,6 +39,9 @@ export class SortingVisualizerComponent implements OnInit {
       case 'quick':
         await this.parentQuickSort();
         break;
+      case 'heap':
+        await this.heapSort();
+        break;
   }
 }
   
@@ -289,8 +292,141 @@ export class SortingVisualizerComponent implements OnInit {
     }
   }
 
-  
+  async parentQuickSort(){
+    this.inProgress = true;
+    this.stopSorting = false;
+    // set all to red
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, 'red');
+    }
+    await this.quickSort(0, this.barHeights.length - 1);
+    this.inProgress = false;
+    if (!this.stopSorting) {
+      for (let i = 0; i < this.barHeights.length; i++) {
+        this.setBarColor(i, 'green');
+      }
+    }
+  }
 
+  async quickSort(left: number = 0, right: number = this.barHeights.length - 1) {
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+    const partition = async (low: number, high: number) => {
+      let pivot = this.barHeights[high];
+      this.setBarColor(high, 'blue');
+      let i = low - 1;
+      for (let j = low; j <= high - 1; j++) {
+        if (this.stopSorting) {
+          return;
+        }
+        this.setBarColor(j, 'yellow');
+        await sleep(100);
+        if (this.barHeights[j] < pivot) {
+          i++;
+          this.setBarColor(i, 'red');
+          [this.barHeights[i], this.barHeights[j]] = [this.barHeights[j], this.barHeights[i]];
+          this.setBarColor(i, 'green');
+        }
+        this.setBarColor(j, 'red');
+      }
+      [this.barHeights[i + 1], this.barHeights[high]] = [this.barHeights[high], this.barHeights[i + 1]];
+      this.setBarColor(high, 'red');
+      this.setBarColor(i + 1, 'green');
+      return i + 1;
+    };
+    if (left < right && !this.stopSorting) {
+      let pivotIndex = await partition(left, right);
+      if (pivotIndex !== undefined) {
+        await this.quickSort(left, pivotIndex - 1);
+        await this.quickSort(pivotIndex + 1, right);
+      }
+    } else {
+      for (let i = left; i <= right; i++) {
+        this.setBarColor(i, 'green');
+      }
+    }
+  }
+
+  async heapSort() {
+    this.inProgress = true;
+    this.stopSorting = false;
+    const n = this.barHeights.length;
+    const delay = 100;
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+  
+    const parent = (i: number) => Math.floor((i - 1) / 2);
+    const left = (i: number) => 2 * i + 1;
+    const right = (i: number) => 2 * i + 2;
+  
+    const heapify = async (size: number, i: number) => {
+      let largest = i;
+      const l = left(i);
+      const r = right(i);
+  
+      this.setBarColor(i, 'blue');
+  
+      if (l < size) {
+        this.setBarColor(l, 'yellow');
+        await sleep(delay);
+        if (this.barHeights[l] > this.barHeights[largest]) {
+          largest = l;
+        }
+        this.setBarColor(l, 'red');
+      }
+  
+      if (r < size) {
+        this.setBarColor(r, 'yellow');
+        await sleep(delay);
+        if (this.barHeights[r] > this.barHeights[largest]) {
+          largest = r;
+        }
+        this.setBarColor(r, 'red');
+      }
+  
+      if (largest !== i) {
+        // Swap the bars
+        let temp = this.barHeights[i];
+        this.barHeights[i] = this.barHeights[largest];
+        this.barHeights[largest] = temp;
+  
+        this.setBarColor(largest, 'red');
+        await heapify(size, largest);
+      }
+  
+      this.setBarColor(i, 'red');
+    };
+  
+    // Build the max heap
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+      if (this.stopSorting) {
+        return;
+      }
+      await heapify(n, i);
+    }
+  
+    // Extract elements from the heap
+    for (let i = n - 1; i > 0; i--) {
+      if (this.stopSorting) {
+        return;
+      }
+      // Swap the bars
+      let temp = this.barHeights[0];
+      this.barHeights[0] = this.barHeights[i];
+      this.barHeights[i] = temp;
+  
+      this.setBarColor(i, 'green');
+      await heapify(i, 0);
+    }
+  
+    this.inProgress = false;
+    // Mark all as green
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, 'green');
+    }
+  }
 
   setBarColor(index: number, color: string) {
     let bar = document.querySelectorAll('.bar')[index] as HTMLElement;
@@ -321,63 +457,6 @@ export class SortingVisualizerComponent implements OnInit {
   onAlgoSelectChange() {
     if (this.alreadySorted) {
       this.reset();
-    }
-  }
-
-  async parentQuickSort(){
-    this.inProgress = true;
-    this.stopSorting = false;
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, 'red');
-    }
-    await this.quickSort(0, this.barHeights.length - 1);
-    this.inProgress = false;
-    if (!this.stopSorting) {
-      for (let i = 0; i < this.barHeights.length; i++) {
-        this.setBarColor(i, 'green');
-      }
-    }
-  }
-
-  async quickSort(left: number = 0, right: number = this.barHeights.length - 1) {
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-    const partition = async (low: number, high: number) => {
-      let pivot = this.barHeights[high];
-      this.setBarColor(high, 'blue');
-      let i = low - 1;
-  
-      for (let j = low; j <= high - 1; j++) {
-        if (this.stopSorting) {
-          return;
-        }
-        this.setBarColor(j, 'yellow');
-        await sleep(100);
-  
-        if (this.barHeights[j] < pivot) {
-          i++;
-          [this.barHeights[i], this.barHeights[j]] = [this.barHeights[j], this.barHeights[i]];
-        }
-  
-        this.setBarColor(j, 'red');
-      }
-      [this.barHeights[i + 1], this.barHeights[high]] = [this.barHeights[high], this.barHeights[i + 1]];
-      this.setBarColor(high, 'red');
-      return i + 1;
-    };
-  
-    if (left < right && !this.stopSorting) {
-      let pivotIndex = await partition(left, right);
-      if (pivotIndex !== undefined) {
-        await this.quickSort(left, pivotIndex - 1);
-        await this.quickSort(pivotIndex + 1, right);
-      }
-    } else {
-      for (let i = left; i <= right; i++) {
-        this.setBarColor(i, 'green');
-      }
     }
   }
 }
