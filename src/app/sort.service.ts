@@ -31,7 +31,6 @@ export class SortService {
       this.barHeights.push(randomHeight);
     }
     // get bar-container height
-    console.log("test1")
     const barContainer = document.getElementById('bar-container');
     const barContainerHeight = barContainer!.clientHeight - 140;
     // calculate bar heights based on bar-container height
@@ -70,9 +69,7 @@ export class SortService {
       swapped = false;
       setUnsortedToRed(); // Set all unsorted bars to red at the beginning of each loop iteration
       for (let i = 0; i < n - 1; i++) {
-        console.log(this.stopSorting)
         if (this.stopSorting) {
-          console.log(this.stopSorting)
           return;
         }
         // if not very first bar
