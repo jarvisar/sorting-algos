@@ -277,9 +277,8 @@ export class SortService {
         }
         this.barHeights[k] = temp[k - left];
         this.setBarColor(k, '#AA3939');
-        await sleep(this.delay);
+        // should probably sleep here
       }
-
     };
   
     const mergeSortHelper = async (left: number, right: number) => {
