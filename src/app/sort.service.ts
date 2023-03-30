@@ -251,6 +251,7 @@ export class SortService {
         } else {
           temp.push(this.barHeights[j]);
           this.setBarColor(j, '#AA3939');
+          // set color of i to red
           j++;
         }
       }
