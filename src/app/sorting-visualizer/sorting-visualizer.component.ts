@@ -220,18 +220,21 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
         if (this.stopSorting) {
           return;
         }
+        for (let k = 0; k < n; k++) {
+          if (k !== j && k !== i) {
+            this.setBarColor(k, 'red');
+          }
+        }
         this.setBarColor(j, 'yellow');
         await sleep(this.delay);
-  
         this.barHeights[j + 1] = this.barHeights[j];
         this.setBarColor(j + 1, 'red');
         j--;
-  
         if (j >= 0) {
-          this.setBarColor(j, 'yellow');
+          this.setBarColor(j, 'blue');
         }
       }
-  
+      
       this.barHeights[j + 1] = key;
       this.setBarColor(j + 1, 'blue');
       await sleep(this.delay);
