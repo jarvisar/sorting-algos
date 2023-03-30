@@ -1,5 +1,14 @@
 <!-- Center div vertically -->
 <div class="buttons-container">
+    <!-- Select box for algorithm type no material design -->
+    <select class="algo-select" [(ngModel)]="selectedAlgo">
+        <option value="bubble">Bubble Sort</option>
+        <option value="selection">Selection Sort</option>
+        <option value="insertion">Insertion Sort</option>
+        <option value="merge">Merge Sort</option>
+        <option value="quick">Quick Sort</option>
+        <option value="heap">Heap Sort</option>
+    </select>
     <button mat-raised-button (click)="sort()" style="margin: 80px 20px;" [disabled]="inProgress">Sort</button>
     <button mat-raised-button (click)="reset()" style="margin: 80px 20px;" [disabled]="inProgress">Reset</button>
     <button mat-raised-button (click)="stop()" style="margin: 80px 20px;" [disabled]="!inProgress">Stop</button>
