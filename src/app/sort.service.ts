@@ -163,33 +163,12 @@ export class SortService {
     const sleep = (ms: number, index: number, color: string) => {
       return new Promise<void>(resolve => {
         setTimeout(() => {
-          // Find all bars with the same height as the target bar
-          let sameHeightIndices = [];
-          for (let i = 0; i < n; i++) {
-            if (this.barHeights[i] === this.barHeights[index]) {
-              sameHeightIndices.push(i);
-            }
-          }
-    
-          // Set the color of all bars with the same height
-          for (let i of sameHeightIndices) {
-            this.setBarColor(i, color);
-          }
-    
-          // Reset the color of all bars with different height
-          for (let i = 0; i < n; i++) {
-            if (!sameHeightIndices.includes(i)) {
-              this.setBarColor(i, '#AA3939');
-            }
-          }
-    
+          this.setBarColor(index, color);
           resolve();
         }, ms);
       });
     };
     
-    
-
     // set all to red
     for (let i = 0; i < n; i++) {
       this.setBarColor(i, '#AA3939');
@@ -200,6 +179,7 @@ export class SortService {
         return;
       }
       let key = this.barHeights[i];
+      this.setBarColor(i, 'blue');
       await sleep(this.delay, i, 'blue');
   
       let j = i - 1;
@@ -215,6 +195,7 @@ export class SortService {
         }
         this.setBarColor(j, '#FEDC56')
         this.barHeights[j + 1] = this.barHeights[j];
+        this.setBarColor(j + 1, '#AA3939');
         await sleep(this.delay, j + 1, '#AA3939');
         j--;
         if (j >= 0) {
@@ -223,6 +204,7 @@ export class SortService {
       }
       
       this.barHeights[j + 1] = key;
+      this.setBarColor(j + 1, '#32CD32');
       await sleep(this.delay, j + 1, 'blue');
   
       for (let k = 0; k <= n; k++) {
