@@ -1,7 +1,7 @@
 <!-- Center div vertically -->
 <div class="buttons-container">
     <!-- Select box for algorithm type no material design -->
-    <select class="algo-select" [(ngModel)]="selectedAlgo">
+    <select class="algo-select" [(ngModel)]="selectedAlgo" (change)="onAlgoSelectChange()">
         <option value="bubble">Bubble Sort</option>
         <option value="selection">Selection Sort</option>
         <option value="insertion">Insertion Sort</option>

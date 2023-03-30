@@ -9,6 +9,7 @@ export class SortingVisualizerComponent implements OnInit {
   barHeights: number[] = [];
   inProgress = false;
   selectedAlgo = 'bubble';
+  alreadySorted = false;
 
   ngOnInit() {
     // Generate an array of 100 random heights between 10 and 100
@@ -29,9 +30,9 @@ export class SortingVisualizerComponent implements OnInit {
       case 'selection':
         await this.selectionSort();
         break;
-      // case 'insertion':
-      //   await this.insertionSort();
-      //   break;
+      case 'insertion':
+        await this.insertionSort();
+        break;
       // case 'merge':
       //   await this.mergeSort();
       //   break;
@@ -62,7 +63,9 @@ export class SortingVisualizerComponent implements OnInit {
       swapped = false;
       setUnsortedToRed(); // Set all unsorted bars to red at the beginning of each loop iteration
       for (let i = 0; i < n - 1; i++) {
+        console.log(this.stopSorting)
         if (this.stopSorting) {
+          console.log(this.stopSorting)
           return;
         }
         // if not very first bar
@@ -146,7 +149,56 @@ export class SortingVisualizerComponent implements OnInit {
     }
   }
 
+  async insertionSort() {
+    this.inProgress = true;
+    this.stopSorting = false;
+    const n = this.barHeights.length;
+    const delay = 100;
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
   
+    for (let i = 1; i < n; i++) {
+      if (this.stopSorting) {
+        return;
+      }
+      let key = this.barHeights[i];
+      this.setBarColor(i, 'blue');
+      await sleep(delay);
+  
+      let j = i - 1;
+  
+      while (j >= 0 && this.barHeights[j] > key) {
+        if (this.stopSorting) {
+          return;
+        }
+        this.setBarColor(j, 'yellow');
+        await sleep(delay);
+  
+        this.barHeights[j + 1] = this.barHeights[j];
+        this.setBarColor(j + 1, 'red');
+        j--;
+  
+        if (j >= 0) {
+          this.setBarColor(j, 'yellow');
+        }
+      }
+  
+      this.barHeights[j + 1] = key;
+      this.setBarColor(j + 1, 'blue');
+      await sleep(delay);
+  
+      for (let k = 0; k <= i; k++) {
+        this.setBarColor(k, 'green');
+      }
+    }
+  
+    this.inProgress = false;
+    // Mark remaining bars as sorted
+    for (let i = 0; i < n; i++) {
+      this.setBarColor(i, 'green');
+    }
+  }
 
   setBarColor(index: number, color: string) {
     let bar = document.querySelectorAll('.bar')[index] as HTMLElement;
@@ -155,11 +207,14 @@ export class SortingVisualizerComponent implements OnInit {
 
   stop(){
     this.inProgress = false;
-    this.stopSorting = !this.stopSorting;
+    this.stopSorting = true;
 
   }
 
   reset(){
+    this.inProgress = false;
+    this.stopSorting = false;
+    this.alreadySorted = false;
     // reset all colors
     for (let i = 0; i < this.barHeights.length; i++) {
       this.setBarColor(i, '');
@@ -170,6 +225,12 @@ export class SortingVisualizerComponent implements OnInit {
     }
   }
   
+  // reset on algo-select change
+  onAlgoSelectChange() {
+    if (this.alreadySorted) {
+      this.reset();
+    }
+  }
   
 }
 
