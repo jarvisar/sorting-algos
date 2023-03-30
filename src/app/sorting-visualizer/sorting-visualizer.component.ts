@@ -1,27 +1,44 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-sorting-visualizer',
   templateUrl: './sorting-visualizer.component.html',
   styleUrls: ['./sorting-visualizer.component.scss']
 })
-export class SortingVisualizerComponent implements OnInit {
+export class SortingVisualizerComponent implements OnInit, AfterViewInit {
   barHeights: number[] = [];
   inProgress = false;
   selectedAlgo = 'bubble';
   alreadySorted = false;
   numBars = 25;
+  delay = 1000 / this.numBars;
+
+  ngAfterViewInit() {
+    // get bar-container height
+    console.log("test1")
+    const barContainer = document.getElementById('bar-container');
+    const barContainerHeight = barContainer!.clientHeight - 140;
+    // calculate bar heights based on bar-container height
+    const maxHeight = Math.max(...this.barHeights);
+    this.barHeights = this.barHeights.map(height => {
+      return Math.floor((height / maxHeight) * barContainerHeight);
+    });
+  }
+
 
   ngOnInit() {
     // calculate number of bars I can fit on screen
-    const barWidth = 80;
+    const barWidth = 60;
     const barMargin = 10;
     const screenWidth = window.innerWidth;
     const numBars = Math.floor((screenWidth - 100) / (barWidth + barMargin));
+
+    console.log("test2")
     // Generate an array of 100 random heights between 10 and 100
     for (let i = 0; i < numBars; i++) {
       this.barHeights.push(Math.floor(Math.random() * 91) + 10);
     }
+
   }
 
   stopSorting = false;
@@ -56,7 +73,8 @@ export class SortingVisualizerComponent implements OnInit {
     this.stopSorting = false;
     let n = this.barHeights.length;
     let swapped = true;
-    const delay = 75;
+    // this.delay should be calculation so it always finishes in 7 seconds based on numBars
+
     const sleep = (ms: number) => {
       return new Promise(resolve => setTimeout(resolve, ms));
     };
@@ -80,7 +98,7 @@ export class SortingVisualizerComponent implements OnInit {
         // if not very first bar
         // Set the color of the bars being compared to blue
         this.setBarColor(i + 1, 'blue');
-        await sleep(delay);
+        await sleep(this.delay);
         if (i !== 0) {
           this.setBarColor(i-1, 'red');
           }
@@ -111,7 +129,6 @@ export class SortingVisualizerComponent implements OnInit {
     this.inProgress = true;
     this.stopSorting = false;
     const n = this.barHeights.length;
-    const delay = 100;
     const sleep = (ms: number) => {
       return new Promise(resolve => setTimeout(resolve, ms));
     };
@@ -128,7 +145,7 @@ export class SortingVisualizerComponent implements OnInit {
           return;
         }
         this.setBarColor(j, 'yellow');
-        await sleep(delay);
+        await sleep(this.delay);
   
         if (this.barHeights[j] < this.barHeights[minIndex]) {
           this.setBarColor(minIndex, 'red');
@@ -162,7 +179,6 @@ export class SortingVisualizerComponent implements OnInit {
     this.inProgress = true;
     this.stopSorting = false;
     const n = this.barHeights.length;
-    const delay = 100;
     const sleep = (ms: number) => {
       return new Promise(resolve => setTimeout(resolve, ms));
     };
@@ -173,7 +189,7 @@ export class SortingVisualizerComponent implements OnInit {
       }
       let key = this.barHeights[i];
       this.setBarColor(i, 'blue');
-      await sleep(delay);
+      await sleep(this.delay);
   
       let j = i - 1;
   
@@ -182,7 +198,7 @@ export class SortingVisualizerComponent implements OnInit {
           return;
         }
         this.setBarColor(j, 'yellow');
-        await sleep(delay);
+        await sleep(this.delay);
   
         this.barHeights[j + 1] = this.barHeights[j];
         this.setBarColor(j + 1, 'red');
@@ -195,7 +211,7 @@ export class SortingVisualizerComponent implements OnInit {
   
       this.barHeights[j + 1] = key;
       this.setBarColor(j + 1, 'blue');
-      await sleep(delay);
+      await sleep(this.delay);
   
       for (let k = 0; k <= i; k++) {
         this.setBarColor(k, 'green');
@@ -213,7 +229,6 @@ export class SortingVisualizerComponent implements OnInit {
     this.inProgress = true;
     this.stopSorting = false;
     const n = this.barHeights.length;
-    const delay = 100;
     const sleep = (ms: number) => {
       return new Promise(resolve => setTimeout(resolve, ms));
     };
@@ -235,7 +250,7 @@ export class SortingVisualizerComponent implements OnInit {
   
         this.setBarColor(i, 'blue');
         this.setBarColor(j, 'yellow');
-        await sleep(delay);
+        await sleep(this.delay);
   
         if (this.barHeights[i] <= this.barHeights[j]) {
           temp.push(this.barHeights[i]);
@@ -272,7 +287,7 @@ export class SortingVisualizerComponent implements OnInit {
         }
         this.barHeights[k] = temp[k - left];
         this.setBarColor(k, 'green');
-        await sleep(delay);
+        await sleep(this.delay);
       }
     };
   
@@ -358,7 +373,6 @@ export class SortingVisualizerComponent implements OnInit {
     this.inProgress = true;
     this.stopSorting = false;
     const n = this.barHeights.length;
-    const delay = 100;
     const sleep = (ms: number) => {
       return new Promise(resolve => setTimeout(resolve, ms));
     };
@@ -378,7 +392,7 @@ export class SortingVisualizerComponent implements OnInit {
   
       if (l < size) {
         this.setBarColor(l, 'yellow');
-        await sleep(delay);
+        await sleep(this.delay);
         if (this.barHeights[l] > this.barHeights[largest]) {
           largest = l;
         }
@@ -386,7 +400,7 @@ export class SortingVisualizerComponent implements OnInit {
       }
       if (r < size) {
         this.setBarColor(r, 'yellow');
-        await sleep(delay);
+        await sleep(this.delay);
         if (this.barHeights[r] > this.barHeights[largest]) {
           largest = r;
         }
