@@ -33,9 +33,9 @@ export class SortingVisualizerComponent implements OnInit {
       case 'insertion':
         await this.insertionSort();
         break;
-      // case 'merge':
-      //   await this.mergeSort();
-      //   break;
+      case 'merge':
+        await this.mergeSort();
+        break;
       // case 'quick':
       //   await this.quickSort();
       //   break;
@@ -199,6 +199,96 @@ export class SortingVisualizerComponent implements OnInit {
       this.setBarColor(i, 'green');
     }
   }
+
+  async mergeSort() {
+    this.inProgress = true;
+    this.stopSorting = false;
+    const n = this.barHeights.length;
+    const delay = 100;
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+
+    // set all bars to red
+    for (let i = 0; i < n; i++) {
+      this.setBarColor(i, 'red');
+    }
+  
+    const merge = async (left: number, mid: number, right: number) => {
+      let i = left;
+      let j = mid + 1;
+      let temp = [];
+  
+      while (i <= mid && j <= right) {
+        if (this.stopSorting) {
+          return;
+        }
+  
+        this.setBarColor(i, 'blue');
+        this.setBarColor(j, 'yellow');
+        await sleep(delay);
+  
+        if (this.barHeights[i] <= this.barHeights[j]) {
+          temp.push(this.barHeights[i]);
+          this.setBarColor(i, 'red');
+          i++;
+        } else {
+          temp.push(this.barHeights[j]);
+          this.setBarColor(j, 'red');
+          j++;
+        }
+      }
+  
+      while (i <= mid) {
+        if (this.stopSorting) {
+          return;
+        }
+        temp.push(this.barHeights[i]);
+        this.setBarColor(i, 'red');
+        i++;
+      }
+  
+      while (j <= right) {
+        if (this.stopSorting) {
+          return;
+        }
+        temp.push(this.barHeights[j]);
+        this.setBarColor(j, 'red');
+        j++;
+      }
+  
+      for (let k = left; k <= right; k++) {
+        if (this.stopSorting) {
+          return;
+        }
+        this.barHeights[k] = temp[k - left];
+        this.setBarColor(k, 'green');
+        await sleep(delay);
+      }
+    };
+  
+    const mergeSortHelper = async (left: number, right: number) => {
+      if (left < right) {
+        if (this.stopSorting) {
+          return;
+        }
+        let mid = Math.floor((left + right) / 2);
+        await mergeSortHelper(left, mid);
+        await mergeSortHelper(mid + 1, right);
+        await merge(left, mid, right);
+      }
+    };
+  
+    await mergeSortHelper(0, n - 1);
+  
+    this.inProgress = false;
+    if (!this.stopSorting) {
+      for (let i = 0; i < this.barHeights.length; i++) {
+        this.setBarColor(i, 'green');
+      }
+    }
+  }
+
 
   setBarColor(index: number, color: string) {
     let bar = document.querySelectorAll('.bar')[index] as HTMLElement;
