@@ -451,6 +451,7 @@ export class SortService {
   barColors: string[] = [];
   setBarColor(index: number, color: string) {
     let bar = document.querySelectorAll('.bar')[index] as HTMLElement;
+    if (bar)
     bar.style.backgroundColor = color;
     this.barColors[index] = color;
   }
