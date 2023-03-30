@@ -1,8 +1,16 @@
+// center buttons class vertically
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
 .bar-container {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    height: 500px;
+
     width: 100%;
     background-color: #fff;
   }
