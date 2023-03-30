@@ -1,27 +1,31 @@
-# SortingAlgos
+# Sorting Visualizer
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.9.
+This is a web app that visually demonstrates various sorting algorithms using bars of varying heights. The app is built using Angular and allows users to choose from several sorting algorithms, including bubble sort, selection sort, and insertion sort. As the sorting algorithm runs, the app updates the color and height of the bars to reflect the current state of the sorting process.
 
-## Development server
+## Installation
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+To install and run this app on your local machine, follow these steps:
 
-## Code scaffolding
+1. Clone the repository to your local machine using the command:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+`git clone https://github.com/jarvisar/sorting-algos.git`
 
-## Build
+Navigate to the project directory using the command:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+`cd sorting-visualizer`
 
-## Running unit tests
+3. Install the necessary dependencies using the command:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+`npm install`
 
-## Running end-to-end tests
+4. Start the app using the command:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+`ng serve`
 
-## Further help
+5. Open your web browser and navigate to `http://localhost:4200` to view the app.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Usage
+
+Currently this web application only supports bubble sort visualization. Additional sorting algorithms will be implemented in the coming days.
+
+###### Note: this project is very early in development and is subject to drastic design and feature changes
