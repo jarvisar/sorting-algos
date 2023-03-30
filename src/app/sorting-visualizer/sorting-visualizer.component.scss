@@ -1,38 +1,14 @@
-.buttons-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin-top: 80px; 
-    margin-bottom: 20px;
-}
-
-.main-button{
-    margin: 5px;
-    color: #333;
-}
-
-.sort-button{
-    background-color: lightgreen;
-}
-
-.reset-button{
-    background-color: #eaeaea;
-}
-
-.stop-button{
-    background-color: red;
-}
-
 .bar-container {
     display: flex;
     justify-content: center;
     align-items: flex-end;
     width: calc(100% - 120px);
-    height: calc(100% - 245px);
+    height: calc(100% - 230px);
     margin: 0 auto;
+    margin-top: 80px;
     background-color: #3c3f42;
     padding: 30px;
+    padding-bottom: 40px;
     border-radius: 10px;
     overflow: hidden;
   }
@@ -59,24 +35,11 @@
   
 .bar-label {
     font-size: 20px;
-    margin-top: 5px;
     position: absolute;
-    bottom: -35px;
+    bottom: -40px;
     left: 50%;
     transform: translateX(-50%);
     color: #ccc;
     font-family: 'Roboto', sans-serif;
-}
-
-.algo-select{
-    width: 150px;
-    height:40px;
-    font-size:16px;
-    text-align:left;
-    padding-left: 10px;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-    font-weight: 450;
-    margin-left: 15px;
-    transform: all 0.5 ease;
 }
 

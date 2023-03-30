@@ -7,11 +7,13 @@ import { AppComponent } from './app.component';
 import { SortingVisualizerComponent } from './sorting-visualizer/sorting-visualizer.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
+import { InputBarComponent } from './input-bar/input-bar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SortingVisualizerComponent
+    SortingVisualizerComponent,
+    InputBarComponent
   ],
   imports: [
     BrowserModule,

@@ -1,18 +1,4 @@
 <!-- Center div vertically -->
-<div class="buttons-container">
-    <!-- Select box for algorithm type no material design -->
-    <select class="algo-select" [(ngModel)]="sortService.selectedAlgo" (change)="onAlgoSelectChange()" style="margin: 5px">
-        <option value="bubble">Bubble Sort</option>
-        <option value="selection">Selection Sort</option>
-        <option value="insertion">Insertion Sort</option>
-        <option value="merge">Merge Sort</option>
-        <option value="quick">Quick Sort</option>
-        <option value="heap">Heap Sort</option>
-    </select>
-    <button mat-raised-button (click)="sort()" [disabled]="sortService.inProgress" class="main-button sort-button">Sort</button>
-    <button mat-raised-button (click)="reset()" [disabled]="sortService.inProgress" class="main-button reset-button">Reset</button>
-    <button mat-raised-button (click)="stop()" [disabled]="!sortService.inProgress" class="main-button stop-button">Stop</button>
-</div>
 <div class="bar-container" id="bar-container">
     <!-- Maximum height should be container height, and scale from there -->
     <div class="bar" *ngFor="let height of sortService.barHeights" [style.height.px]="height">  <p class="bar-label">{{height}}</p> </div>
