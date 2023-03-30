@@ -2,6 +2,9 @@
 
 This is a web app that visually demonstrates various sorting algorithms using bars of varying heights. The app is built using Angular and allows users to choose from several sorting algorithms, including bubble sort, selection sort, and insertion sort. As the sorting algorithm runs, the app updates the color and height of the bars to reflect the current state of the sorting process.
 
+Visit the [GitHub pages](https://jarvisar.github.io/sorting-algos/) site to access the latest deployment.
+
+
 ## Installation
 
 To install and run this app on your local machine, follow these steps:
