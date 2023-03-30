@@ -10,7 +10,7 @@ To install and run this app on your local machine, follow these steps:
 
 `git clone https://github.com/jarvisar/sorting-algos.git`
 
-Navigate to the project directory using the command:
+2. Navigate to the project directory using the command:
 
 `cd sorting-visualizer`
 
