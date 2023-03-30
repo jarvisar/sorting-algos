@@ -11,7 +11,7 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
   selectedAlgo = 'bubble';
   alreadySorted = false;
   numBars = 25;
-  delay = 1000 / this.numBars;
+  delay = 200;
 
   ngAfterViewInit() {
     // get bar-container height
@@ -27,8 +27,13 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
 
 
   ngOnInit() {
+    this.generateBars();
+  }
+
+  generateBars(){
+    this.barHeights = [];
     // calculate number of bars I can fit on screen
-    const barWidth = 60;
+    const barWidth = 40;
     const barMargin = 10;
     const screenWidth = window.innerWidth;
     const numBars = Math.floor((screenWidth - 100) / (barWidth + barMargin));
@@ -38,7 +43,6 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
     for (let i = 0; i < numBars; i++) {
       this.barHeights.push(Math.floor(Math.random() * 91) + 10);
     }
-
   }
 
   stopSorting = false;
