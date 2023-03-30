@@ -80,6 +80,17 @@ export class SortingVisualizerComponent implements OnInit {
     this.stopSorting = !this.stopSorting;
 
   }
+
+  reset(){
+    // reset all colors
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '');
+    }
+    this.barHeights = [];
+    for (let i = 0; i < 20; i++) {
+      this.barHeights.push(Math.floor(Math.random() * 91) + 10);
+    }
+  }
   
   
 }
