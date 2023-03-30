@@ -143,6 +143,10 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
       return new Promise(resolve => setTimeout(resolve, ms));
     };
   
+    // set all to red
+    for (let i = 0; i < n; i++) {
+      this.setBarColor(i, 'red');
+    }
     for (let i = 0; i < n - 1; i++) {
       if (this.stopSorting) {
         return;
