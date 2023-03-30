@@ -31,4 +31,4 @@ To install and run this app on your local machine, follow these steps:
 
 Currently this web application supports bubble, selection, insertion, merge, quick, and heap sort. 
 
-This web app was created [Angular v14.3.0](https://angular.io/)
+This web app was created with [Angular v14.3.0](https://angular.io/)
