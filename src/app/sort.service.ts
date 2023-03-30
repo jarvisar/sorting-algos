@@ -432,6 +432,14 @@ export class SortService {
       // Set the color of the largest bar to blue before swapping
       this.setBarColor(0, 'blue');
       this.setBarColor(i, '#FEDC56');
+      // if largest bar is in final position, set to green
+      for (let i = 0; i < n; i++) {
+        if (i === n - 1) {
+          this.setBarColor(0, '#32CD32');
+        }
+      }
+      
+      
 
       // Swap the bars
       let temp = this.barHeights[0];
