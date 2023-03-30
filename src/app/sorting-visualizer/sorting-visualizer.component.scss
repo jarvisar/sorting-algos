@@ -7,6 +7,22 @@
     margin-bottom: 20px;
 }
 
+.main-button{
+    margin: 5px
+}
+
+.sort-button{
+    background-color: lightgreen;
+}
+
+.reset-button{
+    background-color: #eaeaea;
+}
+
+.stop-button{
+    background-color: red;
+}
+
 .bar-container {
     display: flex;
     justify-content: center;
@@ -27,6 +43,16 @@
     margin: 0 1px;
     position: relative;
     border-radius: 4px;
+}
+
+.bar:hover{
+    filter: brightness(1.2);
+}
+
+// on bar:hover, make bar-label pop out a bit
+.bar:hover .bar-label{
+    font-size: 22px;
+    transition: all 0.2s ease-out;
 }
   
 .bar-label {

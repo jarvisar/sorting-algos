@@ -9,9 +9,9 @@
         <option value="quick">Quick Sort</option>
         <option value="heap">Heap Sort</option>
     </select>
-    <button mat-raised-button (click)="sort()" [disabled]="sortService.inProgress" style="margin: 5px">Sort</button>
-    <button mat-raised-button (click)="reset()" [disabled]="sortService.inProgress" style="margin: 5px">Reset</button>
-    <button mat-raised-button (click)="stop()" [disabled]="!sortService.inProgress" style="margin: 5px">Stop</button>
+    <button mat-raised-button (click)="sort()" [disabled]="sortService.inProgress" class="main-button sort-button">Sort</button>
+    <button mat-raised-button (click)="reset()" [disabled]="sortService.inProgress" class="main-button reset-button">Reset</button>
+    <button mat-raised-button (click)="stop()" [disabled]="!sortService.inProgress" class="main-button stop-button">Stop</button>
 </div>
 <div class="bar-container" id="bar-container">
     <!-- Maximum height should be container height, and scale from there -->
