@@ -237,7 +237,7 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
       await sleep(this.delay);
   
       for (let k = 0; k <= i; k++) {
-        this.setBarColor(k, 'green');
+        this.setBarColor(k, 'red');
       }
     }
   
