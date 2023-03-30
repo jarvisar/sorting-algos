@@ -20,6 +20,27 @@
     margin: 0;
   }
 
+  .header-title {
+    font-size: 24pt;
+    font-family: Roboto, Helvetica Neue, sans-serif;
+    margin-left: 10px;
+    font-weight: 500;
+    text-shadow: 0px 1px 0.5px #919191, 0px 2px 0.5px #919191, 0px 3px 0.5px #919191;
+    transition: transform 0.1s ease, text-shadow 0.1s ease;
+    transform: translateY(0px);
+    cursor: pointer;
+  }
+    
+  .header-title:hover {
+    text-shadow: 0px 1px 0px #818181, 0px 2px 0.5px #818181;
+    transform: translateY(1px);
+  }
+    
+  .header-title:active {
+    text-shadow: 0px 1px 0px #717171;
+    transform: translateY(2px);
+  }
+
   .spacer {
     flex: 1;
   }
@@ -32,7 +53,7 @@
     height: 60px;
     display: flex;
     align-items: center;
-    background-color: #1976d2;
+    background-color: #32353a;
     color: white;
     font-weight: 600;
   }
