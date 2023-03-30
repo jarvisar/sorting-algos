@@ -36,9 +36,9 @@ export class SortingVisualizerComponent implements OnInit {
       case 'merge':
         await this.mergeSort();
         break;
-      // case 'quick':
-      //   await this.quickSort();
-      //   break;
+      case 'quick':
+        await this.parentQuickSort();
+        break;
   }
 }
   
@@ -289,6 +289,8 @@ export class SortingVisualizerComponent implements OnInit {
     }
   }
 
+  
+
 
   setBarColor(index: number, color: string) {
     let bar = document.querySelectorAll('.bar')[index] as HTMLElement;
@@ -321,6 +323,62 @@ export class SortingVisualizerComponent implements OnInit {
       this.reset();
     }
   }
+
+  async parentQuickSort(){
+    this.inProgress = true;
+    this.stopSorting = false;
+    // set all to red
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, 'red');
+    }
+    await this.quickSort(0, this.barHeights.length - 1);
+    this.inProgress = false;
+    if (!this.stopSorting) {
+      for (let i = 0; i < this.barHeights.length; i++) {
+        this.setBarColor(i, 'green');
+      }
+    }
+  }
+
+  async quickSort(left: number = 0, right: number = this.barHeights.length - 1) {
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+    const partition = async (low: number, high: number) => {
+      let pivot = this.barHeights[high];
+      this.setBarColor(high, 'blue');
+      let i = low - 1;
   
+      for (let j = low; j <= high - 1; j++) {
+        if (this.stopSorting) {
+          return;
+        }
+        this.setBarColor(j, 'yellow');
+        await sleep(100);
+  
+        if (this.barHeights[j] < pivot) {
+          i++;
+          [this.barHeights[i], this.barHeights[j]] = [this.barHeights[j], this.barHeights[i]];
+        }
+  
+        this.setBarColor(j, 'red');
+      }
+      [this.barHeights[i + 1], this.barHeights[high]] = [this.barHeights[high], this.barHeights[i + 1]];
+      this.setBarColor(high, 'red');
+      return i + 1;
+    };
+  
+    if (left < right && !this.stopSorting) {
+      let pivotIndex = await partition(left, right);
+      if (pivotIndex !== undefined) {
+        await this.quickSort(left, pivotIndex - 1);
+        await this.quickSort(pivotIndex + 1, right);
+      }
+    } else {
+      for (let i = left; i <= right; i++) {
+        this.setBarColor(i, 'green');
+      }
+    }
+  }
 }
 
