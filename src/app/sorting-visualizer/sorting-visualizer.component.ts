@@ -30,10 +30,14 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
     const screenWidth = window.innerWidth;
     const numBars = Math.floor((screenWidth - 100) / (barWidth + barMargin));
 
-    console.log("test2")
     // Generate an array of 100 random heights between 10 and 100
     for (let i = 0; i < numBars; i++) {
-      this.barHeights.push(Math.floor(Math.random() * 91) + 10);
+      // prevent duplicate numbers
+      let randomHeight = Math.floor(Math.random() * 90) + 10;
+      while (this.barHeights.includes(randomHeight)) {
+        randomHeight = Math.floor(Math.random() * 90) + 10;
+      }
+      this.barHeights.push(randomHeight);
     }
     // get bar-container height
     console.log("test1")
@@ -362,17 +366,15 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
         }
         this.setBarColor(j, 'yellow');
         await sleep(100);
-        if (this.barHeights[j] < pivot) {
-          i++;
-          this.setBarColor(i, 'red');
-          [this.barHeights[i], this.barHeights[j]] = [this.barHeights[j], this.barHeights[i]];
-          this.setBarColor(i, 'green');
-        }
-        this.setBarColor(j, 'red');
+        if (this.barHeights[j] < pivot) { 
+          i++; 
+          this.setBarColor(i, 'red'); // Reset i back to red 
+          [this.barHeights[i], this.barHeights[j]] = [this.barHeights[j], this.barHeights[i]]; 
+        } 
+        this.setBarColor(j, 'red'); // Reset j back to red
       }
       [this.barHeights[i + 1], this.barHeights[high]] = [this.barHeights[high], this.barHeights[i + 1]];
       this.setBarColor(high, 'red');
-      this.setBarColor(i + 1, 'green');
       return i + 1;
     };
     if (left < right && !this.stopSorting) {
@@ -380,10 +382,6 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
       if (pivotIndex !== undefined) {
         await this.quickSort(left, pivotIndex - 1);
         await this.quickSort(pivotIndex + 1, right);
-      }
-    } else {
-      for (let i = left; i <= right; i++) {
-        this.setBarColor(i, 'green');
       }
     }
   }
@@ -413,15 +411,15 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
         this.setBarColor(l, 'yellow');
         await sleep(this.delay);
         if (this.barHeights[l] > this.barHeights[largest]) {
-          largest = l;
+            largest = l; 
         }
-        this.setBarColor(l, 'red');
-      }
-      if (r < size) {
+        this.setBarColor(l, 'red'); // Reset left child back to red 
+    }
+    if (r < size) {
         this.setBarColor(r, 'yellow');
         await sleep(this.delay);
         if (this.barHeights[r] > this.barHeights[largest]) {
-          largest = r;
+            largest = r; 
         }
         this.setBarColor(r, 'red');
       }
@@ -469,7 +467,6 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
       this.barHeights[i] = temp;
 
       // Set the color of the bar at index i to green (final position)
-      this.setBarColor(i, 'green');
       await heapify(i, 0);
     }
     this.inProgress = false;
