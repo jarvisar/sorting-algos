@@ -9,7 +9,7 @@ export class SortService {
   selectedAlgo = 'bubble';
   alreadySorted = false;
   numBars = 25;
-  delay = 200;
+  delay = 100;
 
   constructor() { }
 
@@ -41,7 +41,7 @@ export class SortService {
     this.alreadySorted = false;
     // set all to default color
     for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '');
+      this.setBarColor(i, '#7474B0');
     }
   }
 
@@ -464,11 +464,15 @@ export class SortService {
 
   barColors: string[] = [];
   setBarColor(index: number, color: string) {
-    let bar = document.querySelectorAll('.bar')[index] as HTMLElement;
+    setTimeout(() => {
+      let bar = document.querySelectorAll('.bar')[index] as HTMLElement;
+    console.log("test")
     if (bar) { 
       // add important
       bar.style.setProperty('background-color', color, 'important');
       this.barColors[index] = color;
+    } else {
+      console.log("bar not found")
     }
-  }
+  } , 0);}
 }
