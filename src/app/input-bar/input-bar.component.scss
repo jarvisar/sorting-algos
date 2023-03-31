@@ -53,3 +53,7 @@
 .stop-button{
     background-color: #c24949;
 }
+
+::ng-deep .mat-slider-thumb, ::ng-deep .mat-slider-thumb-label, ::ng-deep .mat-slider-track-fill {
+    background-color: #7474B0 !important;
+}

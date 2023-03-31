@@ -9,8 +9,13 @@
         <option value="heap">Heap Sort</option>
     </select>
     <!-- Input for number of bars -->
-    <input type="number" class="bar-count-input" [(ngModel)]="sortService.numBars" (change)="onBarCountChange()" placeholder="Number of Bars" style="margin: 5px">
+    <input type="number" class="bar-count-input" [(ngModel)]="sortService.numBars" (change)="onBarCountChange()" placeholder="Number of Bars" style="margin: 5px" max="90">
     <button mat-raised-button (click)="sort()" [disabled]="sortService.inProgress" class="main-button sort-button">Sort</button>
     <button mat-raised-button (click)="reset()" [disabled]="sortService.inProgress" class="main-button reset-button">Reset</button>
     <button mat-raised-button (click)="stop()" [disabled]="!sortService.inProgress" class="main-button stop-button">Stop</button>
+    <!-- Slider for sortingService.delay with label in ms -->
+    <div class="slider-container" style="position: relative">
+        <mat-slider [(ngModel)]="sortService.delay" (change)="onDelayChange()" min="0" max="100" step="0.5" thumbLabel></mat-slider>
+        <p class="slider-label" style="color: #aaa; position: absolute; bottom: -20px; left: 20px;">Delay: {{sortService.delay}} ms</p></div>
+
 </div>
