@@ -283,8 +283,8 @@ export class SortService {
           return;
         }
         this.barHeights[k] = temp[k - left];
-        // this.setBarColor(k, '#AA3939'); I even tried putting color before, still doesnt work. Same issue
-        await sleep(this.delay); // bar color gets reset right here for some reason. Need to fix!
+        this.setBarColor(k, '#FEDC56');
+        await sleep(this.delay);
         this.setBarColor(k, '#AA3939');
       }
     };
@@ -466,13 +466,10 @@ export class SortService {
   setBarColor(index: number, color: string) {
     setTimeout(() => {
       let bar = document.querySelectorAll('.bar')[index] as HTMLElement;
-    console.log("test")
     if (bar) { 
       // add important
       bar.style.setProperty('background-color', color, 'important');
       this.barColors[index] = color;
-    } else {
-      console.log("bar not found")
     }
   } , 0);}
 }

@@ -48,13 +48,13 @@ export class InputBarComponent implements OnInit {
     if (this.sortService.selectedAlgo === 'heap') {
       setTimeout(() => {
         for (let i = 0; i < this.sortService.barHeights.length; i++) {
-          this.sortService.setBarColor(i, '');
+          this.sortService.setBarColor(i, '#7474B0');
         };
       }, this.sortService.delay * 3);
     } else {
       setTimeout(() => {
         for (let i = 0; i < this.sortService.barHeights.length; i++) {
-          this.sortService.setBarColor(i, '');
+          this.sortService.setBarColor(i, '#7474B0');
         };
       }, this.sortService.delay);
     }
@@ -68,7 +68,7 @@ export class InputBarComponent implements OnInit {
     this.sortService.generateBars();
     setTimeout(() => {
       for (let i = 0; i < this.sortService.barHeights.length; i++) {
-        this.sortService.setBarColor(i, '');
+        this.sortService.setBarColor(i, '#7474B0');
       };
     }, this.sortService.delay);
   }
