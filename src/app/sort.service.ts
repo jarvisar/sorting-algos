@@ -32,7 +32,7 @@ export class SortService {
     }
     // get bar-container height
     const barContainer = document.getElementById('bar-container');
-    const barContainerHeight = barContainer!.clientHeight - 140;
+    const barContainerHeight = barContainer!.clientHeight - 70;
     // calculate bar heights based on bar-container height
     const maxHeight = Math.max(...this.barHeights);
     this.barHeights = this.barHeights.map(height => {
