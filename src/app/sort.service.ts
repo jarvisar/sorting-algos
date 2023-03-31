@@ -223,7 +223,10 @@ export class SortService {
     this.stopSorting = false;
     const n = this.barHeights.length;
     const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
+      return new Promise(resolve => 
+        // I even tried to take a color as parameter and set it here using setTimeout. Also same issue. 
+        setTimeout(resolve, ms)
+        );
     };
 
     // set all bars to red
@@ -280,8 +283,9 @@ export class SortService {
           return;
         }
         this.barHeights[k] = temp[k - left];
+        // this.setBarColor(k, '#AA3939'); I even tried putting color before, still doesnt work. Same issue
+        await sleep(this.delay); // bar color gets reset right here for some reason. Need to fix!
         this.setBarColor(k, '#AA3939');
-        // should probably sleep here
       }
     };
   
@@ -461,8 +465,9 @@ export class SortService {
   barColors: string[] = [];
   setBarColor(index: number, color: string) {
     let bar = document.querySelectorAll('.bar')[index] as HTMLElement;
-    if (bar) {
-      bar.style.backgroundColor = color;
+    if (bar) { 
+      // add important
+      bar.style.setProperty('background-color', color, 'important');
       this.barColors[index] = color;
     }
   }
