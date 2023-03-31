@@ -36,7 +36,7 @@
 
 .bar:active{
     filter: brightness(1.1);
-    transition: all 0.05s ease-out;
+    transition: all 0.02s ease-out;
 }
 
 // on bar:hover, make bar-label pop out a bit
@@ -49,7 +49,7 @@
 // on bar:hover, make bar-label pop out a bit
 .bar:active .bar-label{
     font-size: 21px;
-    transition: all 0.05s ease-out;
+    transition: all 0.02s ease-out;
     color: white;
 }
   
