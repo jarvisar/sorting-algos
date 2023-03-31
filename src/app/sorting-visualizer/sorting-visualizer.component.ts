@@ -14,7 +14,6 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
     this.sortService.generateBars();
   }
 
-
   ngOnInit() {
 
   }

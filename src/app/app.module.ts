@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { SortingVisualizerComponent } from './sorting-visualizer/sorting-visualizer.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { InputBarComponent } from './input-bar/input-bar.component';
 
 @NgModule({
@@ -21,7 +22,8 @@ import { InputBarComponent } from './input-bar/input-bar.component';
     MatToolbarModule,
     MatButtonModule,
     BrowserAnimationsModule,
-    FormsModule
+    FormsModule,
+    DragDropModule
   ],
   providers: [FormsModule],
   bootstrap: [AppComponent]
