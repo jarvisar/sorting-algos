@@ -1,0 +1,59 @@
+{
+    "short_name": "Sorting Visualizer",
+    "name": "Sorting Algorithm Visualizer",
+    "description": "Visual representation of several different sorting algorithms.",
+    "icons": [
+      {
+        "src": "/sorting-algos/assets/favicon-32x32.png",
+        "sizes": "32x32",
+        "purpose": "any"
+      },
+      {
+        "src": "/sorting-algos/assets/android-chrome-192x192.png",
+        "sizes": "192x192",
+        "purpose": "any"
+      },
+      {
+        "src": "/sorting-algos/assets/android-chrome-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any"
+      }
+    ],
+    "id": "/sorting-algos",
+    "start_url": "/sorting-algos/",
+    "scope": "/sorting-algos/",
+    "background_color": "#444444",
+    "display": "standalone",
+    "theme_color": "#444444",
+    "shortcuts": [
+      {
+        "name": "NASA Exoplanet Archive Search",
+        "short_name": "Exoplanet Search",
+        "description": "Search for exoplanets using data from NASA's Archive",
+        "url": "/sorting-algos/",
+        "icons": [
+            {
+                "src": "/sorting-algos/assets/favicon-32x32.png",
+                "sizes": "32x32",
+                "purpose": "any"
+            },
+            {
+                "src": "/sorting-algos/assets/android-chrome-192x192.png",
+                "sizes": "192x192",
+                "purpose": "any"
+            },
+            {
+                "src": "/sorting-algos/assets/android-chrome-512x512.png",
+                "sizes": "512x512",
+                "type": "image/png",
+                "purpose": "any"
+            }
+        ]
+      }
+    ],
+    "lang": "en",
+    "display_override": [
+      "standalone"
+    ]
+  }
