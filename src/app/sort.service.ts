@@ -91,14 +91,14 @@ export class SortService {
       }
       // Set the bar in its final position to green if not very first iteration
       if (n !== this.barHeights.length) {
-      this.setBarColor(n, '#32CD32');
+      this.setBarColor(n, '#73be73');
       }
       n--;
     }
     this.inProgress = false;
     // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#32CD32');
+      this.setBarColor(i, '#73be73');
     }
   }
 
@@ -145,14 +145,14 @@ export class SortService {
       this.setBarColor(minIndex, '#c24949');
       // if not first one
       if (i !== 0) {
-        this.setBarColor(i - 1, '#32CD32');
+        this.setBarColor(i - 1, '#73be73');
       }
     }
   
     this.inProgress = false;
     // Mark all as green
     for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#32CD32');
+      this.setBarColor(i, '#73be73');
     }
   }
 
@@ -214,7 +214,7 @@ export class SortService {
     this.inProgress = false;
     // Mark remaining bars as sorted
     for (let i = 0; i < n; i++) {
-      this.setBarColor(i, '#32CD32');
+      this.setBarColor(i, '#73be73');
     }
   }
 
@@ -306,7 +306,7 @@ export class SortService {
     this.inProgress = false;
     if (!this.stopSorting) {
       for (let i = 0; i < this.barHeights.length; i++) {
-        this.setBarColor(i, '#32CD32');
+        this.setBarColor(i, '#73be73');
       }
     }
   }
@@ -322,7 +322,7 @@ export class SortService {
     this.inProgress = false;
     if (!this.stopSorting) {
       for (let i = 0; i < this.barHeights.length; i++) {
-        this.setBarColor(i, '#32CD32');
+        this.setBarColor(i, '#73be73');
       }
     }
   }
@@ -438,7 +438,7 @@ export class SortService {
 
       // Set the color of the largest bar to #229ccb before swapping
       this.setBarColor(0, '#229ccb');
-      this.setBarColor(i, '#32CD32');
+      this.setBarColor(i, '#73be73');
 
       // Swap the bars
       let temp = this.barHeights[0];
@@ -452,7 +452,7 @@ export class SortService {
   
     // Mark all as green
     for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#32CD32');
+      this.setBarColor(i, '#73be73');
     }
   }
 
