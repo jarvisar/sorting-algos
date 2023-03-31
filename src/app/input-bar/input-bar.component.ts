@@ -80,4 +80,12 @@ export class InputBarComponent implements OnInit {
     }
   }
 
+  onBarCountChange() {
+    if (this.sortService.inProgress) {
+      return;
+    } else {
+      this.reset();
+    }
+  }
+
 }

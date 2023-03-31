@@ -11,18 +11,21 @@ export class SortService {
   numBars = 25;
   delay = 100;
 
-  constructor() { }
+  constructor() {
+    const barWidth = 40;
+    const barMargin = 15;
+    const screenWidth = window.innerWidth;
+    this.numBars = Math.floor((screenWidth - 100) / (barWidth + barMargin));
+
+   }
 
   generateBars(){
     this.barHeights = [];
     // calculate number of bars I can fit on screen
-    const barWidth = 40;
-    const barMargin = 15;
-    const screenWidth = window.innerWidth;
-    const numBars = Math.floor((screenWidth - 100) / (barWidth + barMargin));
+
 
     // Generate an array of 100 random heights between 10 and 100
-    for (let i = 0; i < numBars; i++) {
+    for (let i = 0; i < this.numBars; i++) {
       // prevent duplicate numbers
       let randomHeight = Math.floor(Math.random() * 90) + 10;
       while (this.barHeights.includes(randomHeight)) {

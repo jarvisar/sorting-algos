@@ -8,6 +8,8 @@
         <option value="quick">Quick Sort</option>
         <option value="heap">Heap Sort</option>
     </select>
+    <!-- Input for number of bars -->
+    <input type="number" class="bar-count-input" [(ngModel)]="sortService.numBars" (change)="onBarCountChange()" placeholder="Number of Bars" style="margin: 5px">
     <button mat-raised-button (click)="sort()" [disabled]="sortService.inProgress" class="main-button sort-button">Sort</button>
     <button mat-raised-button (click)="reset()" [disabled]="sortService.inProgress" class="main-button reset-button">Reset</button>
     <button mat-raised-button (click)="stop()" [disabled]="!sortService.inProgress" class="main-button stop-button">Stop</button>
