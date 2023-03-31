@@ -17,7 +17,7 @@ export class SortService {
     this.barHeights = [];
     // calculate number of bars I can fit on screen
     const barWidth = 40;
-    const barMargin = 10;
+    const barMargin = 15;
     const screenWidth = window.innerWidth;
     const numBars = Math.floor((screenWidth - 100) / (barWidth + barMargin));
 
@@ -73,8 +73,8 @@ export class SortService {
           return;
         }
         // if not very first bar
-        // Set the color of the bars being compared to blue
-        this.setBarColor(i + 1, 'blue');
+        // Set the color of the bars being compared to #229ccb
+        this.setBarColor(i + 1, '#229ccb');
         await sleep(this.delay);
         if (i !== 0) {
           this.setBarColor(i-1, '#AA3939');
@@ -119,7 +119,7 @@ export class SortService {
         return;
       }
       let minIndex = i;
-      this.setBarColor(i, 'blue');
+      this.setBarColor(i, '#229ccb');
   
       for (let j = i + 1; j < n; j++) {
         if (this.stopSorting) {
@@ -131,7 +131,7 @@ export class SortService {
         if (this.barHeights[j] < this.barHeights[minIndex]) {
           this.setBarColor(minIndex, '#AA3939');
           minIndex = j;
-          this.setBarColor(minIndex, 'blue');
+          this.setBarColor(minIndex, '#229ccb');
         } else {
           this.setBarColor(j, '#AA3939');
         }
@@ -179,8 +179,8 @@ export class SortService {
         return;
       }
       let key = this.barHeights[i];
-      this.setBarColor(i, 'blue');
-      await sleep(this.delay, i, 'blue');
+      this.setBarColor(i, '#229ccb');
+      await sleep(this.delay, i, '#229ccb');
   
       let j = i - 1;
   
@@ -199,12 +199,12 @@ export class SortService {
         await sleep(this.delay, j + 1, '#AA3939');
         j--;
         if (j >= 0) {
-          this.setBarColor(j, 'blue');
+          this.setBarColor(j, '#229ccb');
         }
       }
       
       this.barHeights[j + 1] = key;
-      await sleep(this.delay, j + 1, 'blue');
+      await sleep(this.delay, j + 1, '#229ccb');
   
       for (let k = 0; k <= n; k++) {
         this.setBarColor(k, '#AA3939');
@@ -244,7 +244,7 @@ export class SortService {
           return;
         }
   
-        this.setBarColor(i, 'blue');
+        this.setBarColor(i, '#229ccb');
         this.setBarColor(j, '#FEDC56');
         await sleep(this.delay);
   
@@ -333,7 +333,7 @@ export class SortService {
     };
     const partition = async (low: number, high: number) => {
       let pivot = this.barHeights[high];
-      this.setBarColor(high, 'blue');
+      this.setBarColor(high, '#229ccb');
       let i = low - 1;
       for (let j = low; j <= high - 1; j++) {
         if (this.stopSorting) {
@@ -404,10 +404,10 @@ export class SortService {
       }
   
       if (largest !== i) {
-        // Set the color of the largest bar to blue before swapping
+        // Set the color of the largest bar to #229ccb before swapping
 
-        // blue if not in final position, else green
-        this.setBarColor(largest, 'blue');
+        // #229ccb if not in final position, else green
+        this.setBarColor(largest, '#229ccb');
         this.setBarColor(i, '#FEDC56');
   
         // Swap the bars
@@ -436,8 +436,8 @@ export class SortService {
         return;
       }
 
-      // Set the color of the largest bar to blue before swapping
-      this.setBarColor(0, 'blue');
+      // Set the color of the largest bar to #229ccb before swapping
+      this.setBarColor(0, '#229ccb');
       this.setBarColor(i, '#FEDC56');
       // if largest bar is in final position, set to green
       for (let i = 0; i < n; i++) {
