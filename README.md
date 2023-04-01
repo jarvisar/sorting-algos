@@ -21,7 +21,7 @@ To install and run this app on a local machine, follow these steps:
 
 `npm install`
 
-4. If necessary, install the Angular CLI:
+4. If necessary, install Angular CLI:
 
 `npm i @angular/cli`
 
