@@ -74,7 +74,7 @@ Home Page
  </kbd>
  
 <br>
-(Radix Sort (LSD))[https://www.geeksforgeeks.org/radix-sort/]
+[GitHub pages](https://jarvisar.github.io/sorting-algos/)
 <br>
 <br>
 
