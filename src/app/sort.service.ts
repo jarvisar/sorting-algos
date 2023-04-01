@@ -719,6 +719,188 @@ export class SortService {
       this.setBarColor(i, '#73be73');
     }
   }
+
+  // cycle sort
+  async cycleSort() {
+    this.inProgress = true;
+    this.stopSorting = false;
+
+    // set all to red
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#c24949');
+    }
+
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+
+    let writes = 0;
+    let n = this.barHeights.length;
+    for (let cycleStart = 0; cycleStart <= n - 2; cycleStart++) {
+      let item = this.barHeights[cycleStart];
+      let pos = cycleStart;
+      for (let i = cycleStart + 1; i < n; i++) {
+        if (this.stopSorting) {
+          return;
+        }
+        this.setBarColor(i, '#FEDC56');
+        this.setBarColor(pos, '#229ccb');
+        await sleep(this.delay);
+        this.setBarColor(i, '#c24949');
+        this.setBarColor(pos, '#c24949');
+        if (this.barHeights[i] < item) {
+          pos++;
+        }
+      }
+      if (pos === cycleStart) {
+        continue;
+      }
+      while (item === this.barHeights[pos]) {
+        pos += 1;
+      }
+      if (pos !== cycleStart) {
+        let temp = item;
+        item = this.barHeights[pos];
+        this.barHeights[pos] = temp;
+        writes++;
+      }
+      while (pos !== cycleStart) {
+        pos = cycleStart;
+        for (let i = cycleStart + 1; i < n; i++) {
+          if (this.stopSorting) {
+            return;
+          }
+          this.setBarColor(i, '#FEDC56');
+          this.setBarColor(pos, '#229ccb');
+          await sleep(this.delay);
+          this.setBarColor(i, '#c24949');
+          this.setBarColor(pos, '#c24949');
+          if (this.barHeights[i] < item) {
+            pos += 1;
+          }
+        }
+        while (item === this.barHeights[pos]) {
+          pos += 1;
+        }
+        if (item !== this.barHeights[pos]) {
+          let temp = item;
+          item = this.barHeights[pos];
+          this.barHeights[pos] = temp;
+          writes++;
+        }
+      }
+    }
+
+    this.inProgress = false;
+
+    // Mark all bars as green
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#73be73');
+    }
+  }
+
+  // gnome sort
+  async gnomeSort() {
+    this.inProgress = true;
+    this.stopSorting = false;
+  
+    // Set all bars to red
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#c24949');
+    }
+  
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+  
+    let i = 0;
+    while (i < this.barHeights.length) {
+      if (this.stopSorting) {
+        return;
+      }
+      if (i === 0) {
+        i++;
+      }
+      // Set the bars being compared to blue
+      this.setBarColor(i, '#FEDC56');
+      this.setBarColor(i - 1, '#229ccb');
+      this.setBarColor(i - 2, '#c24949');
+      // if going down, set i - 1 to red
+      if (this.barHeights[i] < this.barHeights[i - 1]) {
+        this.setBarColor(i - 1, '#c24949');
+      }
+      await sleep(this.delay);
+      if (this.barHeights[i] >= this.barHeights[i - 1]) {
+        i++;
+      } else {
+        let temp = this.barHeights[i];
+        this.barHeights[i] = this.barHeights[i - 1];
+        this.barHeights[i - 1] = temp;
+        i--;
+      }
+      // Set the bars being compared back to red
+      this.setBarColor(i, '#c24949');
+      this.setBarColor(i - 1, '#c24949');
+      this.setBarColor(i - 2, '#c24949');
+    }
+  
+    this.inProgress = false;
+  
+    // Set all bars to green
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#73be73');
+    }
+  }
+  
+  // shell sort
+  async shellSort() {
+    this.inProgress = true;
+    this.stopSorting = false;
+
+    // set all to red
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#c24949');
+    }
+
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+
+    let n = this.barHeights.length;
+    let gap = Math.floor(n / 2);
+    while (gap > 0) {
+      for (let i = gap; i < n; i++) {
+        if (this.stopSorting) {
+          return;
+        }
+        let temp = this.barHeights[i];
+        let j = i;
+        while (j >= gap && this.barHeights[j - gap] > temp) {
+          this.setBarColor(j, '#FEDC56');
+          this.setBarColor(j - gap, '#229ccb');
+          await sleep(this.delay);
+          this.setBarColor(j - gap, '#229ccb');
+          this.barHeights[j] = this.barHeights[j - gap];
+          this.setBarColor(j, '#c24949');
+          j -= gap;
+          this.setBarColor(j, '#FEDC56');
+          this.setBarColor(j - gap, '#c24949');
+        }
+        this.barHeights[j] = temp;
+        this.setBarColor(j, '#c24949');
+        this.setBarColor(i, '#c24949');
+      }
+      gap = Math.floor(gap / 2);
+    }
+
+    this.inProgress = false;
+
+    // Mark all bars as green
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#73be73');
+    }
+
+  }
   
   barColors: string[] = [];
   setBarColor(index: number, color: string) {

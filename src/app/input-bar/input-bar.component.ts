@@ -48,6 +48,15 @@ export class InputBarComponent implements OnInit {
       case 'comb':
         await this.sortService.combSort();
         break;
+      case 'gnome':
+        await this.sortService.gnomeSort();
+        break;
+      case 'shell':
+        await this.sortService.shellSort();
+        break;
+      case 'cycle':
+        await this.sortService.cycleSort();
+        break;
   }
 }
 
