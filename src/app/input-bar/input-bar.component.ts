@@ -56,13 +56,13 @@ export class InputBarComponent implements OnInit {
         for (let i = 0; i < this.sortService.barHeights.length; i++) {
           this.sortService.setBarColor(i, '#7474B0');
         };
-      }, 110);
+      }, this.sortService.delay + 100);
     } else {
       setTimeout(() => {
         for (let i = 0; i < this.sortService.barHeights.length; i++) {
           this.sortService.setBarColor(i, '#7474B0');
         };
-      }, 110);
+      }, this.sortService.delay + 50);
     }
   }
 
