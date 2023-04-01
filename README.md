@@ -74,7 +74,7 @@ Home Page
  </kbd>
  
 <br>
-Radix Sort (LSD)
+[Radix Sort (LSD)](https://www.geeksforgeeks.org/radix-sort/)
 <br>
 <br>
 
@@ -83,7 +83,7 @@ Radix Sort (LSD)
 </kbd>
 
 <br>
-Bitonic Sort
+[Bitonic Sort](https://www.geeksforgeeks.org/bitonic-sort/)
 <br>
 <br>
 
@@ -91,5 +91,5 @@ Bitonic Sort
  <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-6.gif" alt="Screenshot" title"Screenshot 2" width="750">
 </kbd>
 <br>
-Cocktail Shaker Sort
+[Cocktail Sort](https://www.geeksforgeeks.org/cocktail-sort/)
 </p>
