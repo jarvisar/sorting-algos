@@ -74,7 +74,7 @@ Home Page
  </kbd>
  
 <br>
-[GitHub pages](https://jarvisar.github.io/sorting-algos/)
+Radix Sort
 <br>
 <br>
 
@@ -83,7 +83,7 @@ Home Page
 </kbd>
 
 <br>
-(Bitonic Sort)[https://www.geeksforgeeks.org/bitonic-sort/]
+Bitonic Sort
 <br>
 <br>
 
@@ -91,5 +91,5 @@ Home Page
  <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-6.gif" alt="Screenshot" title"Screenshot 2" width="750">
 </kbd>
 <br>
-(Cocktail Sort)[https://www.geeksforgeeks.org/cocktail-sort/]
+Cocktail Sort
 </p>
