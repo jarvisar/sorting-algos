@@ -29,7 +29,25 @@ To install and run this app on your local machine, follow these steps:
 
 ## Usage
 
-Currently this web application supports bubble, selection, insertion, merge, quick, heap, radix (LSD), and bitonic sort. 
+Currently this web application supports the following sorting algorithms:
+
+
+-  Bubble Sort
+-   Selection Sort
+-   Insertion Sort
+-   Merge Sort
+-   Quick Sort
+-   Heap Sort
+-   Radix Sort (LSD)
+-   Bitonic Sort
+-   Cocktail Shaker
+-   Comb Sort
+-   Gnome Sort
+-   Shell Sort
+-   Cycle Sort
+-   Pancake Sort
+-   Bogo Sort
+-   Stooge Sort
 
 Use the input box to enter the number of bars on the screen. Currently the maximum amount is 512. 
 
