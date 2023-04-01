@@ -58,7 +58,7 @@ To install and run this app on a local machine, follow these steps:
 
 6. Open a web browser and navigate to `http://localhost:4200` to view the app.
 
-This web app was created with [Angular v14.3.0](https://angular.io/)
+###### This web app was created with [Angular v14.3.0](https://angular.io/)
 
 ## Screenshots
 
