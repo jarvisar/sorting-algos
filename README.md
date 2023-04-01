@@ -7,9 +7,9 @@ Visit the [GitHub pages](https://jarvisar.github.io/sorting-algos/) site to acce
 
 ## Installation
 
-To install and run this app on your local machine, follow these steps:
+To install and run this app on a local machine, follow these steps:
 
-1. Clone the repository to your local machine using the command:
+1. Clone the repository to the local machine using the command:
 
 `git clone https://github.com/jarvisar/sorting-algos.git`
 
@@ -25,7 +25,7 @@ To install and run this app on your local machine, follow these steps:
 
 `ng serve`
 
-5. Open your web browser and navigate to `http://localhost:4200` to view the app.
+5. Open a web browser and navigate to `http://localhost:4200` to view the app.
 
 ## Usage
 
