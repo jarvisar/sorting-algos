@@ -516,8 +516,7 @@ export class SortService {
 
     this.inProgress = false;
   }
-
-
+  
   barColors: string[] = [];
   setBarColor(index: number, color: string) {
     setTimeout(() => {
