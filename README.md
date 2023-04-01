@@ -1,35 +1,8 @@
 # Sorting Visualizer
 
-Angular-powered web app that visually demonstrates various sorting algorithms using bars of varying heights. The app is built using Angular and allows users to choose from several sorting algorithms, including bubble sort, selection sort, and insertion sort. As the sorting algorithm runs, the app updates the color and height of the bars to reflect the current state of the sorting process.
+Angular-powered web app capable of visually representing various sorting algorithms using bars of varying heights. The app is built using Angular and allows users to choose from several sorting algorithms, including selection sort, quick sort, and bitonic sort. As the sorting algorithm runs, the app updates the color and height of the bars to reflect the current state of the sorting process.
 
 Visit the [GitHub pages](https://jarvisar.github.io/sorting-algos/) site to access the latest deployment.
-
-
-## Installation
-
-To install and run this app on a local machine, follow these steps:
-
-1. Clone the repository to the local machine using the command:
-
-`git clone https://github.com/jarvisar/sorting-algos.git`
-
-2. Navigate to the project directory using the command:
-
-`cd sorting-algos`
-
-3. Install the necessary dependencies using the command:
-
-`npm install`
-
-4. If necessary, install Angular CLI:
-
-`npm i @angular/cli`
-
-5. Start the app using the command:
-
-`ng serve`
-
-6. Open a web browser and navigate to `http://localhost:4200` to view the app.
 
 ## Usage
 
@@ -58,6 +31,32 @@ Learn more about sorting algorithms here: https://www.geeksforgeeks.org/sorting-
 Use the input box to enter the number of bars on the screen. Currently the maximum amount is 512. 
 
 Control the speed of the sorting process with the slider.
+
+## Local Installation
+
+To install and run this app on a local machine, follow these steps:
+
+1. Clone the repository to the local machine using the command:
+
+`git clone https://github.com/jarvisar/sorting-algos.git`
+
+2. Navigate to the project directory using the command:
+
+`cd sorting-algos`
+
+3. Install the necessary dependencies using the command:
+
+`npm install`
+
+4. If necessary, install Angular CLI:
+
+`npm i @angular/cli`
+
+5. Start the app using the command:
+
+`ng serve`
+
+6. Open a web browser and navigate to `http://localhost:4200` to view the app.
 
 This web app was created with [Angular v14.3.0](https://angular.io/)
 
