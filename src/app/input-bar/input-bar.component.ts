@@ -45,6 +45,9 @@ export class InputBarComponent implements OnInit {
       case 'cocktail':
         await this.sortService.cocktailShakerSort();
         break;
+      case 'comb':
+        await this.sortService.combSort();
+        break;
   }
 }
 
