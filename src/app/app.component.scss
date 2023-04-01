@@ -43,7 +43,7 @@
 }
 
 /* Mobile sizing */
-@media only screen and (max-width: 850px) {
+@media only screen and (max-width: 850px) and (orientation:landscape) {
   .toolbar {
     transform: translateY(-60px);
     transition: all 0.05s ease;
