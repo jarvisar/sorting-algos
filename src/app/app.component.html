@@ -9,20 +9,16 @@
 <body style="background-color: #23272a  ">
   <!-- Toolbar -->
   <div class="toolbar" role="banner">
-    <img
-      width="40"
-      alt="Angular Logo"
-      src="assets/android-chrome-512x512.png"
-    />
+    <img width="40" alt="Logo" src="assets/android-chrome-512x512.png" (click)="reset($event)" style="cursor: pointer"/>
     <span class="header-title" (click)="reset($event)">Sorting Algorithm Visualizer</span>
       <div class="spacer"></div>
       <!-- Github Button -->
-      <button mat-icon-button (click)="openHelp()" appearance="outline" style="margin-right: 0px; color: #eaeaea;" matTooltip="Learn more about different sorting algorithms" matTooltipShowDelay="250" matTooltipPosition="below">
+      <button mat-icon-button (click)="openHelp()" appearance="outline" style="margin-right: 0px; color: #eaeaea; cursor: pointer;" matTooltip="Learn more about different sorting algorithms" matTooltipShowDelay="250" matTooltipPosition="below" >
         <mat-icon>help</mat-icon>
     </button>
-      <a aria-label="Source Code" target="_blank" rel="noopener" href="https://github.com/jarvisar/sorting-algos/" title="Project Source Code">
-        <img width="40" alt="GitHub Logo" src="assets/github.png" />
-      </a>
+    <a aria-label="Source Code" target="_blank" rel="noopener" href="https://github.com/jarvisar/sorting-algos/" title="Project Source Code" style="cursor: pointer;">
+      <img width="40" alt="GitHub Logo" src="assets/github.png"/>
+    </a>
   </div>
 
   <div class="content" role="main">
