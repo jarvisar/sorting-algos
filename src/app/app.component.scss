@@ -53,6 +53,13 @@
 @media only screen and (max-width: 850px) {
   .header-title{
     font-size: 14pt;
+    transform: translateY(0px);
+    text-shadow: 0px 1px 0.5px #919191, 0px 2px 0.5px #919191;
+  }
+    
+  .header-title:active {
+    text-shadow: 0px 1px 0px #717171;
+    transform: translateY(2px);
   }
 }
 
