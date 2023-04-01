@@ -56,3 +56,15 @@ Use the input box to enter the number of bars on the screen. Currently the maxim
 Control the speed of the sorting process with the slider.
 
 This web app was created with [Angular v14.3.0](https://angular.io/)
+
+## Screenshots
+
+<p align="center">
+  <kbd>
+  <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-4.gif" alt="Screenshot" title"Screenshot 1" width="750">
+   </kbd>
+<br>
+  <kbd>
+  <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-5.gif" alt="Screenshot" title"Screenshot 2" width="750">
+   </kbd>
+</p>
