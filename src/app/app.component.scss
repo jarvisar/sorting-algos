@@ -44,8 +44,9 @@
 
 /* Mobile sizing */
 @media only screen and (max-width: 850px) {
-  .header-title {
-    font-size: 14pt;
+  .toolbar {
+    transform: translateY(-60px);
+    transition: all 0.05s ease;
   }
 }
 

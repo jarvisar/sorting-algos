@@ -16,6 +16,14 @@
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
 }
 
+/* Mobile sizing */
+@media only screen and (max-width: 850px) {
+    .bar-container {
+        margin-top: 20px;
+        height: calc(100% - 170px);
+    }
+  }
+
 .bar-container:hover{
     box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.75);
 }
