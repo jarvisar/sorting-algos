@@ -29,7 +29,7 @@ export class SortService {
       // prevent duplicate numbers
       let randomHeight = Math.floor(Math.random() * 90) + 10;
       while (this.barHeights.includes(randomHeight)) {
-        randomHeight = Math.floor(Math.random() * 200) + 10;
+        randomHeight = Math.floor(Math.random() * this.numBars) + 10;
       }
       this.barHeights.push(randomHeight);
     }
