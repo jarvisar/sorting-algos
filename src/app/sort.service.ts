@@ -9,7 +9,7 @@ export class SortService {
   selectedAlgo = 'bubble';
   alreadySorted = false;
   numBars = 25;
-  delay = 100;
+  delay = 20;
 
   constructor() {
     const barWidth = 40;
