@@ -40,7 +40,7 @@ export class InputBarComponent implements OnInit {
         await this.sortService.radixSort();
         break;
       case 'bitonic':
-        await this.sortService.cocktailShakerSort();
+        await this.sortService.bitonicSort();
         break;
       case 'cocktail':
         await this.sortService.cocktailShakerSort();
@@ -56,6 +56,15 @@ export class InputBarComponent implements OnInit {
         break;
       case 'cycle':
         await this.sortService.cycleSort();
+        break;
+      case 'pancake':
+        await this.sortService.pancakeSort();
+        break;
+      case 'bogo':
+        await this.sortService.bogoSort();
+        break;
+      case 'stooge':
+        await this.sortService.stoogeSort();
         break;
   }
 }
