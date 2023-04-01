@@ -459,6 +459,65 @@ export class SortService {
     }
   }
 
+  async radixSort() {
+    this.inProgress = true;
+    this.stopSorting = false;
+    
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+    
+    // Set initial color of all bars to red
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#c24949');
+    }
+    
+    // Get the maximum number of digits in the bar heights
+    const maxDigitCount = Math.max(...this.barHeights).toString().length;
+    
+    // Sort the bars by each digit position, starting from the least significant
+    for (let digitPos = 0; digitPos < maxDigitCount; digitPos++) {
+      // Declare the buckets array with a type annotation
+      const buckets: number[][] = Array.from({ length: 10 }, () => []);
+      for (let i = 0; i < this.barHeights.length; i++) {
+        const digit = Math.floor(this.barHeights[i] / Math.pow(10, digitPos)) % 10;
+        buckets[digit].push(this.barHeights[i]);
+      }
+      // Flatten the buckets array and update the bar heights and colors
+      let index = 0;
+      for (let j = 0; j < buckets.length; j++) {
+        for (let k = 0; k < buckets[j].length; k++) {
+          if (this.stopSorting) {
+            return;
+          }
+
+          // Set the color of the current bar being compared to blue
+          if (k > 0) {
+            this.setBarColor(index, '#c24949');
+            this.setBarColor(index - 1, '#FEDC56');
+          }
+          this.setBarColor(this.barHeights.indexOf(buckets[j][k]), '#c24949');
+
+          // Update the bar height and color
+          this.barHeights[index] = buckets[j][k];
+          this.setBarColor(index, '#FEDC56');
+          await sleep(this.delay);
+          this.setBarColor(this.barHeights.indexOf(buckets[j][k]), '#c24949');
+          this.setBarColor(index - 1, '#c24949');
+          index++;
+        }
+      }
+    }
+
+    // Mark all bars as green
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#73be73');
+    }
+
+    this.inProgress = false;
+  }
+
+
   barColors: string[] = [];
   setBarColor(index: number, color: string) {
     setTimeout(() => {

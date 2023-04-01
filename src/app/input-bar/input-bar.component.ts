@@ -36,6 +36,9 @@ export class InputBarComponent implements OnInit {
       case 'heap':
         await this.sortService.heapSort();
         break;
+      case 'radix':
+        await this.sortService.radixSort();
+        break;
   }
 }
 
