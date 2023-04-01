@@ -31,4 +31,8 @@ To install and run this app on your local machine, follow these steps:
 
 Currently this web application supports bubble, selection, insertion, merge, quick, heap, radix (LSD), and bitonic sort. 
 
+Use the input box to enter the number of bars on the screen. Currently the maximum amount is 512. 
+
+Control the speed of the sorting process with the slider.
+
 This web app was created with [Angular v14.3.0](https://angular.io/)
