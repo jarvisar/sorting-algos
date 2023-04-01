@@ -10,6 +10,7 @@ export class SortService {
   alreadySorted = false;
   numBars = 50;
   delay = 20;
+  numChanges = 0;
 
   constructor() {
     const barWidth = 10;
@@ -87,6 +88,7 @@ export class SortService {
           let temp = this.barHeights[i];
           this.barHeights[i] = this.barHeights[i + 1];
           this.barHeights[i + 1] = temp;
+          this.numChanges++;
           swapped = true;
           this.setBarColor(i, '#FEDC56');
         }
@@ -144,6 +146,7 @@ export class SortService {
       let temp = this.barHeights[i];
       this.barHeights[i] = this.barHeights[minIndex];
       this.barHeights[minIndex] = temp;
+      this.numChanges++;
   
       this.setBarColor(minIndex, '#c24949');
       // if not first one
@@ -198,6 +201,7 @@ export class SortService {
         }
         this.setBarColor(j, '#FEDC56')
         this.barHeights[j + 1] = this.barHeights[j];
+        this.numChanges++;
         this.setBarColor(j + 1, '#c24949');
         await sleep(this.delay, j + 1, '#c24949');
         j--;
@@ -207,6 +211,7 @@ export class SortService {
       }
       
       this.barHeights[j + 1] = key;
+      this.numChanges++;
       await sleep(this.delay, j + 1, '#229ccb');
   
       for (let k = 0; k <= n; k++) {
@@ -286,6 +291,7 @@ export class SortService {
           return;
         }
         this.barHeights[k] = temp[k - left];
+        this.numChanges++;
         this.setBarColor(k, '#FEDC56');
         await sleep(this.delay);
         this.setBarColor(k, '#c24949');
@@ -348,10 +354,12 @@ export class SortService {
           i++; 
           this.setBarColor(i, '#c24949'); // Reset i back to red 
           [this.barHeights[i], this.barHeights[j]] = [this.barHeights[j], this.barHeights[i]]; 
+          this.numChanges++;
         } 
         this.setBarColor(j, '#c24949'); // Reset j back to red
       }
       [this.barHeights[i + 1], this.barHeights[high]] = [this.barHeights[high], this.barHeights[i + 1]];
+      this.numChanges++;
       this.setBarColor(high, '#c24949');
       // set all to red
       for (let i = 0; i < this.barHeights.length; i++) {
@@ -417,6 +425,7 @@ export class SortService {
         let temp = this.barHeights[i];
         this.barHeights[i] = this.barHeights[largest];
         this.barHeights[largest] = temp;
+        this.numChanges++;
   
         // Set the color of the current index to yellow after the swap
         this.setBarColor(i, '#FEDC56');
@@ -447,6 +456,7 @@ export class SortService {
       let temp = this.barHeights[0];
       this.barHeights[0] = this.barHeights[i];
       this.barHeights[i] = temp;
+      this.numChanges++;
 
       // Set the color of the bar at index i to green (final position)
       await heapify(i, 0);
@@ -500,6 +510,7 @@ export class SortService {
 
           // Update the bar height and color
           this.barHeights[index] = buckets[j][k];
+          this.numChanges++;
           this.setBarColor(index, '#FEDC56');
           await sleep(this.delay);
           this.setBarColor(this.barHeights.indexOf(buckets[j][k]), '#c24949');
@@ -545,6 +556,7 @@ export class SortService {
         let temp = this.barHeights[i];
         this.barHeights[i] = this.barHeights[j];
         this.barHeights[j] = temp;
+        this.numChanges++;
       }
       this.setBarColor(i, '#c24949');
       this.setBarColor(j, '#c24949');
@@ -617,6 +629,7 @@ export class SortService {
           let temp = this.barHeights[i];
           this.barHeights[i] = this.barHeights[i + 1];
           this.barHeights[i + 1] = temp;
+          this.numChanges++;
           swapped = true;
         }
         // if final positon, set to green
@@ -646,6 +659,7 @@ export class SortService {
           let temp = this.barHeights[i];
           this.barHeights[i] = this.barHeights[i + 1];
           this.barHeights[i + 1] = temp;
+          this.numChanges++;
           // if in final position, set to green
           swapped = true;
         }
@@ -704,6 +718,7 @@ export class SortService {
           let temp = this.barHeights[i];
           this.barHeights[i] = this.barHeights[i + gap];
           this.barHeights[i + gap] = temp;
+          this.numChanges++;
           sorted = false;
         }
         this.setBarColor(i + gap, '#c24949');
@@ -762,6 +777,7 @@ export class SortService {
         let temp = item;
         item = this.barHeights[pos];
         this.barHeights[pos] = temp;
+        this.numChanges++;
         writes++;
       }
       while (pos !== cycleStart) {
@@ -786,6 +802,7 @@ export class SortService {
           let temp = item;
           item = this.barHeights[pos];
           this.barHeights[pos] = temp;
+          this.numChanges++;
           writes++;
         }
       }
@@ -821,6 +838,7 @@ export class SortService {
         let t = arr[l];
         arr[l] = arr[h];
         arr[h] = t;
+        this.numChanges++;
       }
       if (h - l + 1 > 2) {
         let t = Math.floor((h - l + 1) / 3);
@@ -877,6 +895,7 @@ export class SortService {
         let temp = this.barHeights[i];
         this.barHeights[i] = this.barHeights[i - 1];
         this.barHeights[i - 1] = temp;
+        this.numChanges++;
         i--;
       }
       // Set the bars being compared back to red
@@ -922,6 +941,7 @@ export class SortService {
           await sleep(this.delay);
           this.setBarColor(j - gap, '#229ccb');
           this.barHeights[j] = this.barHeights[j - gap];
+          this.numChanges++;
           this.setBarColor(j, '#c24949');
           j -= gap;
           this.setBarColor(j, '#FEDC56');
@@ -982,6 +1002,7 @@ export class SortService {
           let t = this.barHeights[i];
           this.barHeights[i] = this.barHeights[curr_size - i + mi - 1];
           this.barHeights[curr_size - i + mi - 1] = t;
+          this.numChanges++;
           temp = this.barHeights[mi];
         }
       }
@@ -1037,6 +1058,7 @@ export class SortService {
         return;
       }
       this.barHeights = shuffle(this.barHeights);
+      this.numChanges++;
       await sleep(this.delay);
     }
 

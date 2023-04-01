@@ -11,6 +11,7 @@
     padding-bottom: 40px;
     border-radius: 10px;
     overflow: hidden;
+    position: relative;
     // outer glow
     transition: all 0.2s ease-out;
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
@@ -26,6 +27,15 @@
 
 .bar-container:hover{
     box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.75);
+}
+
+.num-changes{
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    color: white;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 16;
 }
   
 .bar {

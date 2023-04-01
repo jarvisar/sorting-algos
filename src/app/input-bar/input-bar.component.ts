@@ -17,6 +17,7 @@ export class InputBarComponent implements OnInit {
     if (this.sortService.inProgress) {
       return;
     }
+    this.sortService.numChanges = 0;
     switch (this.sortService.selectedAlgo) {
       case 'bubble':
         await this.sortService.bubbleSort();
@@ -79,12 +80,14 @@ export class InputBarComponent implements OnInit {
       setTimeout(() => {
         for (let i = 0; i < this.sortService.barHeights.length; i++) {
           this.sortService.setBarColor(i, '#7474B0');
+          this.sortService.numChanges = 0;
         };
       }, this.sortService.delay + 100);
     } else {
       setTimeout(() => {
         for (let i = 0; i < this.sortService.barHeights.length; i++) {
           this.sortService.setBarColor(i, '#7474B0');
+          this.sortService.numChanges = 0;
         };
       }, this.sortService.delay + 50);
     }
