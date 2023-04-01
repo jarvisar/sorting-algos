@@ -23,4 +23,10 @@ export class AppComponent {
       this.inputbar.stop();
     }
   }
+
+  
+  openHelp(){
+    window.open('https://www.geeksforgeeks.org/sorting-algorithms/');
+  }
+  
 }

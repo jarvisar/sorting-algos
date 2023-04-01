@@ -12,6 +12,8 @@ import { InputBarComponent } from './input-bar/input-bar.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { MatSliderModule } from '@angular/material/slider';
     FormsModule,
     DragDropModule,
     MatSliderModule,
+    MatIconModule,
+    MatTooltipModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
       // Register the ServiceWorker as soon as the application is stable

@@ -816,48 +816,6 @@ export class SortService {
     }
   }
 
-  // stooge sort
-  async stoogeSort() {
-    this.inProgress = true;
-    this.stopSorting = false;
-
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-
-    const stoogeSort = async (arr: number[], l: number, h: number) => {
-      if (l >= h) {
-        return;
-      }
-      if (arr[l] > arr[h]) {
-        let t = arr[l];
-        arr[l] = arr[h];
-        arr[h] = t;
-        this.numChanges++;
-      }
-      if (h - l + 1 > 2) {
-        let t = Math.floor((h - l + 1) / 3);
-        await stoogeSort(arr, l, h - t);
-        await stoogeSort(arr, l + t, h);
-        await stoogeSort(arr, l, h - t);
-      }
-    };
-    
-    await stoogeSort(this.barHeights, 0, this.barHeights.length - 1);
-    
-    this.inProgress = false;
-
-    // Mark all bars as green
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#73be73');
-    }
-  }
-
   // gnome sort
   async gnomeSort() {
     this.inProgress = true;
@@ -962,6 +920,7 @@ export class SortService {
     }
   }
 
+  // pancake sort
   async pancakeSort() {
     this.inProgress = true;
     this.stopSorting = false;
@@ -1016,6 +975,47 @@ export class SortService {
     }
   }
   
+  // stooge sort
+  async stoogeSort() {
+    this.inProgress = true;
+    this.stopSorting = false;
+
+    // set all to red
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#c24949');
+    }
+
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+
+    const stoogeSort = async (arr: number[], l: number, h: number) => {
+      if (l >= h) {
+        return;
+      }
+      if (arr[l] > arr[h]) {
+        let t = arr[l];
+        arr[l] = arr[h];
+        arr[h] = t;
+        this.numChanges++;
+      }
+      if (h - l + 1 > 2) {
+        let t = Math.floor((h - l + 1) / 3);
+        await stoogeSort(arr, l, h - t);
+        await stoogeSort(arr, l + t, h);
+        await stoogeSort(arr, l, h - t);
+      }
+    };
+    
+    await stoogeSort(this.barHeights, 0, this.barHeights.length - 1);
+    
+    this.inProgress = false;
+
+    // Mark all bars as green
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#73be73');
+    }
+  }
 
   // bogo sort
   async bogoSort() {
