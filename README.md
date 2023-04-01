@@ -62,7 +62,7 @@ This web app was created with [Angular v14.3.0](https://angular.io/)
 <p align="center">
   
  <kbd>
-  <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-1.gif" alt="Screenshot" title"Screenshot 1" width="750">
+  <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-1.png" alt="Screenshot" title"Screenshot 1" width="750">
  </kbd>
  <br>
  <kbd>
