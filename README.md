@@ -67,11 +67,14 @@ This web app was created with [Angular v14.3.0](https://angular.io/)
 <br>
 Home Page
 <br>
+<br>
  
  <kbd>
   <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-4.gif" alt="Screenshot" title"Screenshot 1" width="750">
  </kbd>
  
+<br>
+Radix Sort (LSD)
 <br>
 <br>
 
@@ -80,9 +83,13 @@ Home Page
 </kbd>
 
 <br>
+Bitonic Sort
+<br>
 <br>
 
 <kbd>
  <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-6.gif" alt="Screenshot" title"Screenshot 2" width="750">
 </kbd>
+<br>
+Cocktail Shaker Sort
 </p>
