@@ -20,73 +20,80 @@
     margin: 0;
   }
 
+.header-title {
+  font-size: 24pt;
+  font-family: Roboto, Helvetica Neue, sans-serif;
+  margin-left: 5px;
+  font-weight: 500;
+  text-shadow: 0px 1px 0.5px #919191, 0px 2px 0.5px #919191, 0px 3px 0.5px #919191;
+  transition: transform 0.1s ease, text-shadow 0.1s ease;
+  transform: translateY(0px);
+  user-select: none;
+  cursor: pointer;
+}
+  
+.header-title:hover {
+  text-shadow: 0px 1px 0px #818181, 0px 2px 0.5px #818181;
+  transform: translateY(1px);
+}
+  
+.header-title:active {
+  text-shadow: 0px 1px 0px #717171;
+  transform: translateY(2px);
+}
+
+/* Mobile sizing */
+@media only screen and (max-width: 850px) {
   .header-title {
-    font-size: 24pt;
-    font-family: Roboto, Helvetica Neue, sans-serif;
-    margin-left: 5px;
-    font-weight: 500;
-    text-shadow: 0px 1px 0.5px #919191, 0px 2px 0.5px #919191, 0px 3px 0.5px #919191;
-    transition: transform 0.1s ease, text-shadow 0.1s ease;
-    transform: translateY(0px);
-    user-select: none;
-    cursor: pointer;
+    font-size: 14pt;
   }
-    
-  .header-title:hover {
-    text-shadow: 0px 1px 0px #818181, 0px 2px 0.5px #818181;
-    transform: translateY(1px);
-  }
-    
-  .header-title:active {
-    text-shadow: 0px 1px 0px #717171;
-    transform: translateY(2px);
-  }
+}
 
-  .spacer {
-    flex: 1;
-  }
+.spacer {
+  flex: 1;
+}
 
-  .toolbar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    background-color: #32353a;
-    color: white;
-    font-weight: 600;
-    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-  }
+.toolbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  background-color: #32353a;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
 
-  .toolbar img {
-    margin: 0 16px;
-    margin-top: 5px;
-    transition: filter 0.05s ease-out;
-  }
+.toolbar img {
+  margin: 0 16px;
+  margin-top: 5px;
+  transition: filter 0.05s ease-out;
+}
 
-  .toolbar img:hover {
-    filter: brightness(0.8);
-  }
+.toolbar img:hover {
+  filter: brightness(0.8);
+}
 
-  .toolbar img:active {
-    filter: brightness(0.7);
-  }
+.toolbar img:active {
+  filter: brightness(0.7);
+}
 
-  a,
-  a:visited,
-  a:hover {
-    color: #1976d2;
-    text-decoration: none;
-  }
+a,
+a:visited,
+a:hover {
+  color: #1976d2;
+  text-decoration: none;
+}
 
-  a:hover {
-    color: #125699;
-  }
+a:hover {
+  color: #125699;
+}
 
-  .content{
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-  }
+.content{
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
