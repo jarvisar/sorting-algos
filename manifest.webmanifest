@@ -3,6 +3,7 @@
   "short_name": "Sorting Visualizer",
   "theme_color": "#7474B0",
   "background_color": "#32353a",
+  "orientation": "landscape",
   "display": "standalone",
   "scope": "/sorting-algos/",
   "start_url": "/sorting-algos/",
