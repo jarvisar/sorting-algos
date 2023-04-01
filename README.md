@@ -15,17 +15,21 @@ To install and run this app on a local machine, follow these steps:
 
 2. Navigate to the project directory using the command:
 
-`cd sorting-visualizer`
+`cd sorting-algos`
 
 3. Install the necessary dependencies using the command:
 
 `npm install`
 
-4. Start the app using the command:
+4. If necessary, install the Angular CLI:
+
+`npm i @angular/cli`
+
+5. Start the app using the command:
 
 `ng serve`
 
-5. Open a web browser and navigate to `http://localhost:4200` to view the app.
+6. Open a web browser and navigate to `http://localhost:4200` to view the app.
 
 ## Usage
 
