@@ -343,7 +343,7 @@ export class SortService {
           return;
         }
         this.setBarColor(j, '#FEDC56');
-        await sleep(100);
+        await sleep(this.delay);
         if (this.barHeights[j] < pivot) { 
           i++; 
           this.setBarColor(i, '#c24949'); // Reset i back to red 
