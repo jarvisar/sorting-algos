@@ -49,20 +49,20 @@
 
 // on bar:hover, make bar-label pop out a bit
 .bar:hover .bar-label{
-    font-size: 16px;
+    font-size: 13px;
     transition: all 0.05s ease-out;
     color: white;
 }
 
 // on bar:hover, make bar-label pop out a bit
 .bar:active .bar-label{
-    font-size: 15px;
+    font-size: 12px;
     transition: all 0.02s ease-out;
     color: white;
 }
   
 .bar-label {
-    font-size: 14px;
+    font-size: 11px;
     position: absolute;
     bottom: -40px;
     left: 50%;

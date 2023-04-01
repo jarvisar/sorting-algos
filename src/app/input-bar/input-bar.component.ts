@@ -87,7 +87,7 @@ export class InputBarComponent implements OnInit {
   }
 
   onBarCountChange() {
-    if (this.sortService.inProgress || this.sortService.numBars > 90) {
+    if (this.sortService.inProgress || this.sortService.numBars > 200) {
       return;
     } else {
       this.reset();

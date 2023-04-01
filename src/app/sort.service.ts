@@ -8,11 +8,11 @@ export class SortService {
   inProgress = false;
   selectedAlgo = 'bubble';
   alreadySorted = false;
-  numBars = 25;
+  numBars = 50;
   delay = 20;
 
   constructor() {
-    const barWidth = 20;
+    const barWidth = 10;
     const barMargin = 15;
     const screenWidth = window.innerWidth;
     this.numBars = Math.floor((screenWidth - 100) / (barWidth + barMargin));
@@ -29,7 +29,7 @@ export class SortService {
       // prevent duplicate numbers
       let randomHeight = Math.floor(Math.random() * 90) + 10;
       while (this.barHeights.includes(randomHeight)) {
-        randomHeight = Math.floor(Math.random() * 90) + 10;
+        randomHeight = Math.floor(Math.random() * 200) + 10;
       }
       this.barHeights.push(randomHeight);
     }
@@ -524,6 +524,11 @@ export class SortService {
     this.generateBars();
     this.inProgress = true;
     this.stopSorting = false;
+
+    // set all to red
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#c24949');
+    }
     
     const sleep = (ms: number) => {
       return new Promise(resolve => setTimeout(resolve, ms));
