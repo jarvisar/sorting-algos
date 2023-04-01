@@ -516,6 +516,69 @@ export class SortService {
 
     this.inProgress = false;
   }
+
+  //bitonic
+  async bitonicSort() {
+    // set this.numBars to closest power of 2
+    this.numBars = Math.pow(2, Math.floor(Math.log2(this.numBars)));
+    this.generateBars();
+    this.inProgress = true;
+    this.stopSorting = false;
+    
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+    
+    const compare = async (i: number, j: number, dir: number) => {
+      if (this.stopSorting) {
+        return;
+      }
+      this.setBarColor(i, '#FEDC56');
+      this.setBarColor(j, '#FEDC56');
+      await sleep(this.delay);
+      if ((this.barHeights[i] > this.barHeights[j] && dir === 1) || (this.barHeights[i] < this.barHeights[j] && dir === 0)) {
+        let temp = this.barHeights[i];
+        this.barHeights[i] = this.barHeights[j];
+        this.barHeights[j] = temp;
+      }
+      this.setBarColor(i, '#c24949');
+      this.setBarColor(j, '#c24949');
+    };
+    
+    const bitonicMerge = async (low: number, count: number, dir: number) => {
+      if (this.stopSorting) {
+        return;
+      }
+      if (count > 1) {
+        let k = Math.floor(count / 2);
+        for (let i = low; i < low + k; i++) {
+          await compare(i, i + k, dir);
+        }
+        await bitonicMerge(low, k, dir);
+        await bitonicMerge(low + k, k, dir);
+      }
+    };
+    
+    const bitonicSort = async (low: number, count: number, dir: number) => {
+      if (this.stopSorting) {
+        return;
+      }
+      if (count > 1) {
+        let k = Math.floor(count / 2);
+        await bitonicSort(low, k, 1);
+        await bitonicSort(low + k, k, 0);
+        await bitonicMerge(low, count, dir);
+      }
+    };
+    
+    const n = this.barHeights.length;
+    await bitonicSort(0, n, 1);
+    this.inProgress = false;
+    
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#73be73');
+    }
+  }
   
   barColors: string[] = [];
   setBarColor(index: number, color: string) {

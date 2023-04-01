@@ -39,6 +39,9 @@ export class InputBarComponent implements OnInit {
       case 'radix':
         await this.sortService.radixSort();
         break;
+      case 'bitonic':
+        await this.sortService.bitonicSort();
+        break;
   }
 }
 
