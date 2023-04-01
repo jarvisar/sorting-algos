@@ -28,7 +28,9 @@ Currently this web application supports the following sorting algorithms:
 
 Learn more about sorting algorithms here: https://www.geeksforgeeks.org/sorting-algorithms/
 
-Use the input box to enter the number of bars on the screen. Currently the maximum amount is 512. 
+Use the input box to enter the number of bars on the screen. Currently the maximum amount is 512.
+
+Click `Sort` to begin sorting. Click `Stop` at any time to halt the sorting process. Click `Reset` to regenerate new bars.
 
 Control the speed of the sorting process with the slider.
 
