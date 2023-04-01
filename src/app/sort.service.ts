@@ -12,7 +12,7 @@ export class SortService {
   delay = 20;
 
   constructor() {
-    const barWidth = 40;
+    const barWidth = 20;
     const barMargin = 15;
     const screenWidth = window.innerWidth;
     this.numBars = Math.floor((screenWidth - 100) / (barWidth + barMargin));
