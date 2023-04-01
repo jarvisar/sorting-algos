@@ -64,8 +64,39 @@ To install and run this app on a local machine, follow these steps:
 
 ## Screenshots
 
-<p float="left">
-  <img src="https://i.imgur.com/kPpDz2b.png" width="150" />
-  <img src="https://i.imgur.com/wDEUlZl.png" width="150" /> 
-  <img src="https://i.imgur.com/bvN4pg7.png" width="150" />
+## Screenshots
+
+<p align="center">
+ 
+ <kbd>
+  <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-1.png" alt="Home Page" title"Home Page" width="750">
+ </kbd>
+ 
+<br>
+Home Page
+<br>
+<br>
+
+<kbd>
+  <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-2.gif" alt="Radix Sort" title"Radix Sort" width="750">
+</kbd>
+
+<br>
+Radix Sort
+<br>
+<br>
+
+<kbd>
+ <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-3.gif" alt="Bitonic Sort" title"Bitonic Sort" width="750">
+</kbd>
+<br>
+Bitonic Sort
+<br>
+<br>
+
+<kbd>
+ <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-4.gif" alt="Cocktail Sort" title"Cocktail Sort" width="750">
+</kbd>
+<br>
+Cocktail Sort
 </p>
