@@ -65,20 +65,22 @@ This web app was created with [Angular v14.3.0](https://angular.io/)
   <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-1.png" alt="Screenshot" title"Screenshot 1" width="750">
  </kbd>
  
- <br>
+<br>
+<br>
  
  <kbd>
- 
   <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-4.gif" alt="Screenshot" title"Screenshot 1" width="750">
  </kbd>
  
+<br>
 <br>
 
 <kbd>
   <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-5.gif" alt="Screenshot" title"Screenshot 2" width="750">
 </kbd>
 
-  <br>
+<br>
+<br>
 
 <kbd>
  <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-6.gif" alt="Screenshot" title"Screenshot 2" width="750">
