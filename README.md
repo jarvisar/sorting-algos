@@ -29,6 +29,6 @@ To install and run this app on your local machine, follow these steps:
 
 ## Usage
 
-Currently this web application supports bubble, selection, insertion, merge, quick, and heap sort. 
+Currently this web application supports bubble, selection, insertion, merge, quick, heap, radix (LSD), and bitonic sort. 
 
 This web app was created with [Angular v14.3.0](https://angular.io/)
