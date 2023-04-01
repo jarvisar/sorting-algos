@@ -78,7 +78,7 @@ Home Page
 <br>
 
 <kbd>
-  <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-2.gif" alt="Radix Sort" title"Radix Sort" width="750">
+  <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-4.gif" alt="Radix Sort" title"Radix Sort" width="750">
 </kbd>
 
 <br>
@@ -87,7 +87,7 @@ Radix Sort
 <br>
 
 <kbd>
- <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-3.gif" alt="Bitonic Sort" title"Bitonic Sort" width="750">
+ <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-5.gif" alt="Bitonic Sort" title"Bitonic Sort" width="750">
 </kbd>
 <br>
 Bitonic Sort
@@ -95,7 +95,7 @@ Bitonic Sort
 <br>
 
 <kbd>
- <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-4.gif" alt="Cocktail Sort" title"Cocktail Sort" width="750">
+ <img src="https://jarvisar.github.io/assets/img/portfolio/portfolio-12-6.gif" alt="Cocktail Sort" title"Cocktail Sort" width="750">
 </kbd>
 <br>
 Cocktail Sort
