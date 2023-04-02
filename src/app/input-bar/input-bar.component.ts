@@ -104,6 +104,7 @@ export class InputBarComponent implements OnInit {
     this.sortService.stopSorting = false;
     this.sortService.alreadySorted = false;
     this.sortService.numChanges = 0;
+    this.sortService.currentTime = 0;
     // reset all colors
     this.sortService.generateBars();
     setTimeout(() => {
