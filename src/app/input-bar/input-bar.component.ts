@@ -121,10 +121,12 @@ export class InputBarComponent implements OnInit {
   }
 
   onBarCountChange() {
-    if (this.sortService.inProgress || this.sortService.numBars > 512) {
+    if (this.sortService.numBars > 512) {
       return;
     } else {
-      this.reset();
+      this.stop();
+      this.sortService.alreadySorted = false;
+      this.sortService.generateBars();
     }
   }
 
