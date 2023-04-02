@@ -14,12 +14,7 @@ export class SortService {
   currentTime: number = 0;
 
   updateTimer() {
-    if (this.delay != 0){
-      this.currentTime += (0.01 / this.delay);
-    } else {
-      this.currentTime += 0.01;
-    }
-
+    this.currentTime += 0.01;
   }
 
   constructor() {
