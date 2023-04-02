@@ -1,2 +1,2 @@
 # Sorting Algorithm Visualizer 
-Created using the Ionic, Capacitor, and Cordova.
+Created using Ionic, Capacitor, and Cordova.
