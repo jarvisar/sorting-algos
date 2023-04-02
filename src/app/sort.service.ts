@@ -1106,6 +1106,55 @@ export class SortService {
     }
   }
 
+  // bogo sort
+  async bogoSort() {
+    this.inProgress = true;
+    this.stopSorting = false;
+
+    // set all to red
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#c24949');
+    }
+
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+
+    const isSorted = (arr: number[]) => {
+      for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    const shuffle = (arr: number[]) => {
+      for (let i = 0; i < arr.length; i++) {
+        let j = Math.floor(Math.random() * arr.length);
+        let temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+      }
+    };
+
+    while (!isSorted(this.barHeights)) {
+      if (this.stopSorting) {
+        return;
+      }
+      shuffle(this.barHeights);
+      this.numChanges++;
+      await sleep(this.delay);
+    }
+
+    this.inProgress = false;
+
+    // Mark all bars as green
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#73be73');
+    }
+  }
+
   // counting sort
   async countingSort() {
     this.inProgress = true;
@@ -1173,58 +1222,6 @@ export class SortService {
     this.inProgress = false;
   }
 
-  // bogo sort
-  async bogoSort() {
-    this.inProgress = true;
-    this.stopSorting = false;
-
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-
-    const isSorted = (arr: number[]) => {
-      for (let i = 1; i < arr.length; i++) {
-        if (arr[i - 1] > arr[i]) {
-          return false;
-        }
-      }
-      return true;
-    };
-
-    const shuffle = (arr: number[]) => {
-      let m = arr.length;
-      let t;
-      let i;
-      while (m) {
-        i = Math.floor(Math.random() * m--);
-        t = arr[m];
-        arr[m] = arr[i];
-        arr[i] = t;
-      }
-      return arr;
-    };
-
-    while (!isSorted(this.barHeights)) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.barHeights = shuffle(this.barHeights);
-      this.numChanges++;
-      await sleep(this.delay);
-    }
-
-    this.inProgress = false;
-
-    // set all to green
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#73be73');
-    }
-  }
   
   barColors: string[] = [];
   setBarColor(index: number, color: string) {
