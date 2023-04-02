@@ -15,6 +15,5 @@ public class MainActivity extends BridgeActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        // Rest of your code
     }
 }
