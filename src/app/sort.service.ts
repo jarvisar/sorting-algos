@@ -735,74 +735,6 @@ export class SortService {
     }
   }
 
-  // counting sort
-  async countingSort() {
-    this.inProgress = true;
-    this.stopSorting = false;
-  
-    // Set all bars to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, "#c24949");
-    }
-  
-    const sleep = (ms: number) => {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    };
-  
-    let max = Math.max(...this.barHeights);
-    let min = Math.min(...this.barHeights);
-    let range = max - min + 1;
-    let count = new Array(range).fill(0);
-    let output = new Array(this.barHeights.length).fill(0);
-  
-    // Animate the counting process
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, "#FEDC56"); // Highlight the current bar
-      this.setBarColor(i + 1, "#229ccb"); // Highlight the current bar
-      await sleep(this.delay); // Pause for a short amount of time
-      count[this.barHeights[i] - min]++;
-      this.setBarColor(i, "#c24949"); // Set the color back to red
-      if (this.stopSorting) {
-        return;
-      }
-    }
-  
-    // Animate the prefix sum process
-    for (let i = 1; i < count.length; i++) {
-      count[i] += count[i - 1];
-      if (this.stopSorting) {
-        return;
-      }
-    }
-  
-    // Animate the sorting process
-    for (let i = this.barHeights.length - 1; i >= 0; i--) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, "#FEDC56"); // Highlight the current bar
-      this.setBarColor(i - 1, "#229ccb"); // Highlight the current bar
-      await sleep(this.delay); // Pause for a short amount of time
-      output[count[this.barHeights[i] - min] - 1] = this.barHeights[i];
-      count[this.barHeights[i] - min]--;
-      this.setBarColor(i, "#c24949"); // Set the color back to red
-    }
-  
-    // Animate the final step
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.barHeights[i] = output[i];
-      this.numChanges++;
-      this.setBarColor(i, "#73be73"); // Set the color to green to indicate that the bar is sorted
-      await sleep(this.delay); // Pause for a short amount of time
-    }
-  
-    this.inProgress = false;
-  }
-  
-
   // cycle sort
   async cycleSort() {
     this.inProgress = true;
@@ -882,6 +814,73 @@ export class SortService {
     for (let i = 0; i < this.barHeights.length; i++) {
       this.setBarColor(i, '#73be73');
     }
+  }
+
+  // counting sort
+  async countingSort() {
+    this.inProgress = true;
+    this.stopSorting = false;
+  
+    // Set all bars to red
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, "#c24949");
+    }
+  
+    const sleep = (ms: number) => {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    };
+  
+    let max = Math.max(...this.barHeights);
+    let min = Math.min(...this.barHeights);
+    let range = max - min + 1;
+    let count = new Array(range).fill(0);
+    let output = new Array(this.barHeights.length).fill(0);
+  
+    // Animate the counting process
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, "#FEDC56"); // Highlight the current bar
+      this.setBarColor(i + 1, "#229ccb"); // Highlight the current bar
+      await sleep(this.delay); // Pause for a short amount of time
+      count[this.barHeights[i] - min]++;
+      this.setBarColor(i, "#c24949"); // Set the color back to red
+      if (this.stopSorting) {
+        return;
+      }
+    }
+  
+    // Animate the prefix sum process
+    for (let i = 1; i < count.length; i++) {
+      count[i] += count[i - 1];
+      if (this.stopSorting) {
+        return;
+      }
+    }
+  
+    // Animate the sorting process
+    for (let i = this.barHeights.length - 1; i >= 0; i--) {
+      if (this.stopSorting) {
+        return;
+      }
+      this.setBarColor(i, "#FEDC56"); // Highlight the current bar
+      this.setBarColor(i - 1, "#229ccb"); // Highlight the current bar
+      await sleep(this.delay); // Pause for a short amount of time
+      output[count[this.barHeights[i] - min] - 1] = this.barHeights[i];
+      count[this.barHeights[i] - min]--;
+      this.setBarColor(i, "#c24949"); // Set the color back to red
+    }
+  
+    // Animate the final step
+    for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
+      this.barHeights[i] = output[i];
+      this.numChanges++;
+      this.setBarColor(i, "#73be73"); // Set the color to green to indicate that the bar is sorted
+      await sleep(this.delay); // Pause for a short amount of time
+    }
+  
+    this.inProgress = false;
   }
 
   // gnome sort
