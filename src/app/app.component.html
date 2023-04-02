@@ -1,3 +1,33 @@
-<ion-app>
-  <ion-router-outlet></ion-router-outlet>
-</ion-app>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sorting Algorithm Visualizer</title>
+</head>
+<body style="background-color: #23272a  ">
+  <!-- Toolbar -->
+  <div class="toolbar" role="banner">
+    <img width="40" alt="Logo" src="assets/android-chrome-512x512.png" (click)="reset($event)" style="cursor: pointer"/>
+    <span class="header-title" (click)="reset($event)">Sorting Algorithm Visualizer</span>
+      <div class="spacer"></div>
+      <!-- Github Button -->
+      <button mat-icon-button (click)="openHelp()" appearance="outline" style="margin-right: 0px; color: #eaeaea; cursor: pointer;" matTooltip="Learn more about different sorting algorithms" matTooltipShowDelay="250" matTooltipPosition="below" >
+        <mat-icon>help</mat-icon>
+    </button>
+    <a aria-label="Source Code" target="_blank" rel="noopener" href="https://github.com/jarvisar/sorting-algos/" title="Project Source Code" style="cursor: pointer;">
+      <img width="40" alt="GitHub Logo" src="assets/github.png"/>
+    </a>
+  </div>
+
+  <div class="content" role="main">
+
+    <app-sorting-visualizer></app-sorting-visualizer>
+    <app-input-bar></app-input-bar>
+
+  </div>
+
+  <router-outlet></router-outlet>
+</body>
+</html>

@@ -1,0 +1,85 @@
+.bar-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: calc(100% - 100px);
+    height: calc(100% - 230px);
+    margin: 0 auto;
+    margin-top: 80px;
+    background-color: #3c3f42;
+    padding: 30px;
+    padding-bottom: 40px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    // outer glow
+    transition: all 0.2s ease-out;
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
+
+/* Mobile sizing */
+@media only screen and (max-width: 850px) and (orientation:landscape) {
+    .bar-container {
+        margin-top: 20px;
+        height: calc(100% - 170px);
+    }
+  }
+
+.bar-container:hover{
+    box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.75);
+}
+
+.num-changes{
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #bbb;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 18;
+    font-weight: 600;
+}
+  
+.bar {
+    width: 100%;
+    height: 100%;
+    background-color: #229ccb  ;
+    margin: 0 1px;
+    position: relative;
+    border-radius: 4px;
+}
+
+.bar:hover{
+    filter: brightness(1.2);
+    transition: all 0.05s ease-out;
+}
+
+.bar:active{
+    filter: brightness(1.1);
+    transition: all 0.02s ease-out;
+}
+
+// on bar:hover, make bar-label pop out a bit
+.bar:hover .bar-label{
+    font-size: 13px;
+    transition: all 0.05s ease-out;
+    color: white;
+}
+
+// on bar:hover, make bar-label pop out a bit
+.bar:active .bar-label{
+    font-size: 12px;
+    transition: all 0.02s ease-out;
+    color: white;
+}
+  
+.bar-label {
+    font-size: 11px;
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ccc;
+    font-family: 'Roboto', sans-serif;
+    user-select: none;
+}
+
