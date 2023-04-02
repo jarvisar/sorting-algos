@@ -57,3 +57,8 @@
 ::ng-deep .mat-slider-thumb, ::ng-deep .mat-slider-thumb-label, ::ng-deep .mat-slider-track-fill {
     background-color: #7474B0 !important;
 }
+
+mat-slider {
+    margin-top: -15px;
+    width: 150px;
+  }
