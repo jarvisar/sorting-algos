@@ -30,11 +30,11 @@
     <button mat-raised-button (click)="stop()" [disabled]="!sortService.inProgress" class="main-button stop-button">Stop</button>
     <!-- Slider for sortingService.delay with label in ms -->
     <div class="slider-container" style="position: relative; margin-left: 5px; width: 200px;">
-        <ion-range [(ngModel)]="sortService.delay" (ionChange)="onDelayChange()" min="0" max="150" step="0.5">
+        <ion-range [(ngModel)]="sortService.delay" (ionChange)="onDelayChange()" min="0" max="200" step="1">
             <ion-label slot="start" style="color: #aaa">0ms</ion-label>
-            <ion-label slot="end" style="color: #aaa">150ms</ion-label>
+            <ion-label slot="end" style="color: #aaa">200ms</ion-label>
           </ion-range>
           
-        <p class="slider-label" style="color: #aaa; position: absolute; bottom: -15px; left: 50px;">Delay: {{sortService.delay}} ms</p>
+        <p class="slider-label" style="color: #aaa; position: absolute; bottom: -15px; left: 45px;">Delay: {{sortService.delay}} ms</p>
     </div>
 </div>
