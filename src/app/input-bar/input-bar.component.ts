@@ -80,7 +80,6 @@ export class InputBarComponent implements OnInit {
     // stop sorting
     this.sortService.stopSorting = true;
     this.sortService.inProgress = false;
-    this.sortService.currentTime = 0;
     // reset colors AFTER async functions finish
     // if heap sort, reset colors after 2x delay
     if (this.sortService.selectedAlgo === 'heap') {
@@ -88,6 +87,7 @@ export class InputBarComponent implements OnInit {
         for (let i = 0; i < this.sortService.barHeights.length; i++) {
           this.sortService.setBarColor(i, '#7474B0');
           this.sortService.numChanges = 0;
+          this.sortService.currentTime = 0;
         };
       }, this.sortService.delay + 100);
     } else {
@@ -95,6 +95,7 @@ export class InputBarComponent implements OnInit {
         for (let i = 0; i < this.sortService.barHeights.length; i++) {
           this.sortService.setBarColor(i, '#7474B0');
           this.sortService.numChanges = 0;
+          this.sortService.currentTime = 0;
         };
       }, this.sortService.delay + 50);
     }
