@@ -530,9 +530,11 @@ export class SortService {
 
   //bitonic
   async bitonicSort() {
-    // set this.numBars to closest power of 2
-    this.numBars = Math.pow(2, Math.floor(Math.log2(this.numBars)));
-    this.generateBars();
+    // set this.numBars to closest power of 2 if not already
+    if (!Number.isInteger(Math.log2(this.numBars))) {
+      this.numBars = Math.pow(2, Math.floor(Math.log2(this.numBars)));
+      this.generateBars();
+    }
     this.inProgress = true;
     this.stopSorting = false;
 
