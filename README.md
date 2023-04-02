@@ -4,6 +4,8 @@ Angular-powered web app capable of visually representing various sorting algorit
 
 Visit the [GitHub pages](https://jarvisar.github.io/sorting-algos/) site to access the latest deployment.
 
+Also available as an [Android APK](https://github.com/jarvisar/sorting-algos/tree/ionic-mobile).
+
 ## Usage
 
 Currently this web application supports the following sorting algorithms:
