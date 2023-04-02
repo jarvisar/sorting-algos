@@ -16,7 +16,8 @@
             android:theme="@style/Theme.FullScreen"
             android:screenOrientation="landscape"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
-            android:immersive="true">
+            android:immersive="true"
+            android:exported="true">>
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
