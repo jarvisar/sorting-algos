@@ -58,6 +58,9 @@ export class InputBarComponent implements OnInit {
       case 'cycle':
         await this.sortService.cycleSort();
         break;
+      case 'counting':
+        await this.sortService.countingSort();
+        break;
       case 'pancake':
         await this.sortService.pancakeSort();
         break;
