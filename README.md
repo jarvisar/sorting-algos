@@ -22,9 +22,11 @@ Currently this web application supports the following sorting algorithms:
 -   Gnome Sort
 -   Shell Sort
 -   Cycle Sort
+-   Counting Sort
+-   Strand Sort
 -   Pancake Sort
--   Bogo Sort
 -   Stooge Sort
+-   Bogo Sort
 
 Learn more about sorting algorithms here: https://www.geeksforgeeks.org/sorting-algorithms/
 
