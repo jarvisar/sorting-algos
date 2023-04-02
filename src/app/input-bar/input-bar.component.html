@@ -1,5 +1,8 @@
 <div class="buttons-container">
     <!-- Select box for algorithm type no material design -->
+    <button mat-icon-button (click)="openGeeksForGeeks()" appearance="outline" style="margin-right: 0px; color: #bbb; cursor: pointer;" matTooltip="Learn more about this algorithm" matTooltipShowDelay="250" matTooltipPosition="below" >
+        <mat-icon>help</mat-icon>
+    </button>
     <select class="algo-select" [(ngModel)]="sortService.selectedAlgo" (change)="onAlgoSelectChange()" style="margin: 5px">
         <option value="bubble">Bubble Sort</option>
         <option value="selection">Selection Sort</option>
@@ -15,6 +18,7 @@
         <option value="shell">Shell Sort</option>
         <option value="cycle">Cycle Sort</option>
         <option value="counting">Counting Sort</option>
+        <option value="strand">Strand Sort</option>
         <option value="pancake">Pancake Sort</option>
         <option value="bogo">Bogo Sort (inefficient)</option>
         <option value="stooge">Stooge Sort (inefficient)</option>

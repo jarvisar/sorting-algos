@@ -61,6 +61,9 @@ export class InputBarComponent implements OnInit {
       case 'counting':
         await this.sortService.countingSort();
         break;
+      case 'strand':
+        await this.sortService.strandSort();
+        break;
       case 'pancake':
         await this.sortService.pancakeSort();
         break;
@@ -128,4 +131,63 @@ export class InputBarComponent implements OnInit {
   onDelayChange() {
   }
 
+  // load https://www.geeksforgeeks.org/{sort-name} on click using window.open() and this.sortService.selectedAlgo. Format "bubble" to "bubble-sort"
+  // https://www.geeksforgeeks.org/bubble-sort/
+  // https://www.geeksforgeeks.org/selection-sort/
+  // https://www.geeksforgeeks.org/insertion-sort/
+  // https://www.geeksforgeeks.org/merge-sort/
+  // https://www.geeksforgeeks.org/quick-sort/
+  // https://www.geeksforgeeks.org/heap-sort/
+  // https://www.geeksforgeeks.org/radix-sort/
+  // https://www.geeksforgeeks.org/bitonic-sort/
+  // https://www.geeksforgeeks.org/cocktail-sort/
+  // https://www.geeksforgeeks.org/comb-sort/
+  // https://www.geeksforgeeks.org/gnome-sort-a-stupid-one/
+  // https://www.geeksforgeeks.org/shellsort/
+  // https://www.geeksforgeeks.org/cycle-sort/
+  // https://www.geeksforgeeks.org/counting-sort/
+  // https://www.geeksforgeeks.org/pancake-sorting/
+  // https://www.geeksforgeeks.org/bogo-sort/
+  // https://www.geeksforgeeks.org/stooge-sort/
+  openGeeksForGeeks() {
+    if (this.sortService.selectedAlgo == "bubble"){
+      window.open("https://www.geeksforgeeks.org/bubble-sort/");
+    } else if (this.sortService.selectedAlgo == "selection"){
+      window.open("https://www.geeksforgeeks.org/selection-sort/");
+    } else if (this.sortService.selectedAlgo == "insertion"){
+      window.open("https://www.geeksforgeeks.org/insertion-sort/");
+    } else if (this.sortService.selectedAlgo == "merge"){
+      window.open("https://www.geeksforgeeks.org/merge-sort/");
+    } else if (this.sortService.selectedAlgo == "quick"){
+      window.open("https://www.geeksforgeeks.org/quick-sort/");
+    } else if (this.sortService.selectedAlgo == "heap"){
+      window.open("https://www.geeksforgeeks.org/heap-sort/");
+    } else if (this.sortService.selectedAlgo == "radix"){
+      window.open("https://www.geeksforgeeks.org/radix-sort/");
+    } else if (this.sortService.selectedAlgo == "bitonic"){
+      window.open("https://www.geeksforgeeks.org/bitonic-sort/");
+    } else if (this.sortService.selectedAlgo == "cocktail"){
+      window.open("https://www.geeksforgeeks.org/cocktail-sort/")
+    } else if (this.sortService.selectedAlgo == "comb"){
+      window.open("https://www.geeksforgeeks.org/comb-sort/");
+    } else if (this.sortService.selectedAlgo == "gnome"){
+      window.open("https://www.geeksforgeeks.org/gnome-sort-a-stupid-one/");
+    } else if (this.sortService.selectedAlgo == "shell"){
+      window.open("https://www.geeksforgeeks.org/shellsort/");
+    } else if (this.sortService.selectedAlgo == "cycle"){
+      window.open("https://www.geeksforgeeks.org/cycle-sort/");
+    } else if (this.sortService.selectedAlgo == "counting"){
+      window.open("https://www.geeksforgeeks.org/counting-sort/");
+    } else if (this.sortService.selectedAlgo == "pancake"){
+      window.open("https://www.geeksforgeeks.org/pancake-sorting/");
+    } else if (this.sortService.selectedAlgo == "bogo"){ 
+      window.open("https://www.geeksforgeeks.org/bogo-sort/");
+    } else if (this.sortService.selectedAlgo == "stooge"){
+      window.open("https://www.geeksforgeeks.org/stooge-sort/");
+    } else if (this.sortService.selectedAlgo == "strand"){
+      window.open("https://www.geeksforgeeks.org/strand-sort/");
+    } else {
+      window.open("https://www.geeksforgeeks.org/");
+    }
+  }
 }
