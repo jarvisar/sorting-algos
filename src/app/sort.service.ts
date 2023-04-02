@@ -563,6 +563,7 @@ export class SortService {
     for (let i = 0; i < this.barHeights.length; i++) {
       this.setBarColor(i, '#73be73');
     }
+
   }
 
   //bitonic

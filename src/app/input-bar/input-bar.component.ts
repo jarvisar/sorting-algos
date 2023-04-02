@@ -80,6 +80,7 @@ export class InputBarComponent implements OnInit {
     // stop sorting
     this.sortService.stopSorting = true;
     this.sortService.inProgress = false;
+    this.sortService.currentTime = 0;
     // reset colors AFTER async functions finish
     // if heap sort, reset colors after 2x delay
     if (this.sortService.selectedAlgo === 'heap') {
