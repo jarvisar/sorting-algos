@@ -964,12 +964,24 @@ export class SortService {
         let temp = this.barHeights[i];
         let j = i;
         while (j >= gap && this.barHeights[j - gap] > temp) {
+          if (this.stopSorting) {
+            clearInterval(interval)
+            return;
+          }
           this.setBarColor(j, '#FEDC56');
           this.setBarColor(j - gap, '#229ccb');
           await sleep(this.delay);
-          this.setBarColor(j, '#c24949');
-          this.setBarColor(j - gap, '#c24949');
           this.barHeights[j] = this.barHeights[j - gap];
+          this.setBarColor(j, '#c24949');
+          this.setBarColor(j + 1, '#c24949');
+          this.setBarColor(j - 1, '#c24949');
+          this.setBarColor(j + 2, '#c24949');
+          this.setBarColor(j - 2, '#c24949');
+          this.setBarColor(j - gap, '#c24949');
+          this.setBarColor(j - gap + 1, '#c24949');
+          this.setBarColor(j - gap - 1, '#c24949');
+          this.setBarColor(j - gap + 2, '#c24949');
+          this.setBarColor(j - gap - 2, '#c24949');
           this.numChanges++;
           j -= gap;
         }
