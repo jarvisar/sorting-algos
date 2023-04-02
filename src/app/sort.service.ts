@@ -1068,6 +1068,9 @@ export class SortService {
     };
 
     const stoogeSort = async (arr: number[], l: number, h: number) => {
+      if (this.stopSorting) {
+        return;
+      }
       if (l >= h) {
         return;
       }
@@ -1075,7 +1078,15 @@ export class SortService {
         let t = arr[l];
         arr[l] = arr[h];
         arr[h] = t;
+        // change color to yellow and blue
+        this.setBarColor(l, '#FEDC56');
+        this.setBarColor(h, '#229ccb');
+
+        await sleep(this.delay);
         this.numChanges++;
+        // back to red
+        this.setBarColor(l, '#c24949');
+        this.setBarColor(h, '#c24949');
       }
       if (h - l + 1 > 2) {
         let t = Math.floor((h - l + 1) / 3);
