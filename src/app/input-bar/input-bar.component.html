@@ -1,5 +1,8 @@
 <div class="buttons-container">
     <!-- Select box for algorithm type no material design -->
+    <button mat-icon-button (click)="openGeeksForGeeks()" appearance="outline" style="margin-right: 0px; color: #bbb; cursor: pointer;" matTooltip="Learn more about this algorithm" matTooltipShowDelay="250" matTooltipPosition="below" >
+        <mat-icon>help</mat-icon>
+    </button>
     <select class="algo-select" [(ngModel)]="sortService.selectedAlgo" (change)="onAlgoSelectChange()" style="margin: 5px">
         <option value="bubble">Bubble Sort</option>
         <option value="selection">Selection Sort</option>
@@ -14,22 +17,24 @@
         <option value="gnome">Gnome Sort</option>
         <option value="shell">Shell Sort</option>
         <option value="cycle">Cycle Sort</option>
-        <option value="cycle">Pancake Sort</option>
-        <option value="cycle">Bogo Sort (inefficient)</option>
-        <option value="cycle">Stooge Sort (inefficient)</option>
+        <option value="counting">Counting Sort</option>
+        <option value="strand">Strand Sort</option>
+        <option value="pancake">Pancake Sort</option>
+        <option value="stooge">Stooge Sort</option>
+        <option value="bogo">Bogo Sort (random)</option>
     </select>
     <!-- Input for number of bars -->
     <input type="number" class="bar-count-input" [(ngModel)]="sortService.numBars" (change)="onBarCountChange()" placeholder="Number of Bars" style="margin: 5px" max="512">
     <button mat-raised-button (click)="sort()" [disabled]="sortService.inProgress" class="main-button sort-button">Sort</button>
     <button mat-raised-button (click)="reset()" [disabled]="sortService.inProgress" class="main-button reset-button">Reset</button>
-    <button mat-raised-button (click)="stop()" [disabled]="!sortService.inProgress" class="main-button stop-button" >Stop</button>
+    <button mat-raised-button (click)="stop()" [disabled]="!sortService.inProgress" class="main-button stop-button">Stop</button>
     <!-- Slider for sortingService.delay with label in ms -->
     <div class="slider-container" style="position: relative; margin-left: 5px; width: 200px;">
         <ion-range [(ngModel)]="sortService.delay" (ionChange)="onDelayChange()" min="0" max="150" step="0.5">
-            <ion-label slot="start" style="color: #aaa">0 ms</ion-label>
-            <ion-label slot="end" style="color: #aaa">150 ms</ion-label>
+            <ion-label slot="start" style="color: #aaa">0ms</ion-label>
+            <ion-label slot="end" style="color: #aaa">150ms</ion-label>
           </ion-range>
           
-        <p class="slider-label" style="color: #aaa; position: absolute; bottom: -15px; left: 70px;">Delay: {{sortService.delay}} ms</p>
+        <p class="slider-label" style="color: #aaa; position: absolute; bottom: -15px; left: 50px;">Delay: {{sortService.delay}} ms</p>
     </div>
 </div>

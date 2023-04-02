@@ -11,13 +11,10 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
   constructor(public sortService: SortService) { }
 
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.sortService.generateBars();
-    }, 0);
+    this.sortService.generateBars();
   }
 
   ngOnInit() {
-
   }
 
 }

@@ -20,6 +20,17 @@
     margin: 0;
   }
 
+html {
+  overflow: hidden !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden !important;
+}
+
 .header-title {
   font-size: 24pt;
   font-family: Roboto, Helvetica Neue, sans-serif;
