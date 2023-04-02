@@ -335,7 +335,7 @@ export class SortService {
     };
   
     await mergeSortHelper(0, n - 1);
-  
+    clearInterval(interval)
     this.inProgress = false;
     if (!this.stopSorting) {
       for (let i = 0; i < this.barHeights.length; i++) {
