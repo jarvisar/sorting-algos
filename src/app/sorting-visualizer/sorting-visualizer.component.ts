@@ -15,7 +15,6 @@ export class SortingVisualizerComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-
   }
 
 }
