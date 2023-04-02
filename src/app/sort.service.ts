@@ -802,6 +802,8 @@ export class SortService {
           let temp = item;
           item = this.barHeights[pos];
           this.barHeights[pos] = temp;
+          // change to green
+          this.setBarColor(pos, '#c24949');
           this.numChanges++;
           writes++;
         }
