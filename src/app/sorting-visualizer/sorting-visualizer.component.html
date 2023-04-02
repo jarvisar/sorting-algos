@@ -2,7 +2,9 @@
 <div class="bar-container" id="bar-container">
     <!-- Maximum height should be container height, and scale from there -->
     <!-- sortService.numChanges in roboto in the top left corner with 15px margins -->
-    <p *ngIf="sortService.currentTime !== 0" class="timer">{{sortService.currentTime.toFixed(2)}}s</p>
-    <p *ngIf="sortService.numChanges !== 0" class="num-changes">{{sortService.numChanges}} changes</p>
+    <div class="stats-container">
+        <p *ngIf="sortService.currentTime !== 0" class="timer">Timer: {{sortService.currentTime.toFixed(2)}}s</p>
+        <p *ngIf="sortService.numChanges !== 0" class="num-changes">{{sortService.numChanges}} changes</p>
+    </div>
     <div class="bar" *ngFor="let height of sortService.barHeights" [style.height.px]="height" >  <p class="bar-label" >{{height}}</p> </div>
 </div>

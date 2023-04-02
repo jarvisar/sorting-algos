@@ -29,24 +29,27 @@
     box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.75);
 }
 
-.num-changes{
+.stats-container{
     position: absolute;
-    top: 40px;
+    top: 15px;
     left: 20px;
-    color: #bbb;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-    font-size: 18;
-    font-weight: 600;
 }
 
 .timer{
-    position: absolute;
-    top: 20px;
-    left: 20px;
     color: #bbb;
     font-family: Roboto, "Helvetica Neue", sans-serif;
     font-size: 18;
     font-weight: 600;
+    z-index: 11;
+}
+
+.num-changes{
+    margin-top: -10px;
+    color: #bbb;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 18;
+    font-weight: 600;
+    z-index: 11;
 }
   
 .bar {
