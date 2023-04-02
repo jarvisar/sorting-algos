@@ -169,7 +169,7 @@ export class InputBarComponent implements OnInit {
     } else if (this.sortService.selectedAlgo == "strand"){
       window.open("https://www.geeksforgeeks.org/strand-sort/");
     } else {
-      window.open("https://www.geeksforgeeks.org/");
+      window.open("https://www.geeksforgeeks.org/sorting-algorithms/");
     }
   }
 }
