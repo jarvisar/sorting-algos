@@ -22,7 +22,6 @@ export class SortService {
     const barMargin = 15;
     const screenWidth = window.innerWidth;
     this.numBars = Math.floor((screenWidth - 100) / (barWidth + barMargin));
-
    }
 
   generateBars(){
