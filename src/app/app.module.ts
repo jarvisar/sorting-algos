@@ -14,6 +14,8 @@ import { environment } from '../environments/environment';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { IonicModule } from '@ionic/angular';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    IonicModule.forRoot(),
     MatToolbarModule,
     MatButtonModule,
     BrowserAnimationsModule,
@@ -31,6 +34,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     DragDropModule,
     MatSliderModule,
     MatIconModule,
+    MatFormFieldModule,
     MatTooltipModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,

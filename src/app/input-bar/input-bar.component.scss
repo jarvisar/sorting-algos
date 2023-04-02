@@ -43,17 +43,39 @@
 }
 
 .sort-button{
-    background-color: #73be73;
+    background-color: #73be73 !important;
+}
+
+// disabled is dark gray
+.sort-button:disabled{
+    background-color: #333 !important;
 }
 
 .reset-button{
-    background-color: #eaeaea;
+    background-color: #eaeaea !important;
+}
+
+.reset-button:disabled{
+    background-color: #333 !important;
 }
 
 .stop-button{
-    background-color: #c24949;
+    background-color: #c24949 !important;
+}
+
+.stop-button:disabled{
+    background-color: #333 !important;
 }
 
 ::ng-deep .mat-slider-thumb, ::ng-deep .mat-slider-thumb-label, ::ng-deep .mat-slider-track-fill {
     background-color: #7474B0 !important;
 }
+
+::ng-deep .range-knob-handle {
+    --thumb-background: #7474B0;
+    --track-background: #7474B0;
+  }
+
+  ion-range {
+    width: 100%;
+  }
