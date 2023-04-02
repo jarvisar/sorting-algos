@@ -1032,6 +1032,10 @@ export class SortService {
         }
         this.setBarColor(i + 1, '#c24949');
         this.setBarColor(i, '#c24949');
+        // if in start, set to green
+        if (i === start) {
+          this.setBarColor(i - 1, '#73be73');
+        }
       }
 
       if (!swapped) {
@@ -1056,8 +1060,12 @@ export class SortService {
           this.numChanges++;
           swapped = true;
         }
-        this.setBarColor(i + 1, '#c24949');
         this.setBarColor(i, '#c24949');
+        this.setBarColor(i + 1, '#c24949');
+        // if at end, set to green
+        if (i === end - 1) {
+          this.setBarColor(i + 2, '#73be73');
+        }
       }
 
       start++;
