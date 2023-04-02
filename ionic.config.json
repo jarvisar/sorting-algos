@@ -1,0 +1,7 @@
+{
+  "name": "sorting-algos",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
