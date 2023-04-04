@@ -12,7 +12,7 @@ export class SortService {
   delay = 20;
   numChanges = 0;
   currentTime: number = 0;
-  audioLength = 10;
+  audioLength = this.delay;
   private audioContext: AudioContext = new AudioContext();
 
   updateTimer() {
@@ -31,9 +31,14 @@ export class SortService {
     try {
       const oscillator = this.audioContext.createOscillator();
       oscillator.type = 'triangle';
-      // scale between frequencies 220 and 880
-      frequency = (frequency / 1000) * 660 + 220;
-      oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+      // scale between frequencies 220 and 880 based on min and max barHeight
+      const minFrequency = 200;
+      const maxFrequency = 700;
+      const minBarHeight = Math.min(...this.barHeights);
+      const maxBarHeight = Math.max(...this.barHeights)
+      const scaledFrequency = ((frequency - minBarHeight) / (maxBarHeight - minBarHeight)) * (maxFrequency - minFrequency) + minFrequency;
+      console.log(scaledFrequency)
+      oscillator.frequency.setValueAtTime(scaledFrequency, this.audioContext.currentTime);
       oscillator.connect(this.audioContext.destination);
       oscillator.start();
       oscillator.stop(this.audioContext.currentTime + duration / 1000);
@@ -102,7 +107,11 @@ export class SortService {
         // if not very first bar
         // Set the color of the bars being compared to #229ccb
         this.setBarColor(i + 1, '#229ccb');
-        this.playTone(this.barHeights[i], this.audioLength);
+        if (i !== 0) {
+          this.playTone(this.barHeights[i - 1], this.audioLength);
+        } else {
+          this.playTone(this.barHeights[i], this.audioLength);
+        }
         await sleep(this.delay);
         if (i !== 0) {
           this.setBarColor(i-1, '#c24949');
@@ -124,8 +133,11 @@ export class SortService {
     this.inProgress = false;
     // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength); // Play a 440Hz tone for 50ms
+      this.playTone(this.barHeights[i], this.audioLength);
       await sleep(this.delay);
     }
   }
@@ -186,8 +198,11 @@ export class SortService {
     this.inProgress = false;
     // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength); // Play a 440Hz tone for 50ms
+      this.playTone(this.barHeights[i], this.audioLength);
       await sleep(this.delay);
     }
   }
@@ -220,6 +235,7 @@ export class SortService {
       }
       let key = this.barHeights[i];
       this.setBarColor(i, '#229ccb');
+      this.playTone(this.barHeights[i], this.audioLength);
       await sleep(this.delay, i, '#229ccb');
   
       let j = i - 1;
@@ -235,6 +251,7 @@ export class SortService {
           }
         }
         this.setBarColor(j, '#FEDC56')
+        this.playTone(this.barHeights[j], this.audioLength);
         this.barHeights[j + 1] = this.barHeights[j];
         this.numChanges++;
         this.setBarColor(j + 1, '#c24949');
@@ -255,9 +272,14 @@ export class SortService {
     }
     clearInterval(interval)
     this.inProgress = false;
-    // Mark remaining bars as sorted
-    for (let i = 0; i < n; i++) {
+    // Mark all bars as sorted
+    for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay, i, '#73be73');
     }
   }
 
@@ -361,6 +383,9 @@ export class SortService {
     if (!this.stopSorting) {
       // Mark all bars as sorted
       for (let i = 0; i < this.barHeights.length; i++) {
+        if (this.stopSorting) {
+          return;
+        }
         this.setBarColor(i, '#73be73');
         this.playTone(this.barHeights[i], this.audioLength);
         await sleep(this.delay);
@@ -373,6 +398,12 @@ export class SortService {
     this.quickInterval = setInterval(() => {
       this.updateTimer();
     }, 10); // 10 milliseconds = 0.01 seconds
+    const sleep = (ms: number) => {
+      return new Promise(resolve => 
+        // I even tried to take a color as parameter and set it here using setTimeout. Also same issue. 
+        setTimeout(resolve, ms)
+        );
+    };
     this.inProgress = true;
     this.stopSorting = false;
     // set all to red
@@ -383,8 +414,14 @@ export class SortService {
     this.inProgress = false;
     clearInterval(this.quickInterval)
     if (!this.stopSorting) {
+      // Mark all bars as sorted
       for (let i = 0; i < this.barHeights.length; i++) {
+        if (this.stopSorting) {
+          return;
+        }
         this.setBarColor(i, '#73be73');
+        this.playTone(this.barHeights[i], this.audioLength);
+        await sleep(this.delay);
       }
     }
   }
@@ -403,6 +440,7 @@ export class SortService {
           return;
         }
         this.setBarColor(j, '#FEDC56');
+        this.playTone(this.barHeights[j], this.audioLength);
         await sleep(this.delay);
         if (this.barHeights[j] < pivot) { 
           i++; 
@@ -457,6 +495,7 @@ export class SortService {
     if (l < size) {
       this.setBarColor(l, '#FEDC56');
       await sleep(this.delay);
+      this.playTone(this.barHeights[l], this.audioLength);
       if (this.barHeights[l] > this.barHeights[largest]) {
           largest = l; 
       }
@@ -464,6 +503,7 @@ export class SortService {
     }
     if (r < size) {
         this.setBarColor(r, '#FEDC56');
+        this.playTone(this.barHeights[r], this.audioLength);
         await sleep(this.delay);
         if (this.barHeights[r] > this.barHeights[largest]) {
             largest = r; 
@@ -486,6 +526,7 @@ export class SortService {
   
         // Set the color of the current index to yellow after the swap
         this.setBarColor(i, '#FEDC56');
+        this.playTone(this.barHeights[i], this.audioLength);
         await heapify(size, largest);
       }
       this.setBarColor(i, '#c24949');
@@ -509,7 +550,7 @@ export class SortService {
 
       // Set the color of the largest bar to #229ccb before swapping
       this.setBarColor(0, '#229ccb');
-      this.setBarColor(i, '#73be73');
+      this.setBarColor(i, '#c24949');
 
       // Swap the bars
       let temp = this.barHeights[0];
@@ -522,9 +563,14 @@ export class SortService {
     }
     this.inProgress = false;
     clearInterval(interval);  
-    // Mark all as green
+    // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay);
     }
   }
 
@@ -574,6 +620,7 @@ export class SortService {
           this.barHeights[index] = buckets[j][k];
           this.numChanges++;
           this.setBarColor(index, '#FEDC56');
+          this.playTone(this.barHeights[index], this.audioLength);
           await sleep(this.delay);
           this.setBarColor(this.barHeights.indexOf(buckets[j][k]), '#c24949');
           this.setBarColor(index - 1, '#c24949');
@@ -583,11 +630,15 @@ export class SortService {
     }
     clearInterval(interval);  
     this.inProgress = false;
-    // Mark all bars as green
+    // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay);
     }
-
   }
 
   //bitonic
@@ -619,6 +670,7 @@ export class SortService {
       }
       this.setBarColor(i, '#FEDC56');
       this.setBarColor(j, '#229ccb');
+      this.playTone(this.barHeights[i], this.audioLength);
       await sleep(this.delay);
       if ((this.barHeights[i] > this.barHeights[j] && dir === 1) || (this.barHeights[i] < this.barHeights[j] && dir === 0)) {
         let temp = this.barHeights[i];
@@ -663,8 +715,14 @@ export class SortService {
     clearInterval(interval);  
     this.inProgress = false;
     
+    // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay);
     }
   }
   
