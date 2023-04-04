@@ -13,7 +13,7 @@ export class SortService {
   numChanges = 0;
   currentTime: number = 0;
   audioLength = this.delay;
-  isMuted = false;
+  isMuted = true;
   private audioContext: AudioContext = new AudioContext();
 
   updateTimer() {
@@ -759,6 +759,9 @@ export class SortService {
         }
         this.setBarColor(i, '#FEDC56');
         this.setBarColor(i + 1, '#229ccb');
+        if (i !== 0){
+          this.playTone(this.barHeights[i-1], this.audioLength);
+        }
         await sleep(this.delay);
         if (this.barHeights[i] > this.barHeights[i + 1]) {
           let temp = this.barHeights[i];
@@ -768,11 +771,7 @@ export class SortService {
           swapped = true;
         }
         // if final positon, set to green
-        if (i === end - 1) {
-          this.setBarColor(i + 1, '#73be73');
-        } else {
-          this.setBarColor(i + 1, '#c24949');
-        }
+        this.setBarColor(i + 1, '#c24949');
         this.setBarColor(i, '#c24949');
       }
 
@@ -790,6 +789,7 @@ export class SortService {
         }
         this.setBarColor(i, '#FEDC56');
         this.setBarColor(i + 1, '#229ccb');
+        this.playTone(this.barHeights[i], this.audioLength);
         await sleep(this.delay);
         if (this.barHeights[i] > this.barHeights[i + 1]) {
           let temp = this.barHeights[i];
@@ -799,11 +799,7 @@ export class SortService {
           // if in final position, set to green
           swapped = true;
         }
-        if (i === start) {
-          this.setBarColor(i, '#73be73');
-        } else {
-          this.setBarColor(i, '#c24949');
-        }
+        this.setBarColor(i, '#c24949');
         this.setBarColor(i + 1, '#c24949');
       }
       
@@ -812,9 +808,14 @@ export class SortService {
     clearInterval(interval);  
     this.inProgress = false;
 
-    // Mark all bars as green
+    // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay);
     }
   }
 
@@ -853,6 +854,7 @@ export class SortService {
         }
         this.setBarColor(i, '#FEDC56');
         this.setBarColor(i + gap, '#229ccb');
+        this.playTone(this.barHeights[i], this.audioLength);
         await sleep(this.delay);
         if (this.barHeights[i] > this.barHeights[i + gap]) {
           let temp = this.barHeights[i];
@@ -869,9 +871,14 @@ export class SortService {
     clearInterval(interval);  
     this.inProgress = false;
 
-    // Mark all bars as green
+    // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay);
     }
   }
 
@@ -904,6 +911,7 @@ export class SortService {
         }
         this.setBarColor(i, '#FEDC56');
         this.setBarColor(pos, '#229ccb');
+        this.playTone(this.barHeights[i], this.audioLength);
         await sleep(this.delay);
         this.setBarColor(i, '#c24949');
         this.setBarColor(pos, '#c24949');
@@ -932,6 +940,7 @@ export class SortService {
           }
           this.setBarColor(i, '#FEDC56');
           this.setBarColor(pos, '#229ccb');
+          this.playTone(this.barHeights[i], this.audioLength);
           await sleep(this.delay);
           this.setBarColor(i, '#c24949');
           this.setBarColor(pos, '#c24949');
@@ -956,9 +965,14 @@ export class SortService {
     clearInterval(interval);  
     this.inProgress = false;
 
-    // Mark all bars as green
+    // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay);
     }
   }
 
@@ -998,6 +1012,7 @@ export class SortService {
       }
       await sleep(this.delay);
       if (this.barHeights[i] >= this.barHeights[i - 1]) {
+        this.playTone(this.barHeights[i], this.audioLength);
         i++;
       } else {
         let temp = this.barHeights[i];
@@ -1005,6 +1020,9 @@ export class SortService {
         this.barHeights[i - 1] = temp;
         this.numChanges++;
         i--;
+        if (i > 0){
+          this.playTone(this.barHeights[i - 1], this.audioLength);
+        }
       }
       // Set the bars being compared back to red
       this.setBarColor(i, '#c24949');
@@ -1014,9 +1032,14 @@ export class SortService {
     clearInterval(interval);  
     this.inProgress = false;
   
-    // Set all bars to green
+    // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay);
     }
   }
   
@@ -1054,6 +1077,7 @@ export class SortService {
           }
           this.setBarColor(j, '#FEDC56');
           this.setBarColor(j - gap, '#229ccb');
+          this.playTone(this.barHeights[j], this.audioLength);
           await sleep(this.delay);
           this.barHeights[j] = this.barHeights[j - gap];
           this.setBarColor(j, '#c24949');
@@ -1078,9 +1102,14 @@ export class SortService {
     clearInterval(interval); 
     this.inProgress = false;
 
-    // Mark all bars as green
+    // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay);
     }
   }
 
@@ -1116,6 +1145,7 @@ export class SortService {
         }
         this.setBarColor(i, '#FEDC56');
         this.setBarColor(i + 1, '#229ccb');
+        this.playTone(this.barHeights[i + 1], this.audioLength);
         await sleep(this.delay);
         if (this.barHeights[i] > this.barHeights[i + 1]) {
           let temp = this.barHeights[i];
@@ -1126,10 +1156,6 @@ export class SortService {
         }
         this.setBarColor(i + 1, '#c24949');
         this.setBarColor(i, '#c24949');
-        // if in start, set to green
-        if (i === start) {
-          this.setBarColor(i - 1, '#73be73');
-        }
       }
 
       if (!swapped) {
@@ -1144,8 +1170,9 @@ export class SortService {
           clearInterval(interval)
           return;
         }
-        this.setBarColor(i, '#FEDC56');
-        this.setBarColor(i + 1, '#229ccb');
+        this.setBarColor(i, '#229ccb');
+        this.setBarColor(i + 1, '#FEDC56');
+        this.playTone(this.barHeights[i], this.audioLength);
         await sleep(this.delay);
         if (this.barHeights[i] > this.barHeights[i + 1]) {
           let temp = this.barHeights[i];
@@ -1156,10 +1183,6 @@ export class SortService {
         }
         this.setBarColor(i, '#c24949');
         this.setBarColor(i + 1, '#c24949');
-        // if at end, set to green
-        if (i === end - 1) {
-          this.setBarColor(i + 2, '#73be73');
-        }
       }
 
       start++;
@@ -1167,9 +1190,14 @@ export class SortService {
     clearInterval(interval);  
     this.inProgress = false;
 
-    // Mark all bars as green
+    // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay);
     }
   }
 
@@ -1200,6 +1228,7 @@ export class SortService {
         }
         this.setBarColor(i, '#FEDC56');
         this.setBarColor(mi, '#229ccb');
+        this.playTone(this.barHeights[i], this.audioLength);
         await sleep(this.delay);
         this.setBarColor(i, '#c24949');
         this.setBarColor(mi, '#c24949');
@@ -1212,6 +1241,7 @@ export class SortService {
         for (let i = mi; i < (curr_size - mi) / 2 + mi; i++) {
           this.setBarColor(i, '#FEDC56');
           this.setBarColor(curr_size - i + mi - 1, '#229ccb');
+          this.playTone(this.barHeights[i], this.audioLength);
           await sleep(this.delay);
           this.setBarColor(i, '#c24949');
           this.setBarColor(curr_size - i + mi - 1, '#c24949');
@@ -1226,9 +1256,14 @@ export class SortService {
     clearInterval(interval);  
     this.inProgress = false;
   
-    // Mark all bars as green
+    // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay);
     }
   }
   
@@ -1264,7 +1299,7 @@ export class SortService {
         // change color to yellow and blue
         this.setBarColor(l, '#FEDC56');
         this.setBarColor(h, '#229ccb');
-
+        this.playTone(this.barHeights[l], this.audioLength);
         await sleep(this.delay);
         this.numChanges++;
         // back to red
@@ -1283,9 +1318,14 @@ export class SortService {
     clearInterval(interval);  
     this.inProgress = false;
 
-    // Mark all bars as green
+    // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay);
     }
   }
 
@@ -1330,15 +1370,22 @@ export class SortService {
         return;
       }
       shuffle(this.barHeights);
+      // play random tone between max and min of barHeights
+      this.playTone(this.barHeights[0], this.audioLength);
       this.numChanges++;
       await sleep(this.delay);
     }
     clearInterval(interval);  
     this.inProgress = false;
 
-    // Mark all bars as green
+    // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+      }
       this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay);
     }
   }
 
@@ -1369,6 +1416,7 @@ export class SortService {
     for (let i = 0; i < this.barHeights.length; i++) {
       this.setBarColor(i, "#FEDC56"); // Highlight the current bar
       this.setBarColor(i + 1, "#229ccb"); // Highlight the current bar
+      this.playTone(this.barHeights[i], this.audioLength);
       await sleep(this.delay); // Pause for a short amount of time
       count[this.barHeights[i] - min]++;
       this.setBarColor(i, "#c24949"); // Set the color back to red
@@ -1395,6 +1443,7 @@ export class SortService {
       }
       this.setBarColor(i, "#FEDC56"); // Highlight the current bar
       this.setBarColor(i - 1, "#229ccb"); // Highlight the current bar
+      this.playTone(this.barHeights[i], this.audioLength)
       await sleep(this.delay); // Pause for a short amount of time
       output[count[this.barHeights[i] - min] - 1] = this.barHeights[i];
       count[this.barHeights[i] - min]--;
@@ -1410,6 +1459,7 @@ export class SortService {
       this.barHeights[i] = output[i];
       this.numChanges++;
       this.setBarColor(i, "#73be73"); // Set the color to green to indicate that the bar is sorted
+      this.playTone(this.barHeights[i], this.audioLength)
       await sleep(this.delay); // Pause for a short amount of time
     }
     clearInterval(interval)
