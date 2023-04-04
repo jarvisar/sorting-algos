@@ -13,6 +13,7 @@ export class SortService {
   numChanges = 0;
   currentTime: number = 0;
   audioLength = this.delay;
+  isMuted = false;
   private audioContext: AudioContext = new AudioContext();
 
   updateTimer() {
@@ -28,6 +29,7 @@ export class SortService {
   }
 
   playTone(frequency: number, duration: number) {
+    if (this.isMuted) return;
     try {
       const oscillator = this.audioContext.createOscillator();
       oscillator.type = 'triangle';

@@ -12,6 +12,9 @@
     <img width="40" alt="Logo" src="assets/android-chrome-512x512.png" (click)="reset($event)" style="cursor: pointer"/>
     <span class="header-title" (click)="reset($event)">Sorting Algorithm Visualizer</span>
     <div class="spacer"></div>
+    <button mat-icon-button (click)="toggleMute()">
+      <mat-icon>{{ sortService.isMuted ? 'volume_off' : 'volume_up' }}</mat-icon>
+    </button>
     <!-- Github Button -->
     <button mat-icon-button (click)="openHelp()" appearance="outline" style="margin-right: 0px; color: #eaeaea; cursor: pointer;" matTooltip="Learn more about different sorting algorithms" matTooltipShowDelay="250" matTooltipPosition="below" >
       <mat-icon>help</mat-icon>

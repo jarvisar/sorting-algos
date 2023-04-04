@@ -24,6 +24,9 @@ export class AppComponent {
     }
   }
 
+  toggleMute() {
+    this.sortService.isMuted = !this.sortService.isMuted;
+  }
   
   openHelp(){
     window.open('https://www.geeksforgeeks.org/sorting-algorithms/');
