@@ -106,8 +106,36 @@ a:hover {
   color: #125699;
 }
 
+.volume-container {
+  position: relative;
+  z-index: 11;
+}
+
+.volume-slider-container {
+  display: none;
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-60%);
+  background-color: #3c3f42;
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+  transition: all 0.1s ease;
+  padding: 10px;
+  padding-bottom: 15px;
+}
+
+.volume-slider{
+  width: 200px;
+  margin-top: -15px;
+}
+
+.volume-container:hover .volume-slider-container {
+  display: block;
+}
+
 .content{
   height: 100%;
   width: 100%;
   overflow: hidden;
 }
+
