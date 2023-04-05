@@ -39,15 +39,17 @@ export class SortService {
       const minBarHeight = Math.min(...this.barHeights);
       const maxBarHeight = Math.max(...this.barHeights)
       const scaledFrequency = ((frequency - minBarHeight) / (maxBarHeight - minBarHeight)) * (maxFrequency - minFrequency) + minFrequency;
-      console.log(scaledFrequency)
+      const gainNode = this.audioContext.createGain();
+      gainNode.gain.value = 0.3;
+      oscillator.connect(gainNode);
+      gainNode.connect(this.audioContext.destination);
       oscillator.frequency.setValueAtTime(scaledFrequency, this.audioContext.currentTime);
-      oscillator.connect(this.audioContext.destination);
       oscillator.start();
       oscillator.stop(this.audioContext.currentTime + duration / 1000);
     } catch (error) {
       console.error('Failed to play tone:', error);
     }
-  } 
+  }
 
   generateBars(){
     this.barHeights = [];
