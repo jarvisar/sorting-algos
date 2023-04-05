@@ -14,6 +14,7 @@ export class SortService {
   currentTime: number = 0;
   audioLength = this.delay;
   isMuted = true;
+  volume = 30;
   private audioContext: AudioContext = new AudioContext();
 
   updateTimer() {
@@ -31,19 +32,19 @@ export class SortService {
   playTone(frequency: number, duration: number) {
     if (this.isMuted) return;
     try {
-      const oscillator = this.audioContext.createOscillator();
+      const oscillator = this.audioContext.createOscillator(); // Create sound source
       oscillator.type = 'triangle';
       // scale between frequencies 220 and 880 based on min and max barHeight
       const minFrequency = 200;
       const maxFrequency = 700;
       const minBarHeight = Math.min(...this.barHeights);
       const maxBarHeight = Math.max(...this.barHeights)
-      const scaledFrequency = ((frequency - minBarHeight) / (maxBarHeight - minBarHeight)) * (maxFrequency - minFrequency) + minFrequency;
-      const gainNode = this.audioContext.createGain();
-      gainNode.gain.value = 0.3;
+      const scaledFrequency = ((frequency - minBarHeight) / (maxBarHeight - minBarHeight)) * (maxFrequency - minFrequency) + minFrequency; // Scale frequency
+      const gainNode = this.audioContext.createGain(); // Create gain node
+      gainNode.gain.value = this.volume/100; // Set volume
       oscillator.connect(gainNode);
-      gainNode.connect(this.audioContext.destination);
-      oscillator.frequency.setValueAtTime(scaledFrequency, this.audioContext.currentTime);
+      gainNode.connect(this.audioContext.destination); // Connect to speakers
+      oscillator.frequency.setValueAtTime(scaledFrequency, this.audioContext.currentTime); // Value in hertz
       oscillator.start();
       oscillator.stop(this.audioContext.currentTime + duration / 1000);
     } catch (error) {

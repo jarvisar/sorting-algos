@@ -12,9 +12,17 @@
     <img width="40" alt="Logo" src="assets/android-chrome-512x512.png" (click)="reset($event)" style="cursor: pointer"/>
     <span class="header-title" (click)="reset($event)">Sorting Algorithm Visualizer</span>
     <div class="spacer"></div>
-    <button mat-icon-button (click)="toggleMute()">
-      <mat-icon>{{ sortService.isMuted ? 'volume_off' : 'volume_up' }}</mat-icon>
-    </button>
+    <div class="volume-container" (mouseenter)="openVolume()" (mouseleave)="closeVolume()">
+      <button mat-icon-button class="volume-button" (click)="toggleMute()">
+        <mat-icon>{{ sortService.isMuted ? 'volume_off' : 'volume_up' }}</mat-icon>
+      </button>
+      <div class="volume-slider-container" [@fadeInOut] [@modalState]="isShown"
+      (@modalState.start)="$event.element.style.display = 'block'"
+      (@modalState.done)="$event.element.style.display = ($event.toState ? 'block' : 'none')">
+        <mat-slider class="volume-slider" [(ngModel)]="sortService.volume" min="0" max="100" step="1" [disabled]="sortService.isMuted"></mat-slider>
+        <p class="slider-label" style="color: #aaa; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); font-weight: 400;">Sort Volume</p>
+      </div>
+    </div>
     <!-- Github Button -->
     <button mat-icon-button (click)="openHelp()" appearance="outline" style="margin-right: 0px; color: #eaeaea; cursor: pointer;" matTooltip="Learn more about different sorting algorithms" matTooltipShowDelay="250" matTooltipPosition="below" >
       <mat-icon>help</mat-icon>
