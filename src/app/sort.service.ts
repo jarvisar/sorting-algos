@@ -142,7 +142,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
 
@@ -207,7 +207,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
 
@@ -283,7 +283,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay, i, '#73be73');
+      await sleep(this.delay/2, i, '#73be73');
     }
   }
 
@@ -392,7 +392,7 @@ export class SortService {
         }
         this.setBarColor(i, '#73be73');
         this.playTone(this.barHeights[i], this.audioLength);
-        await sleep(this.delay);
+        await sleep(this.delay/2);
       }
     }
   }
@@ -425,7 +425,7 @@ export class SortService {
         }
         this.setBarColor(i, '#73be73');
         this.playTone(this.barHeights[i], this.audioLength);
-        await sleep(this.delay);
+        await sleep(this.delay/2);
       }
     }
   }
@@ -574,7 +574,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
 
@@ -641,7 +641,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
 
@@ -726,7 +726,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
   
@@ -817,7 +817,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
 
@@ -880,7 +880,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
 
@@ -974,7 +974,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
 
@@ -1041,7 +1041,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
   
@@ -1111,7 +1111,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
 
@@ -1199,7 +1199,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
 
@@ -1265,7 +1265,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
   
@@ -1327,7 +1327,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
 
@@ -1387,7 +1387,7 @@ export class SortService {
       }
       this.setBarColor(i, '#73be73');
       this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
+      await sleep(this.delay/2);
     }
   }
 
