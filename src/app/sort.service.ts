@@ -611,13 +611,14 @@ export class SortService {
       for (let j = 0; j < buckets.length; j++) {
         for (let k = 0; k < buckets[j].length; k++) {
           if (this.stopSorting) {
-            return;
+            clearInterval(interval); 
+            return; 
           }
 
           // Set the color of the current bar being compared to blue
           if (k > 0) {
             this.setBarColor(index, '#c24949');
-            this.setBarColor(index - 1, '#FEDC56');
+            this.setBarColor(index - 1, '#229ccb');
           }
           this.setBarColor(this.barHeights.indexOf(buckets[j][k]), '#c24949');
 
@@ -638,6 +639,7 @@ export class SortService {
     // Mark all bars as sorted
     for (let i = 0; i < this.barHeights.length; i++) {
       if (this.stopSorting) {
+        clearInterval(interval);  
         return;
       }
       this.setBarColor(i, '#73be73');
