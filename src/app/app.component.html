@@ -19,7 +19,7 @@
       <div class="volume-slider-container" [@fadeInOut] [@modalState]="isShown"
       (@modalState.start)="$event.element.style.display = 'block'"
       (@modalState.done)="$event.element.style.display = ($event.toState ? 'block' : 'none')">
-        <mat-slider class="volume-slider" [(ngModel)]="sortService.volume" min="0" max="100" step="1" [disabled]="sortService.isMuted"></mat-slider>
+        <mat-slider class="volume-slider" [(ngModel)]="sortService.volume" min="0" max="100" step="1"></mat-slider>
         <p class="slider-label" style="color: #aaa; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); font-weight: 400;">Sort Volume</p>
       </div>
     </div>
