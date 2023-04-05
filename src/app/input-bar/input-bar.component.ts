@@ -103,7 +103,7 @@ export class InputBarComponent implements OnInit {
 
   reset(){
     this.sortService.inProgress = false;
-    this.sortService.stopSorting = false;
+    this.sortService.stopSorting = true;
     this.sortService.alreadySorted = false;
     this.sortService.numChanges = 0;
     this.sortService.currentTime = 0;
@@ -112,6 +112,7 @@ export class InputBarComponent implements OnInit {
     setTimeout(() => {
       for (let i = 0; i < this.sortService.barHeights.length; i++) {
         this.sortService.setBarColor(i, '#7474B0');
+        this.sortService.stopSorting = false;
       };
     }, this.sortService.delay);
   }
