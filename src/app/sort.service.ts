@@ -1090,7 +1090,7 @@ export class SortService {
           this.setBarColor(j - 1, '#c24949');
           this.setBarColor(j + 2, '#c24949');
           this.setBarColor(j - 2, '#c24949');
-          this.setBarColor(j - gap, '#c24949');
+          this.setBarColor(j - gap, '#c24949'); // trying to fix bug with leftover yellow bars during sorting
           this.setBarColor(j - gap + 1, '#c24949');
           this.setBarColor(j - gap - 1, '#c24949');
           this.setBarColor(j - gap + 2, '#c24949');
