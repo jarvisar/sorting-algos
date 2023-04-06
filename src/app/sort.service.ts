@@ -887,6 +887,149 @@ export class SortService {
     }
   }
 
+  // tim sort
+  async timSort() {
+    const interval = setInterval(() => {
+      this.updateTimer();
+    }, 10); // 10 milliseconds = 0.01 seconds
+
+    this.inProgress = true;
+    this.stopSorting = false;
+
+    // set all to red
+    for (let i = 0; i < this.barHeights.length; i++) {
+      this.setBarColor(i, '#c24949');
+    }
+
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+
+    const insertionSort = async (left: number, right: number) => {
+      for (let i = left + 1; i <= right; i++) {
+        let temp = this.barHeights[i];
+        let j = i - 1;
+        while (j >= left && this.barHeights[j] > temp) {
+          if (this.stopSorting) {
+            clearInterval(interval)
+            return;
+          }
+          for (let k = 0; k < n; k++) {
+            if (k !== j && k !== i) {
+              this.setBarColor(k, '#c24949');
+            }
+          }
+          this.setBarColor(j, '#FEDC56');
+          this.setBarColor(j + 1, '#229ccb');
+          this.playTone(this.barHeights[j], this.audioLength);
+          await sleep(this.delay);
+          this.barHeights[j + 1] = this.barHeights[j];
+          this.numChanges++;
+          this.setBarColor(j, '#c24949');
+          this.setBarColor(j + 1, '#c24949');
+          j--;
+        }
+        this.barHeights[j + 1] = temp;
+      }
+    };
+
+    const merge = async (left: number, mid: number, right: number) => {
+      let i = left;
+      let j = mid + 1;
+      let temp = [];
+  
+      while (i <= mid && j <= right) {
+        if (this.stopSorting) {
+          clearInterval(interval)
+          return;
+        }
+  
+        this.setBarColor(i, '#229ccb');
+        this.setBarColor(j, '#FEDC56');
+        this.playTone(this.barHeights[i], this.audioLength);
+        await sleep(this.delay);
+  
+        if (this.barHeights[i] <= this.barHeights[j]) {
+          temp.push(this.barHeights[i]);
+          this.setBarColor(i, '#c24949');
+          i++;
+        } else {
+          temp.push(this.barHeights[j]);
+          this.setBarColor(j, '#c24949');
+          // set color of i to red
+          j++;
+        }
+      }
+  
+      while (i <= mid) {
+        if (this.stopSorting) {
+          clearInterval(interval)
+          return;
+        }
+        temp.push(this.barHeights[i]);
+        this.setBarColor(i, '#c24949');
+        i++;
+      }
+  
+      while (j <= right) {
+        if (this.stopSorting) {
+          clearInterval(interval)
+          return;
+        }
+        temp.push(this.barHeights[j]);
+        this.setBarColor(j, '#c24949');
+        j++;
+      }
+  
+      for (let k = left; k <= right; k++) {
+        if (this.stopSorting) {
+          clearInterval(interval)
+          return;
+        }
+        this.barHeights[k] = temp[k - left];
+        this.numChanges++;
+        this.setBarColor(k, '#FEDC56');
+        this.playTone(this.barHeights[k], this.audioLength);
+        await sleep(this.delay);
+        this.setBarColor(k, '#c24949');
+      }
+    };
+
+
+    let minRun = 32;
+    let n = this.barHeights.length;
+    for (let i = 0; i < n; i += minRun) {
+      await insertionSort(i, Math.min((i + 31), (n - 1)));
+      // change back to red
+      for (let j = i; j < Math.min((i + 31), (n - 1)); j++) {
+        this.setBarColor(j, '#c24949');
+      }
+    }
+
+    for (let size = minRun; size < n; size = 2 * size) {
+      for (let left = 0; left < n; left += 2 * size) {
+        let mid = left + size - 1;
+        let right = Math.min((left + 2 * size - 1), (n - 1));
+        await merge(left, mid, right);
+      }
+    }
+
+    clearInterval(interval);
+    this.inProgress = false;
+
+    // Mark all bars as sorted
+    for (let i = 0; i < this.barHeights.length; i++) {
+      if (this.stopSorting) {
+        return;
+
+      }
+      this.setBarColor(i, '#73be73');
+      this.playTone(this.barHeights[i], this.audioLength);
+      await sleep(this.delay/2);
+    }
+  }
+  
+
   // cycle sort
   async cycleSort() {
     const interval = setInterval(() => {

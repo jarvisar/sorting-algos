@@ -67,6 +67,9 @@ export class InputBarComponent implements OnInit {
       case 'pancake':
         await this.sortService.pancakeSort();
         break;
+      case 'tim':
+        await this.sortService.timSort();
+        break;
       case 'bogo':
         await this.sortService.bogoSort();
         break;
@@ -174,6 +177,8 @@ export class InputBarComponent implements OnInit {
       window.open("https://www.geeksforgeeks.org/stooge-sort/");
     } else if (this.sortService.selectedAlgo == "strand"){
       window.open("https://www.geeksforgeeks.org/strand-sort/");
+    } else if (this.sortService.selectedAlgo == "tim"){
+      window.open("https://www.geeksforgeeks.org/timsort/");
     } else {
       window.open("https://www.geeksforgeeks.org/sorting-algorithms/");
     }
