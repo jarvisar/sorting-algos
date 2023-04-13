@@ -1600,15 +1600,22 @@ export class SortService {
   
     // Animate the final step
     for (let i = 0; i < this.barHeights.length; i++) {
+
       if (this.stopSorting) {
         clearInterval(interval);        
         return;
       }
+      let index = this.barHeights.indexOf(output[i]);
       this.barHeights[i] = output[i];
       this.numChanges++;
+      console.log(this.barHeights.indexOf(output[i]))
+      this.setBarColor(index, "#FEDC56"); 
       this.setBarColor(i, "#73be73"); // Set the color to green to indicate that the bar is sorted
       this.playTone(this.barHeights[i], this.audioLength)
       await sleep(this.delay); // Pause for a short amount of time
+      if (index != i){
+        this.setBarColor(index, "#c24949"); 
+      }
     }
     clearInterval(interval)
     this.inProgress = false;
