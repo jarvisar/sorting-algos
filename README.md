@@ -1,6 +1,6 @@
 # Sorting Visualizer
 
-Angular-powered web app capable of visually representing various sorting algorithms using bars of varying heights. The app is built using Angular and allows users to choose from several sorting algorithms, including selection sort, quick sort, and bitonic sort. As the sorting algorithm runs, the app updates the color and height of the bars to reflect the current state of the sorting process and also plays a tone based on the height of the bar at the current index.
+Angular-powered web app capable of visually representing various sorting algorithms using bars of varying heights. As the sorting algorithm runs, the app updates the color and height of the bars to reflect the current state of the sorting process and also plays a tone based on the height of the bar at the current index.
 
 Visit the [GitHub pages](https://jarvisar.github.io/sorting-algos/) site to access the latest deployment.
 
