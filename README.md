@@ -68,8 +68,6 @@ To install and run this app on a local machine, follow these steps:
 
 ## Screenshots
 
-## Screenshots
-
 <p align="center">
  
  <kbd>
