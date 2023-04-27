@@ -25,6 +25,7 @@ Currently this web application supports the following sorting algorithms:
 -   Shell Sort
 -   Cycle Sort
 -   Counting Sort
+-   Tim Sort
 -   Strand Sort
 -   Pancake Sort
 -   Stooge Sort
