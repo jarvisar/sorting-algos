@@ -1,9 +1,20 @@
-<!-- Center div vertically -->
 <div class="bar-container" id="bar-container">
-    <!-- Maximum height should be container height, and scale from there -->
     <div class="stats-container">
-        <p *ngIf="sortService.currentTime !== 0" class="timer">Timer: {{sortService.currentTime.toFixed(2)}}s</p>
-        <p *ngIf="sortService.numChanges !== 0" class="num-changes">{{sortService.numChanges}} changes</p>
+        <div class="stats">
+            <span>Time <strong>{{sortService.currentTime.toFixed(2)}}s</strong></span>
+            <span><strong>{{sortService.numChanges}}</strong> changes</span>
+        </div>
+        <div class="legend">
+            <span><i [style.background-color]="colors.compare"></i>Comparing</span>
+            <span><i [style.background-color]="colors.active"></i>Key / Pivot</span>
+            <span><i [style.background-color]="colors.sorted"></i>Sorted</span>
+        </div>
     </div>
-    <div class="bar" *ngFor="let height of sortService.barHeights" [style.height.px]="height" >  <p class="bar-label" >{{height}}</p> </div>
+    <div class="bars" #bars [class.show-labels]="showLabels" [class.dense]="dense">
+        <div class="bar" *ngFor="let height of sortService.barHeights; let i = index; trackBy: trackByIndex"
+             [style.height.%]="height / sortService.maxHeight * 100"
+             [style.background-color]="sortService.barColors[i]">
+            <span class="bar-label">{{height}}</span>
+        </div>
+    </div>
 </div>

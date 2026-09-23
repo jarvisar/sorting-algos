@@ -1,1634 +1,712 @@
 import { Injectable } from '@angular/core';
 
+export const BASE = '#7474B0';     // idle, before sorting
+export const UNSORTED = '#c24949'; // not yet in final position
+export const COMPARE = '#FEDC56';  // being compared / written
+export const ACTIVE = '#229ccb';   // pivot, key, current min/max, etc.
+export const SORTED = '#73be73';   // in final position
+
+export interface Algorithm {
+  id: string;
+  name: string;
+  url: string;
+}
+
+export const ALGORITHMS: Algorithm[] = [
+  { id: 'bubble', name: 'Bubble Sort', url: 'https://www.geeksforgeeks.org/bubble-sort/' },
+  { id: 'selection', name: 'Selection Sort', url: 'https://www.geeksforgeeks.org/selection-sort/' },
+  { id: 'insertion', name: 'Insertion Sort', url: 'https://www.geeksforgeeks.org/insertion-sort/' },
+  { id: 'merge', name: 'Merge Sort', url: 'https://www.geeksforgeeks.org/merge-sort/' },
+  { id: 'quick', name: 'Quick Sort', url: 'https://www.geeksforgeeks.org/quick-sort/' },
+  { id: 'heap', name: 'Heap Sort', url: 'https://www.geeksforgeeks.org/heap-sort/' },
+  { id: 'radix', name: 'Radix Sort (LSD)', url: 'https://www.geeksforgeeks.org/radix-sort/' },
+  { id: 'bitonic', name: 'Bitonic Sort', url: 'https://www.geeksforgeeks.org/bitonic-sort/' },
+  { id: 'cocktail', name: 'Cocktail Shaker', url: 'https://www.geeksforgeeks.org/cocktail-sort/' },
+  { id: 'comb', name: 'Comb Sort', url: 'https://www.geeksforgeeks.org/comb-sort/' },
+  { id: 'gnome', name: 'Gnome Sort', url: 'https://www.geeksforgeeks.org/gnome-sort-a-stupid-one/' },
+  { id: 'shell', name: 'Shell Sort', url: 'https://www.geeksforgeeks.org/shellsort/' },
+  { id: 'cycle', name: 'Cycle Sort', url: 'https://www.geeksforgeeks.org/cycle-sort/' },
+  { id: 'counting', name: 'Counting Sort', url: 'https://www.geeksforgeeks.org/counting-sort/' },
+  { id: 'strand', name: 'Strand Sort', url: 'https://www.geeksforgeeks.org/strand-sort/' },
+  { id: 'pancake', name: 'Pancake Sort', url: 'https://www.geeksforgeeks.org/pancake-sorting/' },
+  { id: 'tim', name: 'Tim Sort', url: 'https://www.geeksforgeeks.org/timsort/' },
+  { id: 'stooge', name: 'Stooge Sort', url: 'https://www.geeksforgeeks.org/stooge-sort/' },
+  { id: 'bogo', name: 'Bogo Sort (random)', url: 'https://www.geeksforgeeks.org/bogosort-permutation-sort/' },
+];
+
+export const MAX_BARS = 512;
+
+// Thrown from step() when the user hits Stop, unwinding whatever algorithm is running
+const STOPPED = Symbol('stopped');
+
 @Injectable({
   providedIn: 'root'
 })
 export class SortService {
   barHeights: number[] = [];
+  barColors: string[] = [];
+  maxHeight = 1;
   inProgress = false;
   selectedAlgo = 'bubble';
   alreadySorted = false;
   numBars = 50;
   delay = 20;
   numChanges = 0;
-  currentTime: number = 0;
-  audioLength = this.delay;
+  currentTime = 0;
   isMuted = true;
   volume = 30;
-  private audioContext: AudioContext = new AudioContext();
-
-  updateTimer() {
-    this.currentTime += 0.01;
-  }
+  stopSorting = false;
+  private audioContext?: AudioContext;
 
   constructor() {
-    const barWidth = 10;
-    const barMargin = 15;
     const screenWidth = window.innerWidth;
-    this.numBars = Math.floor((screenWidth - 100) / (barWidth + barMargin));
-    this.audioContext = new AudioContext();
+    this.numBars = Math.min(100, Math.max(10, Math.floor((screenWidth - 64) / 24)));
   }
 
-  playTone(frequency: number, duration: number) {
-    if (this.isMuted) return;
+  // ---------- setup ----------
+
+  generateBars() {
+    const n = Math.min(MAX_BARS, Math.max(2, Math.floor(this.numBars) || this.barHeights.length || 2));
+    this.numBars = n;
+    // Distinct random values, so every bar has a unique height and tone
+    this.maxHeight = Math.max(100, n);
+    const pool = Array.from({ length: this.maxHeight }, (_, i) => i + 1);
+    this.shuffle(pool);
+    this.barHeights = pool.slice(0, n);
+    this.barColors = new Array(n).fill(BASE);
+    this.alreadySorted = false;
+  }
+
+  resetColors() {
+    this.barColors = new Array(this.barHeights.length).fill(BASE);
+  }
+
+  // ---------- running ----------
+
+  async sort() {
+    if (this.inProgress) return;
+    if (this.alreadySorted) this.generateBars();
+    const algorithms: Record<string, () => Promise<void>> = {
+      bubble: () => this.bubbleSort(),
+      selection: () => this.selectionSort(),
+      insertion: () => this.insertionSort(),
+      merge: () => this.mergeSort(),
+      quick: () => this.quickSort(),
+      heap: () => this.heapSort(),
+      radix: () => this.radixSort(),
+      bitonic: () => this.bitonicSort(),
+      cocktail: () => this.cocktailShakerSort(),
+      comb: () => this.combSort(),
+      gnome: () => this.gnomeSort(),
+      shell: () => this.shellSort(),
+      cycle: () => this.cycleSort(),
+      counting: () => this.countingSort(),
+      strand: () => this.strandSort(),
+      pancake: () => this.pancakeSort(),
+      tim: () => this.timSort(),
+      stooge: () => this.stoogeSort(),
+      bogo: () => this.bogoSort(),
+    };
+    const algorithm = algorithms[this.selectedAlgo];
+    if (!algorithm) return;
+
+    this.inProgress = true;
+    this.stopSorting = false;
+    this.numChanges = 0;
+    this.currentTime = 0;
+    this.barColors = new Array(this.barHeights.length).fill(UNSORTED);
+    const start = performance.now();
+    const timer = setInterval(() => this.currentTime = (performance.now() - start) / 1000, 10);
+
     try {
-      const oscillator = this.audioContext.createOscillator(); // Create sound source
-      oscillator.type = 'triangle';
-      // scale between frequencies 220 and 880 based on min and max barHeight
+      await algorithm();
+      clearInterval(timer);
+      this.currentTime = (performance.now() - start) / 1000;
+      // Victory sweep
+      const sweepDelay = Math.min(this.delay / 2, 1000 / this.barHeights.length);
+      for (let i = 0; i < this.barHeights.length; i++) {
+        this.mark(SORTED, i);
+        this.tone(i);
+        await this.step(sweepDelay);
+      }
+      this.alreadySorted = true;
+    } catch (e) {
+      if (e !== STOPPED) throw e;
+      this.resetColors();
+      this.numChanges = 0;
+      this.currentTime = 0;
+    } finally {
+      clearInterval(timer);
+      this.inProgress = false;
+    }
+  }
+
+  // ---------- helpers ----------
+
+  private async step(ms = this.delay) {
+    await new Promise(resolve => setTimeout(resolve, ms));
+    if (this.stopSorting) throw STOPPED;
+  }
+
+  private mark(color: string, ...indices: number[]) {
+    for (const i of indices) {
+      if (i >= 0 && i < this.barColors.length) this.barColors[i] = color;
+    }
+  }
+
+  // Back to unsorted, but never un-mark a bar that's already in its final position
+  private clear(...indices: number[]) {
+    for (const i of indices) {
+      if (this.barColors[i] !== SORTED) this.mark(UNSORTED, i);
+    }
+  }
+
+  private swap(i: number, j: number) {
+    const a = this.barHeights;
+    [a[i], a[j]] = [a[j], a[i]];
+    this.numChanges++;
+  }
+
+  private write(i: number, value: number) {
+    this.barHeights[i] = value;
+    this.numChanges++;
+  }
+
+  private shuffle(arr: number[]) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+
+  private tone(index: number) {
+    const value = this.barHeights[index];
+    if (this.isMuted || value === undefined) return;
+    try {
+      this.audioContext ??= new AudioContext();
+      const ctx = this.audioContext;
+      if (ctx.state === 'suspended') ctx.resume();
       const minFrequency = 200;
       const maxFrequency = 700;
-      const minBarHeight = Math.min(...this.barHeights);
-      const maxBarHeight = Math.max(...this.barHeights)
-      const scaledFrequency = ((frequency - minBarHeight) / (maxBarHeight - minBarHeight)) * (maxFrequency - minFrequency) + minFrequency; // Scale frequency
-      const gainNode = this.audioContext.createGain(); // Create gain node
-      gainNode.gain.value = this.volume/100; // Set volume
+      const frequency = minFrequency + (value / this.maxHeight) * (maxFrequency - minFrequency);
+      const duration = Math.min(Math.max(this.delay, 30), 120) / 1000;
+      const now = ctx.currentTime;
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      oscillator.type = 'triangle';
+      oscillator.frequency.setValueAtTime(frequency, now);
+      // Quick fade out avoids clicking at the end of each tone
+      gainNode.gain.setValueAtTime(this.volume / 100, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, now + duration);
       oscillator.connect(gainNode);
-      gainNode.connect(this.audioContext.destination); // Connect to speakers
-      oscillator.frequency.setValueAtTime(scaledFrequency, this.audioContext.currentTime); // Value in hertz
-      oscillator.start();
-      oscillator.stop(this.audioContext.currentTime + duration / 1000);
+      gainNode.connect(ctx.destination);
+      oscillator.start(now);
+      oscillator.stop(now + duration);
     } catch (error) {
       console.error('Failed to play tone:', error);
     }
   }
 
-  generateBars(){
-    this.barHeights = [];
-    // Generate an array of random heights
-    for (let i = 0; i < this.numBars; i++) {
-      // prevent duplicate numbers
-      let randomHeight = Math.floor(Math.random() * 90) + 10;
-      while (this.barHeights.includes(randomHeight)) {
-        randomHeight = Math.floor(Math.random() * this.numBars) + 10;
+  // Compare two bars: highlight, pause, then clear
+  private async compare(i: number, j: number) {
+    this.mark(COMPARE, i, j);
+    this.tone(j);
+    await this.step();
+    this.clear(i, j);
+    return this.barHeights[i] > this.barHeights[j];
+  }
+
+  // Write buffered values into [lo..] one bar per step. If stopped midway, the rest are
+  // written instantly so no bars are lost. `pointer` optionally highlights another bar per step.
+  private async writeBack(lo: number, values: number[], color: string, pointer: number[] = []) {
+    const a = this.barHeights;
+    for (let t = 0; t < values.length; t++) {
+      const k = lo + t;
+      const p = pointer[t] ?? -1;
+      this.write(k, values[t]);
+      this.mark(ACTIVE, p);
+      this.mark(color, k);
+      this.tone(k);
+      try {
+        await this.step();
+      } catch (e) {
+        for (let r = t + 1; r < values.length; r++) a[lo + r] = values[r];
+        throw e;
       }
-      this.barHeights.push(randomHeight);
-    }
-    // get bar-container height
-    const barContainer = document.getElementById('bar-container');
-    const barContainerHeight = barContainer!.clientHeight - 70;
-    // calculate bar heights based on bar-container height
-    const maxHeight = Math.max(...this.barHeights);
-    this.barHeights = this.barHeights.map(height => {
-      return Math.floor((height / maxHeight) * barContainerHeight);
-    });
-    this.alreadySorted = false;
-    // set all to default color
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#7474B0');
+      this.clear(k);
+      if (p !== -1) this.clear(p);
     }
   }
 
-  stopSorting = false;
-  
-  async bubbleSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-    let n = this.barHeights.length;
-    let swapped = true;
-    // this.delay should be calculation so it always finishes in 7 seconds based on numBars
+  // Merge sorted runs [lo..mid] and [mid+1..hi] via a buffer
+  private async mergeRuns(lo: number, mid: number, hi: number) {
+    const a = this.barHeights;
+    const left = a.slice(lo, mid + 1);
+    const right = a.slice(mid + 1, hi + 1);
+    const merged: number[] = [];
+    const rightPos: number[] = []; // where the right run's next element still sits in the array
+    let i = 0, j = 0;
+    while (merged.length < left.length + right.length) {
+      const takeLeft = j >= right.length || (i < left.length && left[i] <= right[j]);
+      merged.push(takeLeft ? left[i++] : right[j++]);
+      rightPos.push(j < right.length ? mid + 1 + j : -1);
+    }
+    const final = lo === 0 && hi === a.length - 1;
+    await this.writeBack(lo, merged, final ? SORTED : COMPARE, rightPos);
+  }
 
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-  
-    // Set all unsorted bars to red
-    const setUnsortedToRed = () => {
-      for (let i = 0; i < n; i++) {
-        this.setBarColor(i, '#c24949');
+  // Insertion sort on [lo..hi] using adjacent swaps so the key visibly walks left
+  private async insertionRange(lo: number, hi: number) {
+    const a = this.barHeights;
+    for (let i = lo + 1; i <= hi; i++) {
+      let j = i;
+      while (j > lo) {
+        this.mark(ACTIVE, j);
+        this.mark(COMPARE, j - 1);
+        this.tone(j);
+        await this.step();
+        this.clear(j - 1, j);
+        if (a[j - 1] <= a[j]) break;
+        this.swap(j - 1, j);
+        j--;
       }
-    };
-  
+    }
+  }
+
+  // ---------- algorithms ----------
+
+  async bubbleSort() {
+    const a = this.barHeights;
+    let end = a.length;
+    let swapped = true;
     while (swapped) {
       swapped = false;
-      setUnsortedToRed(); // Set all unsorted bars to red at the beginning of each loop iteration
-      for (let i = 0; i < n - 1; i++) {
-        if (this.stopSorting) {
-          clearInterval(interval);
-          return;
-        }
-        // if not very first bar
-        // Set the color of the bars being compared to #229ccb
-        this.setBarColor(i + 1, '#229ccb');
-        if (i !== 0) {
-          this.playTone(this.barHeights[i - 1], this.audioLength);
-        } else {
-          this.playTone(this.barHeights[i], this.audioLength);
-        }
-        await sleep(this.delay);
-        if (i !== 0) {
-          this.setBarColor(i-1, '#c24949');
-        }
-        // Swap the bars if they're out of order
-        if (this.barHeights[i] > this.barHeights[i + 1]) {
-          let temp = this.barHeights[i];
-          this.barHeights[i] = this.barHeights[i + 1];
-          this.barHeights[i + 1] = temp;
-          this.numChanges++;
+      for (let i = 0; i < end - 1; i++) {
+        if (await this.compare(i, i + 1)) {
+          this.swap(i, i + 1);
           swapped = true;
-          this.setBarColor(i, '#FEDC56');
         }
-        this.setBarColor(i + 1, '#c24949');
       }
-      n--;
-    }
-    clearInterval(interval);
-    this.inProgress = false;
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
+      end--;
+      this.mark(SORTED, end); // largest remaining has bubbled to the end
     }
   }
 
   async selectionSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-    const n = this.barHeights.length;
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-  
-    // set all to red
-    for (let i = 0; i < n; i++) {
-      this.setBarColor(i, '#c24949');
-    }
+    const a = this.barHeights;
+    const n = a.length;
     for (let i = 0; i < n - 1; i++) {
-      if (this.stopSorting) {
-          clearInterval(interval);        
-          return;
-      }
-      let minIndex = i;
-      this.setBarColor(i, '#229ccb');
+      let min = i;
+      this.mark(ACTIVE, min);
       for (let j = i + 1; j < n; j++) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        this.setBarColor(j, '#FEDC56');
-        this.playTone(this.barHeights[j], this.audioLength);
-        await sleep(this.delay);
-  
-        if (this.barHeights[j] < this.barHeights[minIndex]) {
-          this.setBarColor(minIndex, '#c24949');
-          minIndex = j;
-          this.setBarColor(minIndex, '#229ccb');
+        this.mark(COMPARE, j);
+        this.tone(j);
+        await this.step();
+        if (a[j] < a[min]) {
+          this.clear(min);
+          min = j;
+          this.mark(ACTIVE, min);
         } else {
-          this.setBarColor(j, '#c24949');
+          this.clear(j);
         }
       }
-  
-      // Swap the bars
-      let temp = this.barHeights[i];
-      this.barHeights[i] = this.barHeights[minIndex];
-      this.barHeights[minIndex] = temp;
-      this.numChanges++;
-  
-      this.setBarColor(minIndex, '#c24949');
-      // if not first one
-      if (i !== 0) {
-        this.setBarColor(i - 1, '#c24949');
-      }
+      this.clear(min);
+      if (min !== i) this.swap(i, min);
+      this.mark(SORTED, i);
     }
-    clearInterval(interval)
-    this.inProgress = false;
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
-    }
+    this.mark(SORTED, n - 1);
   }
 
   async insertionSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-    const n = this.barHeights.length;
-    const sleep = (ms: number, index: number, color: string) => {
-      return new Promise<void>(resolve => {
-        setTimeout(() => {
-          this.setBarColor(index, color);
-          resolve();
-        }, ms);
-      });
-    };
-    
-    // set all to red
-    for (let i = 0; i < n; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-  
-    for (let i = 1; i < n; i++) {
-      if (this.stopSorting) {
-        clearInterval(interval);        
-        return;
-      }
-      let key = this.barHeights[i];
-      this.setBarColor(i, '#229ccb');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay, i, '#229ccb');
-  
-      let j = i - 1;
-  
-      while (j >= 0 && this.barHeights[j] > key) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        for (let k = 0; k < n; k++) {
-          if (k !== j && k !== i) {
-            this.setBarColor(k, '#c24949');
-          }
-        }
-        this.setBarColor(j, '#FEDC56')
-        this.playTone(this.barHeights[j], this.audioLength);
-        this.barHeights[j + 1] = this.barHeights[j];
-        this.numChanges++;
-        this.setBarColor(j + 1, '#c24949');
-        await sleep(this.delay, j + 1, '#c24949');
-        j--;
-        if (j >= 0) {
-          this.setBarColor(j, '#229ccb');
-        }
-      }
-      
-      this.barHeights[j + 1] = key;
-      this.numChanges++;
-      await sleep(this.delay, j + 1, '#229ccb');
-  
-      for (let k = 0; k <= n; k++) {
-        this.setBarColor(k, '#c24949');
-      }
-    }
-    clearInterval(interval)
-    this.inProgress = false;
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2, i, '#73be73');
-    }
+    await this.insertionRange(0, this.barHeights.length - 1);
   }
 
   async mergeSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-    const n = this.barHeights.length;
-    const sleep = (ms: number) => {
-      return new Promise(resolve => 
-        // I even tried to take a color as parameter and set it here using setTimeout. Also same issue. 
-        setTimeout(resolve, ms)
-        );
+    const sortRange = async (lo: number, hi: number) => {
+      if (lo >= hi) return;
+      const mid = Math.floor((lo + hi) / 2);
+      await sortRange(lo, mid);
+      await sortRange(mid + 1, hi);
+      await this.mergeRuns(lo, mid, hi);
     };
+    await sortRange(0, this.barHeights.length - 1);
+  }
 
-    // set all bars to red
-    for (let i = 0; i < n; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-  
-    const merge = async (left: number, mid: number, right: number) => {
-      let i = left;
-      let j = mid + 1;
-      let temp = [];
-  
-      while (i <= mid && j <= right) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-  
-        this.setBarColor(i, '#229ccb');
-        this.setBarColor(j, '#FEDC56');
-        this.playTone(this.barHeights[i], this.audioLength);
-        await sleep(this.delay);
-  
-        if (this.barHeights[i] <= this.barHeights[j]) {
-          temp.push(this.barHeights[i]);
-          this.setBarColor(i, '#c24949');
+  async quickSort() {
+    const a = this.barHeights;
+    // Lomuto partition, last element as pivot
+    const sortRange = async (lo: number, hi: number) => {
+      if (lo > hi) return;
+      if (lo === hi) {
+        this.mark(SORTED, lo);
+        return;
+      }
+      const pivot = a[hi];
+      this.mark(ACTIVE, hi);
+      let i = lo;
+      for (let j = lo; j < hi; j++) {
+        this.mark(COMPARE, j);
+        this.tone(j);
+        await this.step();
+        this.clear(j);
+        if (a[j] < pivot) {
+          if (i !== j) this.swap(i, j);
           i++;
-        } else {
-          temp.push(this.barHeights[j]);
-          this.setBarColor(j, '#c24949');
-          // set color of i to red
-          j++;
         }
       }
-  
-      while (i <= mid) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        temp.push(this.barHeights[i]);
-        this.setBarColor(i, '#c24949');
-        i++;
-      }
-  
-      while (j <= right) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        temp.push(this.barHeights[j]);
-        this.setBarColor(j, '#c24949');
-        j++;
-      }
-  
-      for (let k = left; k <= right; k++) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        this.barHeights[k] = temp[k - left];
-        this.numChanges++;
-        this.setBarColor(k, '#FEDC56');
-        this.playTone(this.barHeights[k], this.audioLength);
-        await sleep(this.delay);
-        this.setBarColor(k, '#c24949');
-      }
+      this.clear(hi);
+      if (i !== hi) this.swap(i, hi);
+      this.mark(SORTED, i); // pivot is now in its final spot
+      await sortRange(lo, i - 1);
+      await sortRange(i + 1, hi);
     };
-  
-    const mergeSortHelper = async (left: number, right: number) => {
-      if (left < right) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        let mid = Math.floor((left + right) / 2);
-        await mergeSortHelper(left, mid);
-        await mergeSortHelper(mid + 1, right);
-        await merge(left, mid, right);
-      }
-    };
-  
-    await mergeSortHelper(0, n - 1);
-    clearInterval(interval)
-    this.inProgress = false;
-    if (!this.stopSorting) {
-      // Mark all bars as sorted
-      for (let i = 0; i < this.barHeights.length; i++) {
-        if (this.stopSorting) {
-          return;
-        }
-        this.setBarColor(i, '#73be73');
-        this.playTone(this.barHeights[i], this.audioLength);
-        await sleep(this.delay/2);
-      }
-    }
-  }
-
-  quickInterval: any;
-  async parentQuickSort(){
-    this.quickInterval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    const sleep = (ms: number) => {
-      return new Promise(resolve => 
-        // I even tried to take a color as parameter and set it here using setTimeout. Also same issue. 
-        setTimeout(resolve, ms)
-        );
-    };
-    this.inProgress = true;
-    this.stopSorting = false;
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-    await this.quickSort(0, this.barHeights.length - 1);
-    this.inProgress = false;
-    clearInterval(this.quickInterval)
-    if (!this.stopSorting) {
-      // Mark all bars as sorted
-      for (let i = 0; i < this.barHeights.length; i++) {
-        if (this.stopSorting) {
-          return;
-        }
-        this.setBarColor(i, '#73be73');
-        this.playTone(this.barHeights[i], this.audioLength);
-        await sleep(this.delay/2);
-      }
-    }
-  }
-
-  async quickSort(left: number = 0, right: number = this.barHeights.length - 1) {
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-    const partition = async (low: number, high: number) => {
-      let pivot = this.barHeights[high];
-      this.setBarColor(high, '#229ccb');
-      let i = low - 1;
-      for (let j = low; j <= high - 1; j++) {
-        if (this.stopSorting) {
-          clearInterval(this.quickInterval)
-          return;
-        }
-        this.setBarColor(j, '#FEDC56');
-        this.playTone(this.barHeights[j], this.audioLength);
-        await sleep(this.delay);
-        if (this.barHeights[j] < pivot) { 
-          i++; 
-          this.setBarColor(i, '#c24949'); // Reset i back to red 
-          [this.barHeights[i], this.barHeights[j]] = [this.barHeights[j], this.barHeights[i]]; 
-          this.numChanges++;
-        } 
-        this.setBarColor(j, '#c24949'); // Reset j back to red
-      }
-      [this.barHeights[i + 1], this.barHeights[high]] = [this.barHeights[high], this.barHeights[i + 1]];
-      this.numChanges++;
-      this.setBarColor(high, '#c24949');
-      // set all to red
-      for (let i = 0; i < this.barHeights.length; i++) {
-        this.setBarColor(i, '#c24949');
-      }
-      return i + 1;
-    };
-    if (left < right && !this.stopSorting) {
-      let pivotIndex = await partition(left, right);
-      if (pivotIndex !== undefined) {
-        await this.quickSort(left, pivotIndex - 1);
-        await this.quickSort(pivotIndex + 1, right);
-      }
-    }
+    await sortRange(0, a.length - 1);
   }
 
   async heapSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-    const n = this.barHeights.length;
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
+    const a = this.barHeights;
+    const n = a.length;
+    const siftDown = async (i: number, size: number) => {
+      while (true) {
+        const l = 2 * i + 1;
+        const r = l + 1;
+        if (l >= size) return;
+        const children = r < size ? [l, r] : [l];
+        this.mark(ACTIVE, i);
+        this.mark(COMPARE, ...children);
+        this.tone(i);
+        await this.step();
+        this.clear(i, ...children);
+        let largest = i;
+        if (a[l] > a[largest]) largest = l;
+        if (r < size && a[r] > a[largest]) largest = r;
+        if (largest === i) return;
+        this.swap(i, largest);
+        i = largest;
+      }
     };
-    const parent = (i: number) => Math.floor((i - 1) / 2);
-    const left = (i: number) => 2 * i + 1;
-    const right = (i: number) => 2 * i + 2;
-  
-    // Set initial color of all bars to red
-    for (let i = 0; i < n; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-  
-    const heapify = async (size: number, i: number) => {
-      let largest = i;
-      const l = left(i);
-      const r = right(i);
-  
-    if (l < size) {
-      this.setBarColor(l, '#FEDC56');
-      await sleep(this.delay);
-      this.playTone(this.barHeights[l], this.audioLength);
-      if (this.barHeights[l] > this.barHeights[largest]) {
-          largest = l; 
-      }
-      this.setBarColor(l, '#c24949'); // Reset left child back to red 
-    }
-    if (r < size) {
-        this.setBarColor(r, '#FEDC56');
-        this.playTone(this.barHeights[r], this.audioLength);
-        await sleep(this.delay);
-        if (this.barHeights[r] > this.barHeights[largest]) {
-            largest = r; 
-        }
-        this.setBarColor(r, '#c24949');
-      }
-  
-      if (largest !== i) {
-        // Set the color of the largest bar to #229ccb before swapping
 
-        // #229ccb if not in final position, else green
-        this.setBarColor(largest, '#229ccb');
-        this.setBarColor(i, '#FEDC56');
-  
-        // Swap the bars
-        let temp = this.barHeights[i];
-        this.barHeights[i] = this.barHeights[largest];
-        this.barHeights[largest] = temp;
-        this.numChanges++;
-  
-        // Set the color of the current index to yellow after the swap
-        this.setBarColor(i, '#FEDC56');
-        this.playTone(this.barHeights[i], this.audioLength);
-        await heapify(size, largest);
-      }
-      this.setBarColor(i, '#c24949');
-    };
-  
-    // Build the max heap
+    // Build max heap
     for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-      if (this.stopSorting) {
-        clearInterval(interval);        
-        return;
-      }
-      await heapify(n, i);
+      await siftDown(i, n);
     }
-  
-    // Extract elements from the heap
-    for (let i = n - 1; i > 0; i--) {
-      if (this.stopSorting) {
-        clearInterval(interval);        
-        return;
-      }
-
-      // Set the color of the largest bar to #229ccb before swapping
-      this.setBarColor(0, '#229ccb');
-      this.setBarColor(i, '#c24949');
-
-      // Swap the bars
-      let temp = this.barHeights[0];
-      this.barHeights[0] = this.barHeights[i];
-      this.barHeights[i] = temp;
-      this.numChanges++;
-
-      // Set the color of the bar at index i to green (final position)
-      await heapify(i, 0);
+    // Move the max to the end, then restore the heap
+    for (let end = n - 1; end > 0; end--) {
+      this.mark(ACTIVE, 0, end);
+      this.tone(0);
+      await this.step();
+      this.swap(0, end);
+      this.clear(0);
+      this.mark(SORTED, end);
+      await siftDown(0, end);
     }
-    this.inProgress = false;
-    clearInterval(interval);  
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
-    }
+    this.mark(SORTED, 0);
   }
 
   async radixSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-    
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-    
-    // Set initial color of all bars to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-    
-    // Get the maximum number of digits in the bar heights
-    const maxDigitCount = Math.max(...this.barHeights).toString().length;
-    
-    // Sort the bars by each digit position, starting from the least significant
-    for (let digitPos = 0; digitPos < maxDigitCount; digitPos++) {
-      // Declare the buckets array with a type annotation
+    const a = this.barHeights;
+    const n = a.length;
+    const max = Math.max(...a);
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+      const lastPass = Math.floor(max / (exp * 10)) === 0;
+      // Distribute into buckets by the current digit
       const buckets: number[][] = Array.from({ length: 10 }, () => []);
-      for (let i = 0; i < this.barHeights.length; i++) {
-        const digit = Math.floor(this.barHeights[i] / Math.pow(10, digitPos)) % 10;
-        buckets[digit].push(this.barHeights[i]);
+      for (let i = 0; i < n; i++) {
+        this.mark(COMPARE, i);
+        this.tone(i);
+        await this.step();
+        this.clear(i);
+        buckets[Math.floor(a[i] / exp) % 10].push(a[i]);
       }
-      // Flatten the buckets array and update the bar heights and colors
-      let index = 0;
-      for (let j = 0; j < buckets.length; j++) {
-        for (let k = 0; k < buckets[j].length; k++) {
-          if (this.stopSorting) {
-            clearInterval(interval); 
-            return; 
-          }
-
-          // Set the color of the current bar being compared to blue
-          if (k > 0) {
-            this.setBarColor(index, '#c24949');
-            this.setBarColor(index - 1, '#229ccb');
-          }
-          this.setBarColor(this.barHeights.indexOf(buckets[j][k]), '#c24949');
-
-          // Update the bar height and color
-          this.barHeights[index] = buckets[j][k];
-          this.numChanges++;
-          this.setBarColor(index, '#FEDC56');
-          this.playTone(this.barHeights[index], this.audioLength);
-          await sleep(this.delay);
-          this.setBarColor(this.barHeights.indexOf(buckets[j][k]), '#c24949');
-          this.setBarColor(index - 1, '#c24949');
-          index++;
-        }
-      }
-    }
-    clearInterval(interval);  
-    this.inProgress = false;
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        clearInterval(interval);  
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
+      // Collect buckets back into the array
+      await this.writeBack(0, buckets.flat(), lastPass ? SORTED : ACTIVE);
     }
   }
 
-  //bitonic
   async bitonicSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    // set this.numBars to closest power of 2 if not already
-    if (!Number.isInteger(Math.log2(this.numBars))) {
-      this.numBars = Math.pow(2, Math.floor(Math.log2(this.numBars)));
-      this.generateBars();
-    }
-    this.inProgress = true;
-    this.stopSorting = false;
-
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-    
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
+    // Works for any n (not just powers of 2) using the arbitrary-length bitonic network
+    const a = this.barHeights;
+    const greatestPowerOfTwoBelow = (n: number) => {
+      let k = 1;
+      while (k < n) k <<= 1;
+      return k >> 1;
     };
-    
-    const compare = async (i: number, j: number, dir: number) => {
-      if (this.stopSorting) {
-        clearInterval(interval);        
-        return;
-      }
-      this.setBarColor(i, '#FEDC56');
-      this.setBarColor(j, '#229ccb');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay);
-      if ((this.barHeights[i] > this.barHeights[j] && dir === 1) || (this.barHeights[i] < this.barHeights[j] && dir === 0)) {
-        let temp = this.barHeights[i];
-        this.barHeights[i] = this.barHeights[j];
-        this.barHeights[j] = temp;
-        this.numChanges++;
-      }
-      this.setBarColor(i, '#c24949');
-      this.setBarColor(j, '#c24949');
+    const compareAndSwap = async (i: number, j: number, ascending: boolean) => {
+      this.mark(COMPARE, i, j);
+      this.tone(i);
+      await this.step();
+      this.clear(i, j);
+      if (ascending ? a[i] > a[j] : a[i] < a[j]) this.swap(i, j);
     };
-    
-    const bitonicMerge = async (low: number, count: number, dir: number) => {
-      if (this.stopSorting) {
-        clearInterval(interval);        
-        return;
+    const merge = async (lo: number, n: number, ascending: boolean) => {
+      if (n <= 1) return;
+      const m = greatestPowerOfTwoBelow(n);
+      for (let i = lo; i < lo + n - m; i++) {
+        await compareAndSwap(i, i + m, ascending);
       }
-      if (count > 1) {
-        let k = Math.floor(count / 2);
-        for (let i = low; i < low + k; i++) {
-          await compare(i, i + k, dir);
-        }
-        await bitonicMerge(low, k, dir);
-        await bitonicMerge(low + k, k, dir);
-      }
+      await merge(lo, m, ascending);
+      await merge(lo + m, n - m, ascending);
     };
-    
-    const bitonicSort = async (low: number, count: number, dir: number) => {
-      if (this.stopSorting) {
-        clearInterval(interval);        
-        return;
-      }
-      if (count > 1) {
-        let k = Math.floor(count / 2);
-        await bitonicSort(low, k, 1);
-        await bitonicSort(low + k, k, 0);
-        await bitonicMerge(low, count, dir);
-      }
+    const sortRange = async (lo: number, n: number, ascending: boolean) => {
+      if (n <= 1) return;
+      const m = Math.floor(n / 2);
+      await sortRange(lo, m, !ascending);
+      await sortRange(lo + m, n - m, ascending);
+      await merge(lo, n, ascending);
     };
-    
-    const n = this.barHeights.length;
-    await bitonicSort(0, n, 1);
-    clearInterval(interval);  
-    this.inProgress = false;
-    
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
-    }
+    await sortRange(0, a.length, true);
   }
-  
-  // cocktail shaker sort
+
   async cocktailShakerSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-
-    let swapped = true;
+    const a = this.barHeights;
     let start = 0;
-    let end = this.barHeights.length - 1;
-
+    let end = a.length - 1;
+    let swapped = true;
     while (swapped) {
       swapped = false;
-
       for (let i = start; i < end; i++) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        this.setBarColor(i, '#FEDC56');
-        this.setBarColor(i + 1, '#229ccb');
-        if (i !== 0){
-          this.playTone(this.barHeights[i-1], this.audioLength);
-        }
-        await sleep(this.delay);
-        if (this.barHeights[i] > this.barHeights[i + 1]) {
-          let temp = this.barHeights[i];
-          this.barHeights[i] = this.barHeights[i + 1];
-          this.barHeights[i + 1] = temp;
-          this.numChanges++;
+        if (await this.compare(i, i + 1)) {
+          this.swap(i, i + 1);
           swapped = true;
         }
-        // if final positon, set to green
-        this.setBarColor(i + 1, '#c24949');
-        this.setBarColor(i, '#c24949');
       }
-
-      if (!swapped) {
-        break;
-      }
+      this.mark(SORTED, end);
+      end--;
+      if (!swapped) break;
 
       swapped = false;
-      end--;
-
       for (let i = end - 1; i >= start; i--) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        this.setBarColor(i, '#FEDC56');
-        this.setBarColor(i + 1, '#229ccb');
-        this.playTone(this.barHeights[i], this.audioLength);
-        await sleep(this.delay);
-        if (this.barHeights[i] > this.barHeights[i + 1]) {
-          let temp = this.barHeights[i];
-          this.barHeights[i] = this.barHeights[i + 1];
-          this.barHeights[i + 1] = temp;
-          this.numChanges++;
-          // if in final position, set to green
+        if (await this.compare(i, i + 1)) {
+          this.swap(i, i + 1);
           swapped = true;
         }
-        this.setBarColor(i, '#c24949');
-        this.setBarColor(i + 1, '#c24949');
       }
-      
+      this.mark(SORTED, start);
       start++;
-    }
-    clearInterval(interval);  
-    this.inProgress = false;
-
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
     }
   }
 
-  // comb sort
   async combSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-
-    let gap = this.barHeights.length;
-    let shrink = 1.3;
+    const n = this.barHeights.length;
+    let gap = n;
     let sorted = false;
-    
     while (!sorted) {
-      gap = Math.floor(gap / shrink);
+      gap = Math.floor(gap / 1.3);
       if (gap <= 1) {
         gap = 1;
         sorted = true;
       }
-      let i = 0;
-      while (i + gap < this.barHeights.length) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        this.setBarColor(i, '#FEDC56');
-        this.setBarColor(i + gap, '#229ccb');
-        this.playTone(this.barHeights[i], this.audioLength);
-        await sleep(this.delay);
-        if (this.barHeights[i] > this.barHeights[i + gap]) {
-          let temp = this.barHeights[i];
-          this.barHeights[i] = this.barHeights[i + gap];
-          this.barHeights[i + gap] = temp;
-          this.numChanges++;
+      for (let i = 0; i + gap < n; i++) {
+        if (await this.compare(i, i + gap)) {
+          this.swap(i, i + gap);
           sorted = false;
         }
-        this.setBarColor(i + gap, '#c24949');
-        this.setBarColor(i, '#c24949');
-        i++;
       }
-    }
-    clearInterval(interval);  
-    this.inProgress = false;
-
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
     }
   }
 
-  // tim sort
-  async timSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-
-    this.inProgress = true;
-    this.stopSorting = false;
-
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-
-    const insertionSort = async (left: number, right: number) => {
-      for (let i = left + 1; i <= right; i++) {
-        let temp = this.barHeights[i];
-        let j = i - 1;
-        while (j >= left && this.barHeights[j] > temp) {
-          if (this.stopSorting) {
-            clearInterval(interval)
-            return;
-          }
-          for (let k = 0; k < n; k++) {
-            if (k !== j && k !== i) {
-              this.setBarColor(k, '#c24949');
-            }
-          }
-          this.setBarColor(j, '#FEDC56');
-          this.setBarColor(j + 1, '#229ccb');
-          this.playTone(this.barHeights[j], this.audioLength);
-          await sleep(this.delay);
-          this.barHeights[j + 1] = this.barHeights[j];
-          this.numChanges++;
-          this.setBarColor(j, '#c24949');
-          this.setBarColor(j + 1, '#c24949');
-          j--;
-        }
-        this.barHeights[j + 1] = temp;
-      }
-    };
-
-    const merge = async (left: number, mid: number, right: number) => {
-      let i = left;
-      let j = mid + 1;
-      let temp = [];
-  
-      while (i <= mid && j <= right) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-  
-        this.setBarColor(i, '#229ccb');
-        this.setBarColor(j, '#FEDC56');
-        this.playTone(this.barHeights[i], this.audioLength);
-        await sleep(this.delay);
-  
-        if (this.barHeights[i] <= this.barHeights[j]) {
-          temp.push(this.barHeights[i]);
-          this.setBarColor(i, '#c24949');
-          i++;
-        } else {
-          temp.push(this.barHeights[j]);
-          this.setBarColor(j, '#c24949');
-          // set color of i to red
-          j++;
-        }
-      }
-  
-      while (i <= mid) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        temp.push(this.barHeights[i]);
-        this.setBarColor(i, '#c24949');
-        i++;
-      }
-  
-      while (j <= right) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        temp.push(this.barHeights[j]);
-        this.setBarColor(j, '#c24949');
-        j++;
-      }
-  
-      for (let k = left; k <= right; k++) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        this.barHeights[k] = temp[k - left];
-        this.numChanges++;
-        this.setBarColor(k, '#FEDC56');
-        this.playTone(this.barHeights[k], this.audioLength);
-        await sleep(this.delay);
-        this.setBarColor(k, '#c24949');
-      }
-    };
-
-
-    let minRun = 32;
-    let n = this.barHeights.length;
-    for (let i = 0; i < n; i += minRun) {
-      await insertionSort(i, Math.min((i + 31), (n - 1)));
-      // change back to red
-      for (let j = i; j < Math.min((i + 31), (n - 1)); j++) {
-        this.setBarColor(j, '#c24949');
-      }
-    }
-
-    for (let size = minRun; size < n; size = 2 * size) {
-      for (let left = 0; left < n; left += 2 * size) {
-        let mid = left + size - 1;
-        let right = Math.min((left + 2 * size - 1), (n - 1));
-        await merge(left, mid, right);
-      }
-    }
-
-    clearInterval(interval);
-    this.inProgress = false;
-
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
-    }
-  }
-  
-
-  // cycle sort
-  async cycleSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-
-    let writes = 0;
-    let n = this.barHeights.length;
-    for (let cycleStart = 0; cycleStart <= n - 2; cycleStart++) {
-      let item = this.barHeights[cycleStart];
-      let pos = cycleStart;
-      for (let i = cycleStart + 1; i < n; i++) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        this.setBarColor(i, '#FEDC56');
-        this.setBarColor(pos, '#229ccb');
-        this.playTone(this.barHeights[i], this.audioLength);
-        await sleep(this.delay);
-        this.setBarColor(i, '#c24949');
-        this.setBarColor(pos, '#c24949');
-        if (this.barHeights[i] < item) {
-          pos++;
-        }
-      }
-      if (pos === cycleStart) {
-        continue;
-      }
-      while (item === this.barHeights[pos]) {
-        pos += 1;
-      }
-      if (pos !== cycleStart) {
-        let temp = item;
-        item = this.barHeights[pos];
-        this.barHeights[pos] = temp;
-        this.numChanges++;
-        writes++;
-      }
-      while (pos !== cycleStart) {
-        pos = cycleStart;
-        for (let i = cycleStart + 1; i < n; i++) {
-          if (this.stopSorting) {
-            return;
-          }
-          this.setBarColor(i, '#FEDC56');
-          this.setBarColor(pos, '#229ccb');
-          this.playTone(this.barHeights[i], this.audioLength);
-          await sleep(this.delay);
-          this.setBarColor(i, '#c24949');
-          this.setBarColor(pos, '#c24949');
-          if (this.barHeights[i] < item) {
-            pos += 1;
-          }
-        }
-        while (item === this.barHeights[pos]) {
-          pos += 1;
-        }
-        if (item !== this.barHeights[pos]) {
-          let temp = item;
-          item = this.barHeights[pos];
-          this.barHeights[pos] = temp;
-          // change to green
-          this.setBarColor(pos, '#c24949');
-          this.numChanges++;
-          writes++;
-        }
-      }
-    }
-    clearInterval(interval);  
-    this.inProgress = false;
-
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
-    }
-  }
-
-  // gnome sort
   async gnomeSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-  
-    // Set all bars to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-  
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-  
-    let i = 0;
-    while (i < this.barHeights.length) {
-      if (this.stopSorting) {
-        clearInterval(interval);        
-        return;
-      }
-      if (i === 0) {
-        i++;
-      }
-      // Set the bars being compared to blue
-      this.setBarColor(i, '#FEDC56');
-      this.setBarColor(i - 1, '#229ccb');
-      this.setBarColor(i - 2, '#c24949');
-      // if going down, set i - 1 to red
-      if (this.barHeights[i] < this.barHeights[i - 1]) {
-        this.setBarColor(i - 1, '#c24949');
-      }
-      await sleep(this.delay);
-      if (this.barHeights[i] >= this.barHeights[i - 1]) {
-        this.playTone(this.barHeights[i], this.audioLength);
+    const a = this.barHeights;
+    let i = 1;
+    while (i < a.length) {
+      this.mark(ACTIVE, i); // the gnome
+      this.mark(COMPARE, i - 1);
+      this.tone(i);
+      await this.step();
+      this.clear(i - 1, i);
+      if (a[i - 1] <= a[i]) {
         i++;
       } else {
-        let temp = this.barHeights[i];
-        this.barHeights[i] = this.barHeights[i - 1];
-        this.barHeights[i - 1] = temp;
-        this.numChanges++;
-        i--;
-        if (i > 0){
-          this.playTone(this.barHeights[i - 1], this.audioLength);
-        }
+        this.swap(i - 1, i);
+        i = Math.max(1, i - 1);
       }
-      // Set the bars being compared back to red
-      this.setBarColor(i, '#c24949');
-      this.setBarColor(i - 1, '#c24949');
-      this.setBarColor(i - 2, '#c24949');
-    }
-    clearInterval(interval);  
-    this.inProgress = false;
-  
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
     }
   }
-  
-  // shell sort
+
   async shellSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-
-    let n = this.barHeights.length;
-    let gap = Math.floor(n / 2);
-    while (gap > 0) {
+    const a = this.barHeights;
+    const n = a.length;
+    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+      // Gapped insertion sort
       for (let i = gap; i < n; i++) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        let temp = this.barHeights[i];
         let j = i;
-        while (j >= gap && this.barHeights[j - gap] > temp) {
-          if (this.stopSorting) {
-            clearInterval(interval)
-            return;
-          }
-          this.setBarColor(j, '#FEDC56');
-          this.setBarColor(j - gap, '#229ccb');
-          this.playTone(this.barHeights[j], this.audioLength);
-          await sleep(this.delay);
-          this.barHeights[j] = this.barHeights[j - gap];
-          this.setBarColor(j, '#c24949');
-          this.setBarColor(j + 1, '#c24949');
-          this.setBarColor(j - 1, '#c24949');
-          this.setBarColor(j + 2, '#c24949');
-          this.setBarColor(j - 2, '#c24949');
-          this.setBarColor(j - gap, '#c24949'); // trying to fix bug with leftover yellow bars during sorting
-          this.setBarColor(j - gap + 1, '#c24949');
-          this.setBarColor(j - gap - 1, '#c24949');
-          this.setBarColor(j - gap + 2, '#c24949');
-          this.setBarColor(j - gap - 2, '#c24949');
-          this.numChanges++;
+        while (j >= gap) {
+          this.mark(ACTIVE, j);
+          this.mark(COMPARE, j - gap);
+          this.tone(j);
+          await this.step();
+          this.clear(j - gap, j);
+          if (a[j - gap] <= a[j]) break;
+          this.swap(j - gap, j);
           j -= gap;
         }
-        this.barHeights[j] = temp;
-        this.setBarColor(j, '#c24949');
-        this.setBarColor(i, '#c24949');
       }
-      gap = Math.floor(gap / 2);
-    }
-    clearInterval(interval); 
-    this.inProgress = false;
-
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
     }
   }
 
-  // strand/spaghetti Sort
+  async cycleSort() {
+    // Swap-based cycle sort: the bar at cycleStart is the item "in hand", and each
+    // swap drops it directly into its final position.
+    const a = this.barHeights;
+    const n = a.length;
+    for (let cycleStart = 0; cycleStart < n - 1; cycleStart++) {
+      while (true) {
+        const item = a[cycleStart];
+        let pos = cycleStart;
+        for (let i = cycleStart + 1; i < n; i++) {
+          this.mark(ACTIVE, cycleStart);
+          this.mark(COMPARE, i);
+          this.tone(i);
+          await this.step();
+          this.clear(i);
+          if (a[i] < item) pos++;
+        }
+        if (pos === cycleStart) break;
+        while (a[pos] === item) pos++; // skip duplicates already in place
+        this.swap(cycleStart, pos);
+        this.mark(SORTED, pos);
+      }
+      this.mark(SORTED, cycleStart);
+    }
+  }
+
+  async countingSort() {
+    const a = this.barHeights;
+    const n = a.length;
+    const min = Math.min(...a);
+    const max = Math.max(...a);
+    const count = new Array(max - min + 1).fill(0);
+    // Count occurrences
+    for (let i = 0; i < n; i++) {
+      this.mark(COMPARE, i);
+      this.tone(i);
+      await this.step();
+      this.clear(i);
+      count[a[i] - min]++;
+    }
+    // Write values back out in order
+    const output = count.flatMap((c, v) => new Array(c).fill(v + min));
+    await this.writeBack(0, output, SORTED);
+  }
+
   async strandSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-
-    let n = this.barHeights.length;
-    let swapped = true;
-    let start = 0;
-    let end = n - 1;
-
-    while (swapped) {
-      swapped = false;
-
-      for (let i = start; i < end; i++) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
+    // In-place strand sort: [0, sortedEnd) holds the merged result so far. Each round pulls an
+    // increasing "strand" out of the remaining bars, gathers it right after the sorted region,
+    // then merges it in.
+    const a = this.barHeights;
+    const n = a.length;
+    let sortedEnd = 0;
+    while (sortedEnd < n) {
+      let strandEnd = sortedEnd + 1;
+      this.mark(ACTIVE, sortedEnd);
+      for (let i = strandEnd; i < n; i++) {
+        this.mark(COMPARE, i);
+        this.tone(i);
+        await this.step();
+        this.clear(i);
+        if (a[i] >= a[strandEnd - 1]) {
+          // Pull a[i] into the strand, shifting the skipped bars right
+          const value = a[i];
+          for (let k = i; k > strandEnd; k--) a[k] = a[k - 1];
+          this.write(strandEnd, value);
+          this.mark(ACTIVE, strandEnd);
+          strandEnd++;
         }
-        this.setBarColor(i, '#FEDC56');
-        this.setBarColor(i + 1, '#229ccb');
-        this.playTone(this.barHeights[i + 1], this.audioLength);
-        await sleep(this.delay);
-        if (this.barHeights[i] > this.barHeights[i + 1]) {
-          let temp = this.barHeights[i];
-          this.barHeights[i] = this.barHeights[i + 1];
-          this.barHeights[i + 1] = temp;
-          this.numChanges++;
-          swapped = true;
-        }
-        this.setBarColor(i + 1, '#c24949');
-        this.setBarColor(i, '#c24949');
       }
-
-      if (!swapped) {
-        break;
+      if (sortedEnd > 0) {
+        await this.mergeRuns(0, sortedEnd - 1, strandEnd - 1);
       }
-
-      swapped = false;
-      end--;
-
-      for (let i = end - 1; i >= start; i--) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        this.setBarColor(i, '#229ccb');
-        this.setBarColor(i + 1, '#FEDC56');
-        this.playTone(this.barHeights[i], this.audioLength);
-        await sleep(this.delay);
-        if (this.barHeights[i] > this.barHeights[i + 1]) {
-          let temp = this.barHeights[i];
-          this.barHeights[i] = this.barHeights[i + 1];
-          this.barHeights[i + 1] = temp;
-          this.numChanges++;
-          swapped = true;
-        }
-        this.setBarColor(i, '#c24949');
-        this.setBarColor(i + 1, '#c24949');
-      }
-
-      start++;
-    }
-    clearInterval(interval);  
-    this.inProgress = false;
-
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
+      for (let k = sortedEnd; k < strandEnd; k++) this.clear(k);
+      sortedEnd = strandEnd;
     }
   }
 
-  // pancake sort
   async pancakeSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-  
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-  
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
+    const a = this.barHeights;
+    // Reverse the top k+1 pancakes in one flip
+    const flip = async (k: number) => {
+      const range = Array.from({ length: k + 1 }, (_, i) => i);
+      this.mark(COMPARE, ...range);
+      this.tone(k);
+      await this.step();
+      for (let l = 0, r = k; l < r; l++, r--) this.swap(l, r);
+      this.tone(0);
+      await this.step();
+      this.clear(...range);
     };
-  
-    let n = this.barHeights.length;
-    for (let curr_size = n; curr_size > 1; --curr_size) {
-      let mi = 0;
-      for (let i = 0; i < curr_size; i++) {
-        if (this.stopSorting) {
-          clearInterval(interval)
-          return;
-        }
-        this.setBarColor(i, '#FEDC56');
-        this.setBarColor(mi, '#229ccb');
-        this.playTone(this.barHeights[i], this.audioLength);
-        await sleep(this.delay);
-        this.setBarColor(i, '#c24949');
-        this.setBarColor(mi, '#c24949');
-        if (this.barHeights[i] > this.barHeights[mi]) {
-          mi = i;
+    for (let size = a.length; size > 1; size--) {
+      // Find the largest pancake in the unsorted stack
+      let max = 0;
+      this.mark(ACTIVE, max);
+      for (let i = 1; i < size; i++) {
+        this.mark(COMPARE, i);
+        this.tone(i);
+        await this.step();
+        if (a[i] > a[max]) {
+          this.clear(max);
+          max = i;
+          this.mark(ACTIVE, max);
+        } else {
+          this.clear(i);
         }
       }
-      if (mi !== curr_size - 1) {
-        let temp = this.barHeights[mi];
-        for (let i = mi; i < (curr_size - mi) / 2 + mi; i++) {
-          this.setBarColor(i, '#FEDC56');
-          this.setBarColor(curr_size - i + mi - 1, '#229ccb');
-          this.playTone(this.barHeights[i], this.audioLength);
-          await sleep(this.delay);
-          this.setBarColor(i, '#c24949');
-          this.setBarColor(curr_size - i + mi - 1, '#c24949');
-          let t = this.barHeights[i];
-          this.barHeights[i] = this.barHeights[curr_size - i + mi - 1];
-          this.barHeights[curr_size - i + mi - 1] = t;
-          this.numChanges++;
-          temp = this.barHeights[mi];
-        }
+      this.clear(max);
+      if (max !== size - 1) {
+        if (max > 0) await flip(max); // bring it to the top
+        await flip(size - 1);         // then flip it to the bottom
       }
+      this.mark(SORTED, size - 1);
     }
-    clearInterval(interval);  
-    this.inProgress = false;
-  
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
+    this.mark(SORTED, 0);
+  }
+
+  async timSort() {
+    // Simplified Timsort: insertion-sort fixed-size runs, then merge them bottom-up.
+    // Real Timsort uses runs of 32-64; 16 keeps the merge phase visible with fewer bars.
+    const n = this.barHeights.length;
+    const minRun = 16;
+    for (let lo = 0; lo < n; lo += minRun) {
+      await this.insertionRange(lo, Math.min(lo + minRun - 1, n - 1));
+    }
+    for (let size = minRun; size < n; size *= 2) {
+      for (let lo = 0; lo < n; lo += 2 * size) {
+        const mid = lo + size - 1;
+        const hi = Math.min(lo + 2 * size - 1, n - 1);
+        if (mid < hi) await this.mergeRuns(lo, mid, hi);
       }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
     }
   }
-  
-  // stooge sort
+
   async stoogeSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-
-    const stoogeSort = async (arr: number[], l: number, h: number) => {
-      if (this.stopSorting) {
-        clearInterval(interval);        
-        return;
-      }
-      if (l >= h) {
-        return;
-      }
-      if (arr[l] > arr[h]) {
-        let t = arr[l];
-        arr[l] = arr[h];
-        arr[h] = t;
-        // change color to yellow and blue
-        this.setBarColor(l, '#FEDC56');
-        this.setBarColor(h, '#229ccb');
-        this.playTone(this.barHeights[l], this.audioLength);
-        await sleep(this.delay);
-        this.numChanges++;
-        // back to red
-        this.setBarColor(l, '#c24949');
-        this.setBarColor(h, '#c24949');
+    // Stooge sort makes ~n^2.7 comparisons, so only swaps pause the animation
+    const a = this.barHeights;
+    const sortRange = async (l: number, h: number): Promise<void> => {
+      if (this.stopSorting) throw STOPPED;
+      if (a[l] > a[h]) {
+        this.mark(COMPARE, l, h);
+        this.tone(l);
+        await this.step();
+        this.swap(l, h);
+        this.clear(l, h);
       }
       if (h - l + 1 > 2) {
-        let t = Math.floor((h - l + 1) / 3);
-        await stoogeSort(arr, l, h - t);
-        await stoogeSort(arr, l + t, h);
-        await stoogeSort(arr, l, h - t);
+        const t = Math.floor((h - l + 1) / 3);
+        await sortRange(l, h - t);
+        await sortRange(l + t, h);
+        await sortRange(l, h - t);
       }
     };
-    
-    await stoogeSort(this.barHeights, 0, this.barHeights.length - 1);
-    clearInterval(interval);  
-    this.inProgress = false;
-
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
-    }
+    await sortRange(0, a.length - 1);
   }
 
-  // bogo sort
   async bogoSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-
-    // set all to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, '#c24949');
-    }
-
-    const sleep = (ms: number) => {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    };
-
-    const isSorted = (arr: number[]) => {
-      for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-          return false;
-        }
-      }
-      return true;
-    };
-
-    const shuffle = (arr: number[]) => {
-      for (let i = 0; i < arr.length; i++) {
-        let j = Math.floor(Math.random() * arr.length);
-        let temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
-      }
-    };
-
-    while (!isSorted(this.barHeights)) {
-      if (this.stopSorting) {
-        clearInterval(interval);        
-        return;
-      }
-      shuffle(this.barHeights);
-      // play random tone between max and min of barHeights
-      this.playTone(this.barHeights[0], this.audioLength);
+    const a = this.barHeights;
+    const isSorted = () => a.every((v, i) => i === 0 || a[i - 1] <= v);
+    while (!isSorted()) {
+      this.shuffle(a);
       this.numChanges++;
-      await sleep(this.delay);
-    }
-    clearInterval(interval);  
-    this.inProgress = false;
-
-    // Mark all bars as sorted
-    for (let i = 0; i < this.barHeights.length; i++) {
-      if (this.stopSorting) {
-        return;
-      }
-      this.setBarColor(i, '#73be73');
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay/2);
+      this.tone(0);
+      await this.step();
     }
   }
-
-  // counting sort
-  async countingSort() {
-    const interval = setInterval(() => {
-      this.updateTimer();
-    }, 10); // 10 milliseconds = 0.01 seconds
-    this.inProgress = true;
-    this.stopSorting = false;
-  
-    // Set all bars to red
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, "#c24949");
-    }
-  
-    const sleep = (ms: number) => {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    };
-  
-    let max = Math.max(...this.barHeights);
-    let min = Math.min(...this.barHeights);
-    let range = max - min + 1;
-    let count = new Array(range).fill(0);
-    let output = new Array(this.barHeights.length).fill(0);
-  
-    // Animate the counting process
-    for (let i = 0; i < this.barHeights.length; i++) {
-      this.setBarColor(i, "#FEDC56"); // Highlight the current bar
-      this.setBarColor(i + 1, "#229ccb"); // Highlight the current bar
-      this.playTone(this.barHeights[i], this.audioLength);
-      await sleep(this.delay); // Pause for a short amount of time
-      count[this.barHeights[i] - min]++;
-      this.setBarColor(i, "#c24949"); // Set the color back to red
-      if (this.stopSorting) {
-        clearInterval(interval);        
-        return;
-      }
-    }
-  
-    // Animate the prefix sum process
-    for (let i = 1; i < count.length; i++) {
-      count[i] += count[i - 1];
-      if (this.stopSorting) {
-        clearInterval(interval);        
-        return;
-      }
-    }
-  
-    // Animate the sorting process
-    for (let i = this.barHeights.length - 1; i >= 0; i--) {
-      if (this.stopSorting) {
-        clearInterval(interval);        
-        return;
-      }
-      this.setBarColor(i, "#FEDC56"); // Highlight the current bar
-      this.setBarColor(i - 1, "#229ccb"); // Highlight the current bar
-      this.playTone(this.barHeights[i], this.audioLength)
-      await sleep(this.delay); // Pause for a short amount of time
-      output[count[this.barHeights[i] - min] - 1] = this.barHeights[i];
-      count[this.barHeights[i] - min]--;
-      this.setBarColor(i, "#c24949"); // Set the color back to red
-    }
-  
-    // Animate the final step
-    for (let i = 0; i < this.barHeights.length; i++) {
-
-      if (this.stopSorting) {
-        clearInterval(interval);        
-        return;
-      }
-      let index = this.barHeights.indexOf(output[i]);
-      this.barHeights[i] = output[i];
-      this.numChanges++;
-      console.log(this.barHeights.indexOf(output[i]))
-      this.setBarColor(index, "#FEDC56"); 
-      this.setBarColor(i, "#73be73"); // Set the color to green to indicate that the bar is sorted
-      this.playTone(this.barHeights[i], this.audioLength)
-      await sleep(this.delay); // Pause for a short amount of time
-      if (index != i){
-        this.setBarColor(index, "#c24949"); 
-      }
-    }
-    clearInterval(interval)
-    this.inProgress = false;
-  }
-  
-  barColors: string[] = [];
-  setBarColor(index: number, color: string) {
-    setTimeout(() => {
-      let bar = document.querySelectorAll('.bar')[index] as HTMLElement;
-    if (bar) { 
-      // add important
-      bar.style.setProperty('background-color', color, 'important');
-      this.barColors[index] = color;
-    }
-  } , 0);}
 }

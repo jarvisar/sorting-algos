@@ -29,7 +29,7 @@ export class AppComponent {
     console.log('Application Started');
   }
 
-  reset(event: Event){
+  reset(){
     if (this.sortService.inProgress !== true){
       this.inputbar.reset();
     } else {

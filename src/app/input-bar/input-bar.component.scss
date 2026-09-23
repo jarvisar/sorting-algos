@@ -1,64 +1,145 @@
 .buttons-container {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    width: 100%; 
-    margin-top: 15px;
+    gap: 8px 20px;
+    width: 100%;
 }
 
-.algo-select{
-    width: 165px;
-    height:41px;
-    font-size:14pt;
-    text-align:left;
-    padding-left: 7px;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-    font-weight: 450;
-    margin-left: 15px;
-    transform: all 0.5 ease;
-    border-radius: 5px;
-    background-color: #eaeaea;
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.bar-count-input{
-    width: 50px;
-    height:36px;
-    font-size:14pt;
-    padding-left: 7px;
+.help-button {
+    color: #aaa;
+}
+
+.algo-select,
+.bar-count-input {
+    height: 40px;
+    font-size: 15px;
     font-family: Roboto, "Helvetica Neue", sans-serif;
-    font-weight: 450;
-    margin-left: 15px;
-    transform: all 0.5 ease;
-    border-radius: 5px;
-    background-color: #eaeaea;
+    color: #eaeaea;
+    background-color: #2c2f33;
+    border: 1px solid #4a4d52;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.15s ease;
+
+    &:hover:not(:disabled), &:focus {
+        border-color: #7474B0;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+    }
+}
+
+.algo-select {
+    width: 180px;
+    padding: 0 8px;
+    cursor: pointer;
+}
+
+.bar-count {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #aaa;
+    font-size: 14px;
+}
+
+.bar-count-input {
+    width: 64px;
     text-align: center;
 }
 
-.main-button{
-    margin: 5px;
-    color: #333;
+.main-button {
     height: 40px;
-    width: 100px;
-    font-size: 14pt;
+    min-width: 88px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #23272a;
+    border-radius: 8px;
+
+    &:disabled {
+        opacity: 0.35;
+        color: #23272a;
+    }
 }
 
-.sort-button{
+// :disabled repeated so Material's grey disabled background doesn't win
+.sort-button, .sort-button:disabled {
     background-color: #73be73;
 }
 
-.reset-button{
+.reset-button, .reset-button:disabled {
     background-color: #eaeaea;
 }
 
-.stop-button{
+.stop-button, .stop-button:disabled {
     background-color: #c24949;
+    color: #fff;
+}
+
+.slider-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.slider-label {
+    color: #aaa;
+    font-size: 13px;
+    margin-bottom: -12px;
+
+    strong {
+        color: #ddd;
+        font-weight: 500;
+    }
+}
+
+mat-slider {
+    width: 170px;
 }
 
 ::ng-deep .mat-slider-thumb, ::ng-deep .mat-slider-thumb-label, ::ng-deep .mat-slider-track-fill {
     background-color: #7474B0 !important;
 }
 
-mat-slider {
-    margin-top: -15px;
-    width: 150px;
-  }
+::ng-deep .mat-slider-track-background {
+    background-color: #555 !important;
+}
+
+/* Phones: stack the rows and let controls fill the width */
+@media (max-width: 600px) {
+    .buttons-container {
+        gap: 8px;
+    }
+
+    .control-group {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .algo-select {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .main-button {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .slider-container {
+        width: 100%;
+    }
+
+    mat-slider {
+        width: 100%;
+    }
+}

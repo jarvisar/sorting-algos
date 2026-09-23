@@ -1,98 +1,114 @@
+:host {
+    display: block;
+    flex: 1;
+    min-height: 0;
+}
+
 .bar-container {
     display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    width: calc(100% - 100px);
-    height: calc(100% - 230px);
-    margin: 0 auto;
-    margin-top: 80px;
-    background-color: #3c3f42;
-    padding: 30px;
-    padding-bottom: 40px;
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
-    // outer glow
-    transition: all 0.2s ease-out;
-    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-}
-
-/* Mobile sizing */
-@media only screen and (max-width: 850px) and (orientation:landscape) {
-    .bar-container {
-        margin-top: 20px;
-        height: calc(100% - 170px);
-    }
-  }
-
-.bar-container:hover{
-    box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.75);
-}
-
-.stats-container{
-    position: absolute;
-    top: 15px;
-    left: 20px;
-}
-
-.timer{
-    color: #bbb;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-    font-size: 18;
-    font-weight: 600;
-    z-index: 11;
-}
-
-.num-changes{
-    margin-top: -10px;
-    color: #bbb;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-    font-size: 18;
-    font-weight: 600;
-    z-index: 11;
-}
-  
-.bar {
-    width: 100%;
+    flex-direction: column;
+    gap: 12px;
     height: 100%;
-    background-color: #229ccb  ;
+    box-sizing: border-box;
+    background-color: #2c2f33;
+    padding: 16px 20px 20px;
+    border-radius: 12px;
+    border: 1px solid #383b40;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+}
+
+.stats-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px 16px;
+    color: #999;
+    font-size: 13px;
+    user-select: none;
+
+    strong {
+        color: #ddd;
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+.stats,
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+}
+
+.legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend i {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+}
+
+.bars {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: flex-end;
+
+    &.show-labels {
+        padding-bottom: 18px;
+    }
+}
+
+.bar {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 2px;
     margin: 0 1px;
     position: relative;
-    border-radius: 4px;
+    background-color: #7474B0;
+    border-radius: 3px 3px 0 0;
+
+    &:hover {
+        filter: brightness(1.2);
+    }
+
+    .dense & {
+        margin: 0;
+        border-radius: 0;
+    }
 }
 
-.bar:hover{
-    filter: brightness(1.2);
-    transition: all 0.05s ease-out;
-}
-
-.bar:active{
-    filter: brightness(1.1);
-    transition: all 0.02s ease-out;
-}
-
-// on bar:hover, make bar-label pop out a bit
-.bar:hover .bar-label{
-    font-size: 13px;
-    transition: all 0.05s ease-out;
-    color: white;
-}
-
-// on bar:hover, make bar-label pop out a bit
-.bar:active .bar-label{
-    font-size: 12px;
-    transition: all 0.02s ease-out;
-    color: white;
-}
-  
 .bar-label {
-    font-size: 11px;
+    display: none;
     position: absolute;
-    bottom: -40px;
+    top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    color: #ccc;
-    font-family: 'Roboto', sans-serif;
+    margin-top: 3px;
+    font-size: 11px;
+    line-height: 1;
+    color: #aaa;
     user-select: none;
+    transition: color 0.05s ease-out;
+
+    .show-labels & {
+        display: block;
+    }
+
+    .bar:hover & {
+        color: #fff;
+    }
 }
 
+@media (max-width: 600px) {
+    .bar-container {
+        padding: 12px 12px 14px;
+        border-radius: 10px;
+    }
+}

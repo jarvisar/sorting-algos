@@ -1,109 +1,73 @@
 :host {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: 14px;
-    color: #333;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    margin: 8px 0;
-  }
+p {
+  margin: 0;
+}
 
-  p {
-    margin: 0;
-  }
+.toolbar {
+  flex: none;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px;
+  background-color: #2c2f33;
+  color: white;
+  border-bottom: 1px solid #383b40;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  z-index: 10;
+}
+
+.logo {
+  margin-right: 8px;
+  cursor: pointer;
+  transition: filter 0.05s ease-out;
+
+  &:hover { filter: brightness(0.85); }
+  &:active { filter: brightness(0.7); }
+}
 
 .header-title {
-  font-size: 24pt;
-  font-family: Roboto, Helvetica Neue, sans-serif;
-  margin-left: 5px;
+  font-size: 22px;
   font-weight: 500;
-  text-shadow: 0px 1px 0.5px #919191, 0px 2px 0.5px #919191, 0px 3px 0.5px #919191;
-  transition: transform 0.1s ease, text-shadow 0.1s ease;
-  transform: translateY(0px);
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   user-select: none;
   cursor: pointer;
-}
-  
-.header-title:hover {
-  text-shadow: 0px 1px 0px #818181, 0px 2px 0.5px #818181;
-  transform: translateY(1px);
-}
-  
-.header-title:active {
-  text-shadow: 0px 1px 0px #717171;
-  transform: translateY(2px);
-}
+  transition: opacity 0.1s ease;
 
-/* Mobile sizing */
-@media only screen and (max-width: 850px) and (orientation:landscape) {
-  .toolbar {
-    transform: translateY(-60px);
-    transition: all 0.05s ease;
-  }
-}
-
-@media only screen and (max-width: 850px) {
-  .header-title{
-    font-size: 14pt;
-    transform: translateY(0px);
-    text-shadow: 0px 1px 0.5px #919191, 0px 2px 0.5px #919191;
-  }
-    
-  .header-title:active {
-    text-shadow: 0px 1px 0px #717171;
-    transform: translateY(2px);
-  }
+  &:hover { opacity: 0.85; }
 }
 
 .spacer {
   flex: 1;
 }
 
-.toolbar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
+.toolbar-button {
+  color: #ccc;
+}
+
+.github-link {
   display: flex;
-  align-items: center;
-  background-color: #32353a;
-  color: white;
-  font-weight: 600;
-  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-}
+  margin-left: 4px;
 
-.toolbar img {
-  margin: 0 16px;
-  margin-top: 5px;
-  transition: filter 0.05s ease-out;
-}
+  img {
+    transition: filter 0.05s ease-out;
+  }
 
-.toolbar img:hover {
-  filter: brightness(0.8);
-}
-
-.toolbar img:active {
-  filter: brightness(0.7);
-}
-
-a,
-a:visited,
-a:hover {
-  color: #1976d2;
-  text-decoration: none;
-}
-
-a:hover {
-  color: #125699;
+  &:hover img { filter: brightness(0.8); }
 }
 
 .volume-container {
@@ -114,29 +78,78 @@ a:hover {
 .volume-slider-container {
   display: none;
   position: absolute;
-  bottom: -60px;
+  top: 100%;
   left: 50%;
   transform: translateX(-60%);
-  background-color: #3c3f42;
-  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
-  transition: all 0.1s ease;
-  padding: 10px;
-  padding-bottom: 15px;
-  border-radius: 5px;
+  background-color: #3a3d42;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  padding: 4px 12px 12px;
+  border-radius: 8px;
 }
 
-.volume-slider{
+.volume-slider {
   width: 200px;
-  margin-top: -15px;
 }
 
-.volume-container:hover .volume-slider-container {
-  display: block;
+.slider-label {
+  color: #aaa;
+  text-align: center;
+  margin-top: -10px;
+  font-size: 13px;
 }
 
-.content{
-  height: 100%;
+.content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px 16px;
+  box-sizing: border-box;
   width: 100%;
-  overflow: hidden;
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
+/* Phones */
+@media (max-width: 600px) {
+  .toolbar {
+    height: 52px;
+    padding: 0 6px 0 10px;
+  }
+
+  .logo {
+    width: 30px;
+    height: 30px;
+  }
+
+  .header-title {
+    font-size: 16px;
+  }
+
+  .content {
+    gap: 12px;
+    padding: 12px 12px 10px;
+  }
+}
+
+/* Short landscape screens (phones on their side): give the bars as much height as possible */
+@media (max-height: 500px) and (orientation: landscape) {
+  .toolbar {
+    height: 44px;
+  }
+
+  .logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .header-title {
+    font-size: 16px;
+  }
+
+  .content {
+    gap: 8px;
+    padding: 8px 16px;
+  }
+}
