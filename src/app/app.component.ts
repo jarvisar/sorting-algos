@@ -38,7 +38,7 @@ export class AppComponent {
   }
 
   toggleMute() {
-    this.sortService.isMuted = !this.sortService.isMuted;
+    this.sortService.toggleMute();
   }
   
   openHelp(){

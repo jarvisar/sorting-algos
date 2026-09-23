@@ -1,5 +1,5 @@
 import { Component, DoCheck, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { ACTIVE, COMPARE, SORTED, SortService } from '../sort.service';
+import { ACTIVE, COMPARE, SORTED, SortService, UNSORTED } from '../sort.service';
 
 @Component({
   selector: 'app-sorting-visualizer',
@@ -8,7 +8,7 @@ import { ACTIVE, COMPARE, SORTED, SortService } from '../sort.service';
 })
 export class SortingVisualizerComponent implements OnInit, DoCheck {
   @ViewChild('bars', { static: true }) bars!: ElementRef<HTMLElement>;
-  colors = { compare: COMPARE, active: ACTIVE, sorted: SORTED };
+  colors = { unsorted: UNSORTED, compare: COMPARE, active: ACTIVE, sorted: SORTED };
   showLabels = true;
   dense = false;
   private width = 0;

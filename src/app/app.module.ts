@@ -39,7 +39,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
       registrationStrategy: 'registerWhenStable:30000'
     })
   ],
-  providers: [FormsModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

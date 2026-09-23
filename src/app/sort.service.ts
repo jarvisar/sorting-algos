@@ -18,11 +18,16 @@ export const ALGORITHMS: Algorithm[] = [
   { id: 'insertion', name: 'Insertion Sort', url: 'https://www.geeksforgeeks.org/insertion-sort/' },
   { id: 'merge', name: 'Merge Sort', url: 'https://www.geeksforgeeks.org/merge-sort/' },
   { id: 'quick', name: 'Quick Sort', url: 'https://www.geeksforgeeks.org/quick-sort/' },
+  { id: 'dualpivot', name: 'Dual-Pivot Quick Sort', url: 'https://www.geeksforgeeks.org/dual-pivot-quicksort/' },
+  { id: 'intro', name: 'Introsort', url: 'https://www.geeksforgeeks.org/introsort-or-introspective-sort/' },
   { id: 'heap', name: 'Heap Sort', url: 'https://www.geeksforgeeks.org/heap-sort/' },
   { id: 'radix', name: 'Radix Sort (LSD)', url: 'https://www.geeksforgeeks.org/radix-sort/' },
+  { id: 'radixmsd', name: 'Radix Sort (MSD)', url: 'https://www.geeksforgeeks.org/msd-most-significant-digit-radix-sort/' },
   { id: 'bitonic', name: 'Bitonic Sort', url: 'https://www.geeksforgeeks.org/bitonic-sort/' },
   { id: 'cocktail', name: 'Cocktail Shaker', url: 'https://www.geeksforgeeks.org/cocktail-sort/' },
+  { id: 'oddeven', name: 'Odd-Even Sort', url: 'https://www.geeksforgeeks.org/odd-even-sort-brick-sort/' },
   { id: 'comb', name: 'Comb Sort', url: 'https://www.geeksforgeeks.org/comb-sort/' },
+  { id: 'circle', name: 'Circle Sort', url: 'https://www.geeksforgeeks.org/circle-sort/' },
   { id: 'gnome', name: 'Gnome Sort', url: 'https://www.geeksforgeeks.org/gnome-sort-a-stupid-one/' },
   { id: 'shell', name: 'Shell Sort', url: 'https://www.geeksforgeeks.org/shellsort/' },
   { id: 'cycle', name: 'Cycle Sort', url: 'https://www.geeksforgeeks.org/cycle-sort/' },
@@ -57,6 +62,7 @@ export class SortService {
   volume = 30;
   stopSorting = false;
   private audioContext?: AudioContext;
+  private wake?: () => void;
 
   constructor() {
     const screenWidth = window.innerWidth;
@@ -92,11 +98,16 @@ export class SortService {
       insertion: () => this.insertionSort(),
       merge: () => this.mergeSort(),
       quick: () => this.quickSort(),
+      dualpivot: () => this.dualPivotQuickSort(),
+      intro: () => this.introSort(),
       heap: () => this.heapSort(),
       radix: () => this.radixSort(),
+      radixmsd: () => this.radixMsdSort(),
       bitonic: () => this.bitonicSort(),
       cocktail: () => this.cocktailShakerSort(),
+      oddeven: () => this.oddEvenSort(),
       comb: () => this.combSort(),
+      circle: () => this.circleSort(),
       gnome: () => this.gnomeSort(),
       shell: () => this.shellSort(),
       cycle: () => this.cycleSort(),
@@ -122,12 +133,17 @@ export class SortService {
       await algorithm();
       clearInterval(timer);
       this.currentTime = (performance.now() - start) / 1000;
-      // Victory sweep
-      const sweepDelay = Math.min(this.delay / 2, 1000 / this.barHeights.length);
-      for (let i = 0; i < this.barHeights.length; i++) {
-        this.mark(SORTED, i);
-        this.tone(i);
-        await this.step(sweepDelay);
+      // Victory sweep. The array is already sorted, so stopping here just skips to the end.
+      try {
+        const sweepDelay = Math.min(this.delay / 2, 1000 / this.barHeights.length);
+        for (let i = 0; i < this.barHeights.length; i++) {
+          this.mark(SORTED, i);
+          this.tone(i);
+          await this.step(sweepDelay);
+        }
+      } catch (e) {
+        if (e !== STOPPED) throw e;
+        this.barColors = new Array(this.barHeights.length).fill(SORTED);
       }
       this.alreadySorted = true;
     } catch (e) {
@@ -143,8 +159,22 @@ export class SortService {
 
   // ---------- helpers ----------
 
+  // The running algorithm unwinds from its current step() and resets the colors itself
+  stop() {
+    this.stopSorting = true;
+    this.wake?.();
+  }
+
   private async step(ms = this.delay) {
-    await new Promise(resolve => setTimeout(resolve, ms));
+    await new Promise<void>(resolve => {
+      const timeout = setTimeout(resolve, ms);
+      // lets stop() end the current pause immediately instead of waiting out the delay
+      this.wake = () => {
+        clearTimeout(timeout);
+        resolve();
+      };
+    });
+    this.wake = undefined;
     if (this.stopSorting) throw STOPPED;
   }
 
@@ -179,12 +209,27 @@ export class SortService {
     }
   }
 
+  toggleMute() {
+    this.isMuted = !this.isMuted;
+    // Browsers (Safari especially) only let audio start from a user gesture like this click
+    if (!this.isMuted) this.getAudioContext()?.resume();
+  }
+
+  private getAudioContext() {
+    try {
+      this.audioContext ??= new AudioContext();
+    } catch (error) {
+      console.error('Audio not supported:', error);
+    }
+    return this.audioContext;
+  }
+
   private tone(index: number) {
     const value = this.barHeights[index];
     if (this.isMuted || value === undefined) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
     try {
-      this.audioContext ??= new AudioContext();
-      const ctx = this.audioContext;
       if (ctx.state === 'suspended') ctx.resume();
       const minFrequency = 200;
       const maxFrequency = 700;
@@ -333,55 +378,147 @@ export class SortService {
   }
 
   async quickSort() {
-    const a = this.barHeights;
-    // Lomuto partition, last element as pivot
     const sortRange = async (lo: number, hi: number) => {
       if (lo > hi) return;
       if (lo === hi) {
         this.mark(SORTED, lo);
         return;
       }
-      const pivot = a[hi];
-      this.mark(ACTIVE, hi);
-      let i = lo;
-      for (let j = lo; j < hi; j++) {
-        this.mark(COMPARE, j);
-        this.tone(j);
+      const p = await this.partition(lo, hi);
+      await sortRange(lo, p - 1);
+      await sortRange(p + 1, hi);
+    };
+    await sortRange(0, this.barHeights.length - 1);
+  }
+
+  // Lomuto partition of [lo..hi] around a[hi]. Returns the pivot's final index.
+  private async partition(lo: number, hi: number) {
+    const a = this.barHeights;
+    const pivot = a[hi];
+    this.mark(ACTIVE, hi);
+    let i = lo;
+    for (let j = lo; j < hi; j++) {
+      this.mark(COMPARE, j);
+      this.tone(j);
+      await this.step();
+      this.clear(j);
+      if (a[j] < pivot) {
+        if (i !== j) this.swap(i, j);
+        i++;
+      }
+    }
+    this.clear(hi);
+    if (i !== hi) this.swap(i, hi);
+    this.mark(SORTED, i); // pivot is now in its final spot
+    return i;
+  }
+
+  async dualPivotQuickSort() {
+    // Yaroslavskiy's dual-pivot partition (as used by Java's Arrays.sort): pivots p <= q
+    // split the range into < p, between p and q, and > q
+    const a = this.barHeights;
+    const sortRange = async (lo: number, hi: number) => {
+      if (lo > hi) return;
+      if (lo === hi) {
+        this.mark(SORTED, lo);
+        return;
+      }
+      if (await this.compare(lo, hi)) this.swap(lo, hi);
+      const p = a[lo];
+      const q = a[hi];
+      this.mark(ACTIVE, lo, hi);
+      let lt = lo + 1; // a[lo+1 .. lt-1] < p
+      let gt = hi - 1; // a[gt+1 .. hi-1] > q
+      for (let k = lt; k <= gt; k++) {
+        this.mark(COMPARE, k);
+        this.tone(k);
         await this.step();
-        this.clear(j);
-        if (a[j] < pivot) {
-          if (i !== j) this.swap(i, j);
-          i++;
+        this.clear(k);
+        if (a[k] < p) {
+          this.swap(k, lt++);
+        } else if (a[k] >= q) {
+          // find something from the right that doesn't belong past q
+          while (a[gt] > q && k < gt) {
+            this.mark(COMPARE, gt);
+            this.tone(gt);
+            await this.step();
+            this.clear(gt);
+            gt--;
+          }
+          this.swap(k, gt--);
+          if (a[k] < p) this.swap(k, lt++);
         }
       }
-      this.clear(hi);
-      if (i !== hi) this.swap(i, hi);
-      this.mark(SORTED, i); // pivot is now in its final spot
-      await sortRange(lo, i - 1);
-      await sortRange(i + 1, hi);
+      lt--;
+      gt++;
+      this.clear(lo, hi);
+      // Move both pivots into their final spots
+      if (lo !== lt) this.swap(lo, lt);
+      if (hi !== gt) this.swap(hi, gt);
+      this.mark(SORTED, lt, gt);
+      await sortRange(lo, lt - 1);
+      await sortRange(lt + 1, gt - 1);
+      await sortRange(gt + 1, hi);
     };
     await sortRange(0, a.length - 1);
   }
 
-  async heapSort() {
+  async introSort() {
+    // Introsort (C++ std::sort): quicksort with a median-of-three pivot, switching to heap sort
+    // if recursion gets too deep, and insertion sort for small ranges
     const a = this.barHeights;
     const n = a.length;
+    const maxDepth = 2 * Math.floor(Math.log2(Math.max(1, n)));
+    const threshold = 16;
+    const sortRange = async (lo: number, hi: number, depth: number) => {
+      const size = hi - lo + 1;
+      if (size <= 0) return;
+      if (size <= threshold) {
+        await this.insertionRange(lo, hi);
+        for (let k = lo; k <= hi; k++) this.mark(SORTED, k);
+        return;
+      }
+      if (depth === 0) {
+        await this.heapSortRange(lo, hi);
+        return;
+      }
+      // Median of three: order a[lo], a[mid], a[hi], then use the median as the pivot
+      const mid = lo + Math.floor(size / 2);
+      if (await this.compare(lo, mid)) this.swap(lo, mid);
+      if (await this.compare(lo, hi)) this.swap(lo, hi);
+      if (await this.compare(mid, hi)) this.swap(mid, hi);
+      this.swap(mid, hi);
+      const p = await this.partition(lo, hi);
+      await sortRange(lo, p - 1, depth - 1);
+      await sortRange(p + 1, hi, depth - 1);
+    };
+    await sortRange(0, n - 1, maxDepth);
+  }
+
+  async heapSort() {
+    await this.heapSortRange(0, this.barHeights.length - 1);
+  }
+
+  // Heap sort on [lo..hi]. Heap node k lives at array index lo + k.
+  private async heapSortRange(lo: number, hi: number) {
+    const a = this.barHeights;
+    const n = hi - lo + 1;
     const siftDown = async (i: number, size: number) => {
       while (true) {
         const l = 2 * i + 1;
         const r = l + 1;
         if (l >= size) return;
-        const children = r < size ? [l, r] : [l];
-        this.mark(ACTIVE, i);
+        const children = r < size ? [lo + l, lo + r] : [lo + l];
+        this.mark(ACTIVE, lo + i);
         this.mark(COMPARE, ...children);
-        this.tone(i);
+        this.tone(lo + i);
         await this.step();
-        this.clear(i, ...children);
+        this.clear(lo + i, ...children);
         let largest = i;
-        if (a[l] > a[largest]) largest = l;
-        if (r < size && a[r] > a[largest]) largest = r;
+        if (a[lo + l] > a[lo + largest]) largest = l;
+        if (r < size && a[lo + r] > a[lo + largest]) largest = r;
         if (largest === i) return;
-        this.swap(i, largest);
+        this.swap(lo + i, lo + largest);
         i = largest;
       }
     };
@@ -392,15 +529,15 @@ export class SortService {
     }
     // Move the max to the end, then restore the heap
     for (let end = n - 1; end > 0; end--) {
-      this.mark(ACTIVE, 0, end);
-      this.tone(0);
+      this.mark(ACTIVE, lo, lo + end);
+      this.tone(lo);
       await this.step();
-      this.swap(0, end);
-      this.clear(0);
-      this.mark(SORTED, end);
+      this.swap(lo, lo + end);
+      this.clear(lo);
+      this.mark(SORTED, lo + end);
       await siftDown(0, end);
     }
-    this.mark(SORTED, 0);
+    this.mark(SORTED, lo);
   }
 
   async radixSort() {
@@ -421,6 +558,35 @@ export class SortService {
       // Collect buckets back into the array
       await this.writeBack(0, buckets.flat(), lastPass ? SORTED : ACTIVE);
     }
+  }
+
+  async radixMsdSort() {
+    // Most significant digit first: bucket the range by one digit, then recurse into each bucket
+    const a = this.barHeights;
+    const sortRange = async (lo: number, hi: number, exp: number) => {
+      if (lo > hi) return;
+      if (lo === hi || exp < 1) {
+        for (let k = lo; k <= hi; k++) this.mark(SORTED, k);
+        return;
+      }
+      const buckets: number[][] = Array.from({ length: 10 }, () => []);
+      for (let i = lo; i <= hi; i++) {
+        this.mark(COMPARE, i);
+        this.tone(i);
+        await this.step();
+        this.clear(i);
+        buckets[Math.floor(a[i] / exp) % 10].push(a[i]);
+      }
+      // On the last digit every bucket is final
+      await this.writeBack(lo, buckets.flat(), exp === 1 ? SORTED : ACTIVE);
+      let start = lo;
+      for (const bucket of buckets) {
+        await sortRange(start, start + bucket.length - 1, exp / 10);
+        start += bucket.length;
+      }
+    };
+    const digits = String(Math.max(...a)).length;
+    await sortRange(0, a.length - 1, Math.pow(10, digits - 1));
   }
 
   async bitonicSort() {
@@ -503,6 +669,53 @@ export class SortService {
         }
       }
     }
+  }
+
+  async oddEvenSort() {
+    // Alternates between comparing all odd-indexed pairs and all even-indexed pairs.
+    // Designed for parallel hardware, where each phase happens at once.
+    const n = this.barHeights.length;
+    let sorted = false;
+    while (!sorted) {
+      sorted = true;
+      for (const start of [1, 0]) {
+        for (let i = start; i < n - 1; i += 2) {
+          if (await this.compare(i, i + 1)) {
+            this.swap(i, i + 1);
+            sorted = false;
+          }
+        }
+      }
+    }
+  }
+
+  async circleSort() {
+    // Compare mirrored pairs from the outside in, recurse into both halves, and repeat
+    // whole passes until one makes no swaps
+    const circle = async (lo: number, hi: number): Promise<boolean> => {
+      if (lo >= hi) return false;
+      let swapped = false;
+      let i = lo;
+      let j = hi;
+      while (i < j) {
+        if (await this.compare(i, j)) {
+          this.swap(i, j);
+          swapped = true;
+        }
+        i++;
+        j--;
+      }
+      // Odd-length range: compare the middle element with its right neighbour
+      if (i === j && await this.compare(i, j + 1)) {
+        this.swap(i, j + 1);
+        swapped = true;
+      }
+      const mid = lo + Math.floor((hi - lo) / 2);
+      const left = await circle(lo, mid);
+      const right = await circle(mid + 1, hi);
+      return swapped || left || right;
+    };
+    while (await circle(0, this.barHeights.length - 1)) { }
   }
 
   async gnomeSort() {

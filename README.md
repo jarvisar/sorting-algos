@@ -16,11 +16,16 @@ Currently this web application supports the following sorting algorithms:
 -   Insertion Sort
 -   Merge Sort
 -   Quick Sort
+-   Dual-Pivot Quick Sort
+-   Introsort
 -   Heap Sort
 -   Radix Sort (LSD)
+-   Radix Sort (MSD)
 -   Bitonic Sort
 -   Cocktail Shaker
+-   Odd-Even Sort
 -   Comb Sort
+-   Circle Sort
 -   Gnome Sort
 -   Shell Sort
 -   Cycle Sort
@@ -64,6 +69,29 @@ To install and run this app on a local machine, follow these steps:
 `ng serve`
 
 6. Open a web browser and navigate to `http://localhost:4200` to view the app.
+
+## Progressive Web App
+
+The production build supports installation and offline use. Open the app online once and let its service worker finish caching before going offline. Sorting runs locally; external help and source-code links still need an internet connection. Google fonts and Material icons are cached as they are requested while the service worker controls the page.
+
+To install, use your browser's install option (for example, the install icon in Chrome or Edge). On iPhone or iPad, open the site in Safari and choose **Share > Add to Home Screen**.
+
+Service workers require HTTPS in deployment; localhost also works for testing. The development server (`npm start`) does not register the service worker. To test locally:
+
+```sh
+npm run build
+npx http-server dist/sorting-algos -p 8080 -c-1
+```
+
+Open `http://localhost:8080`, wait for the service worker to activate, then reload so it controls the page. In browser developer tools, check **Application > Manifest** and **Service Workers**, then switch **Network** to **Offline** and reload to verify offline use.
+
+For GitHub Pages, build with the deployment path:
+
+```sh
+npm run build -- --base-href /sorting-algos/
+```
+
+Publish the contents of `dist/sorting-algos` at `/sorting-algos/`. Manifest URLs are relative to the deployed app, and Angular applies the build's base URL to the service worker's cache paths automatically.
 
 ###### This web app was created with [Angular v14.3.0](https://angular.io/)
 

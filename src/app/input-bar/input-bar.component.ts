@@ -16,9 +16,8 @@ export class InputBarComponent {
     this.sortService.sort();
   }
 
-  // The running algorithm unwinds on its next step and resets the colors itself
   stop() {
-    this.sortService.stopSorting = true;
+    this.sortService.stop();
   }
 
   reset() {
