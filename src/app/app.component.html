@@ -1,7 +1,7 @@
 <!-- Toolbar -->
 <div class="toolbar" role="banner">
   <img class="logo" width="36" height="36" alt="Logo" src="assets/android-chrome-512x512.png" (click)="reset()"/>
-  <span class="header-title" (click)="reset()">Sorting Algorithm Visualizer</span>
+  <h1 class="header-title" (click)="reset()">Sorting Algorithm Visualizer</h1>
   <div class="spacer"></div>
   <div class="volume-container" (mouseenter)="openVolume()" (mouseleave)="closeVolume()">
     <button mat-icon-button class="toolbar-button" (click)="toggleMute()" [attr.aria-label]="sortService.isMuted ? 'Unmute' : 'Mute'">
