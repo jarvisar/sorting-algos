@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sorting-algos.ajarvis.co/sitemap.xml
+Sitemap: https://sorting-algos.jarvisar.com/sitemap.xml
