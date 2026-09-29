@@ -64,11 +64,6 @@ export class SortService {
   private audioContext?: AudioContext;
   private wake?: () => void;
 
-  constructor() {
-    const screenWidth = window.innerWidth;
-    this.numBars = Math.min(100, Math.max(10, Math.floor((screenWidth - 64) / 24)));
-  }
-
   // ---------- setup ----------
 
   generateBars() {
