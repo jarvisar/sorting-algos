@@ -2,7 +2,7 @@
 
 Angular-powered web app capable of visually representing various sorting algorithms using bars of varying heights. As the sorting algorithm runs, the app updates the color and height of the bars to reflect the current state of the sorting process and also plays a tone based on the height of the bar at the current index.
 
-Visit the [GitHub pages](https://jarvisar.github.io/sorting-algos/) site to access the latest deployment.
+Visit the [GitHub pages](https://sorting.jarvisar.com/) site to access the latest deployment.
 
 Also available as an [Android APK](https://github.com/jarvisar/sorting-algos/tree/ionic-mobile).
 
@@ -88,10 +88,10 @@ Open `http://localhost:8080`, wait for the service worker to activate, then relo
 For GitHub Pages, build with the deployment path:
 
 ```sh
-npm run build -- --base-href /sorting-algos/
+npm run build -- --base-href /
 ```
 
-Publish the contents of `dist/sorting-algos` at `/sorting-algos/`. Manifest URLs are relative to the deployed app, and Angular applies the build's base URL to the service worker's cache paths automatically.
+Publish the contents of `dist/sorting-algos` at the site root. To serve it from a subfolder like `/sorting-algos/`, pass that as `--base-href` instead. Manifest URLs are relative to the deployed app, and Angular applies the build's base URL to the service worker's cache paths automatically.
 
 ###### This web app was created with [Angular v14.3.0](https://angular.io/)
 

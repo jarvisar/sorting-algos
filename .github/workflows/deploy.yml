@@ -27,7 +27,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npx ng build --base-href /sorting-algos/
+      - run: npx ng build --base-href /
 
       # SPA fallback so deep links resolve to the app
       - run: cp dist/sorting-algos/index.html dist/sorting-algos/404.html
