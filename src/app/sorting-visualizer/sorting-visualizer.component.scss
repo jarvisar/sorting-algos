@@ -106,6 +106,96 @@
     }
 }
 
+.rainbow-mode {
+    border-color: #6878a0;
+    background-image: radial-gradient(ellipse at 15% 100%, #36dfff12, transparent 55%),
+                      radial-gradient(ellipse at 85% 100%, #ff366d14, transparent 55%);
+
+    .bars {
+        animation: spectrum-reveal 650ms ease-out;
+    }
+
+    .bar {
+        // Two identical cycles keep a full rainbow inside every bar and loop without a jump.
+        background-image: linear-gradient(90deg, #ffffff30, transparent 40%, #00000015),
+                          linear-gradient(0deg, #ff366d 0%, #ff9c32 8.333%, #ffe45e 16.667%,
+                            #53f5a3 25%, #36dfff 33.333%, #7267ff 41.667%, #ff366d 50%,
+                            #ff9c32 58.333%, #ffe45e 66.667%, #53f5a3 75%, #36dfff 83.333%,
+                            #7267ff 91.667%, #ff366d 100%);
+        background-size: 100% 100%, 100% 200%;
+        box-shadow: inset 1px 0 #ffffff40, 0 0 8px #36dfff25;
+        animation: spectrum-flow 7s linear infinite;
+        animation-delay: calc(var(--rainbow-phase) * -7s);
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+        }
+
+        &.is-comparing::after,
+        &.is-active::after {
+            box-shadow: inset 0 0 0 2px var(--bar-state-color), 0 0 12px var(--bar-state-color);
+            background: #ffffff28;
+        }
+
+        &.is-sorted::after {
+            border-top: 2px solid var(--bar-state-color);
+        }
+    }
+
+    .dense .bar {
+        box-shadow: none;
+    }
+
+    .bar-label { color: #d0c8ee; }
+}
+
+.spectrum-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    border: 1px solid #b8a4ff40;
+    border-radius: 20px;
+    background: #b8a4ff0d;
+    color: #e4dcff;
+    font-size: 11px;
+    line-height: 1;
+
+    &::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: conic-gradient(#ff366d, #ffe45e, #53f5a3, #36dfff, #7267ff, #ff366d);
+        box-shadow: 0 0 6px #b8a4ff60;
+    }
+}
+
+@keyframes spectrum-flow {
+    from { background-position: 0 0, 0 0; }
+    to { background-position: 0 0, 0 100%; }
+}
+
+@keyframes spectrum-reveal {
+    from { filter: brightness(1.6) saturate(1.3); }
+    to { filter: brightness(1) saturate(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rainbow-mode .bars,
+    .rainbow-mode .bar {
+        animation: none;
+    }
+
+    .rainbow-mode .bar {
+        background-position: 0 0, 0 calc(var(--rainbow-phase) * 100%);
+    }
+}
+
 @media (max-width: 600px) {
     .bar-container {
         padding: 12px 12px 14px;

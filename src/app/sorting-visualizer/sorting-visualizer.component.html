@@ -1,8 +1,9 @@
-<div class="bar-container" id="bar-container">
+<div class="bar-container" id="bar-container" [class.rainbow-mode]="rainbowMode">
     <div class="stats-container">
         <div class="stats">
             <span>Time <strong>{{sortService.currentTime.toFixed(2)}}s</strong></span>
             <span><strong>{{sortService.numChanges}}</strong> changes</span>
+            <span *ngIf="rainbowMode" class="spectrum-badge" role="status">Spectrum unlocked</span>
         </div>
         <div class="legend">
             <span><i [style.background-color]="colors.unsorted"></i>Unsorted</span>
@@ -14,7 +15,12 @@
     <div class="bars" #bars [class.show-labels]="showLabels" [class.dense]="dense">
         <div class="bar" *ngFor="let height of sortService.barHeights; let i = index; trackBy: trackByIndex"
              [style.height.%]="height / sortService.maxHeight * 100"
-             [style.background-color]="sortService.barColors[i]">
+             [style.background-color]="sortService.barColors[i]"
+             [style.--bar-state-color]="sortService.barColors[i]"
+             [style.--rainbow-phase]="i / sortService.barHeights.length"
+             [class.is-comparing]="sortService.barColors[i] === colors.compare"
+             [class.is-active]="sortService.barColors[i] === colors.active"
+             [class.is-sorted]="sortService.barColors[i] === colors.sorted">
             <span class="bar-label">{{height}}</span>
         </div>
     </div>

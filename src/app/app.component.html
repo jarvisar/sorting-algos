@@ -1,6 +1,8 @@
 <!-- Toolbar -->
 <div class="toolbar" role="banner">
-  <img class="logo" width="36" height="36" alt="Logo" src="assets/android-chrome-512x512.png" (click)="reset()"/>
+  <button class="logo-button" type="button" (click)="onLogoClick()" [class.rainbow-mode]="rainbowMode" aria-label="Reset visualization">
+    <img class="logo" width="36" height="36" alt="" src="assets/android-chrome-512x512.png"/>
+  </button>
   <h1 class="header-title" (click)="reset()">Sorting Algorithm Visualizer</h1>
   <div class="spacer"></div>
   <div class="volume-container" (mouseenter)="openVolume()" (mouseleave)="closeVolume()">
@@ -23,7 +25,7 @@
 </div>
 
 <div class="content" role="main">
-  <app-sorting-visualizer></app-sorting-visualizer>
+  <app-sorting-visualizer [rainbowMode]="rainbowMode"></app-sorting-visualizer>
   <app-input-bar></app-input-bar>
 </div>
 

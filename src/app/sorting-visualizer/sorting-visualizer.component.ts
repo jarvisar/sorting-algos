@@ -1,4 +1,4 @@
-import { Component, DoCheck, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, DoCheck, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ACTIVE, COMPARE, SORTED, SortService, UNSORTED } from '../sort.service';
 
 @Component({
@@ -7,6 +7,7 @@ import { ACTIVE, COMPARE, SORTED, SortService, UNSORTED } from '../sort.service'
   styleUrls: ['./sorting-visualizer.component.scss']
 })
 export class SortingVisualizerComponent implements OnInit, DoCheck, OnDestroy {
+  @Input() rainbowMode = false;
   @ViewChild('bars', { static: true }) bars!: ElementRef<HTMLElement>;
   colors = { unsorted: UNSORTED, compare: COMPARE, active: ACTIVE, sorted: SORTED };
   showLabels = true;
