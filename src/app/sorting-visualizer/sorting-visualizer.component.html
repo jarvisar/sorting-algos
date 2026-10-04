@@ -15,7 +15,6 @@
     <div class="bars" #bars [class.show-labels]="showLabels" [class.dense]="dense">
         <div class="bar" *ngFor="let height of sortService.barHeights; let i = index; trackBy: trackByIndex"
              [style.height.%]="height / sortService.maxHeight * 100"
-             [style.background-color]="sortService.barColors[i]"
              [style.--bar-state-color]="sortService.barColors[i]"
              [style.--rainbow-phase]="i / sortService.barHeights.length"
              [class.is-comparing]="sortService.barColors[i] === colors.compare"

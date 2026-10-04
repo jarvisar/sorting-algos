@@ -47,24 +47,14 @@ p {
   &:hover .logo { opacity: 0.85; }
   &:active .logo { opacity: 0.7; }
 
-  &.rainbow-mode .logo {
-    filter: drop-shadow(0 0 6px #63f5e5);
-    animation: rainbow-logo 7s linear infinite;
+  &.rainbow-mode {
+    box-shadow: -2px 0 #ff366d, 2px 0 #36dfff, 0 -2px #ffe45e, 0 2px #7267ff;
   }
 }
 
 .logo {
   display: block;
   transition: opacity 0.1s ease-out;
-}
-
-@keyframes rainbow-logo {
-  from { filter: hue-rotate(0deg) drop-shadow(0 0 6px #63f5e5); }
-  to { filter: hue-rotate(360deg) drop-shadow(0 0 6px #63f5e5); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .logo-button.rainbow-mode .logo { animation: none; }
 }
 
 .header-title {
