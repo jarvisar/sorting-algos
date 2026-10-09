@@ -48,13 +48,54 @@ p {
   &:active .logo { opacity: 0.7; }
 
   &.rainbow-mode {
-    box-shadow: -2px 0 #ff366d, 2px 0 #36dfff, 0 -2px #ffe45e, 0 2px #7267ff;
+    position: relative;
+    isolation: isolate;
+    border-radius: 50%;
+    box-shadow: 0 0 12px #b8a4ff70;
+
+    // Spinning a round element only needs transform, so the ring stays on the compositor
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      z-index: -1;
+      border-radius: 50%;
+      background: conic-gradient(#ff366d, #ff9c32, #ffe45e, #53f5a3, #36dfff, #7267ff, #ff366d);
+      animation: logo-ring 3s linear infinite;
+    }
+
+    // Covers the middle of the ring so it doesn't show through the logo on hover
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: 50%;
+      background: #2c2f33;
+    }
+
+    .logo { animation: logo-pop 450ms ease-out; }
   }
 }
 
 .logo {
   display: block;
   transition: opacity 0.1s ease-out;
+}
+
+@keyframes logo-ring {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes logo-pop {
+  40% { transform: scale(1.18) rotate(-12deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-button.rainbow-mode::before,
+  .logo-button.rainbow-mode .logo {
+    animation: none;
+  }
 }
 
 .header-title {

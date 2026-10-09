@@ -52,6 +52,7 @@
     width: 10px;
     height: 10px;
     border-radius: 3px;
+    background: var(--swatch);
 }
 
 .bars {
@@ -111,18 +112,71 @@
     background-image: radial-gradient(ellipse at 15% 100%, #36dfff12, transparent 55%),
                       radial-gradient(ellipse at 85% 100%, #ff366d14, transparent 55%);
 
-    .bar {
-        // Static colors avoid repainting every bar on every animation frame.
-        background-color: hsl(calc(var(--rainbow-phase) * 360), 80%, 65%);
+    .bars {
+        position: relative;
+        overflow: hidden;
+    }
 
-        &.is-comparing,
-        &.is-active,
-        &.is-sorted {
-            background-color: var(--bar-state-color);
+    // Hue comes from the bar's value, so a sorted array always ends up as one smooth spectrum.
+    // Static colors avoid repainting every bar on every animation frame. Only the glints below
+    // animate, and only with transform so they stay on the compositor.
+    .bar {
+        --hue: calc(var(--rainbow-phase) * 300);
+        background-color: hsl(var(--hue), 80%, 64%);
+    }
+
+    // Dim everything that isn't in its final spot yet so the sorted bars light up as they land
+    .sorting .bar {
+        background-color: hsl(var(--hue), 30%, 38%);
+
+        // Yellow and blue get lost in a rainbow, so use white instead
+        &.is-comparing { background-color: #fff; }
+
+        &.is-active {
+            background-color: hsl(var(--hue), 95%, 66%);
+            box-shadow: inset 0 0 0 2px #fff;
         }
     }
 
+    .bar.is-sorted {
+        background-color: hsl(var(--hue), 95%, 66%);
+        box-shadow: inset 0 2px #ffffffb0;
+    }
+
+    .bars::after,
+    .bars.finished::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: linear-gradient(105deg, transparent 30%, #ffffff30 46%, #ffffff60 50%, #ffffff30 54%, transparent 70%);
+        transform: translateX(-100%);
+    }
+
+    // One glint when the egg is unlocked and another every time a sort finishes.
+    // Separate pseudo-elements so removing .finished doesn't replay the unlock glint.
+    .bars::after { animation: spectrum-glint 1s ease-out both; }
+    .bars.finished::before { animation: spectrum-glint 1.2s ease-out both; }
+
+    .swatch-unsorted { background: linear-gradient(90deg, hsl(0, 30%, 38%), hsl(150, 30%, 38%), hsl(300, 30%, 38%)); }
+    .swatch-compare { background: #fff; }
+    .swatch-active { background: linear-gradient(90deg, hsl(0, 95%, 66%), hsl(150, 95%, 66%), hsl(300, 95%, 66%)); box-shadow: inset 0 0 0 2px #fff; }
+    .swatch-sorted { background: linear-gradient(90deg, hsl(0, 95%, 66%), hsl(150, 95%, 66%), hsl(300, 95%, 66%)); box-shadow: inset 0 2px #ffffffb0; }
+
     .bar-label { color: #d0c8ee; }
+}
+
+@keyframes spectrum-glint {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rainbow-mode .bars::after,
+    .rainbow-mode .bars.finished::before {
+        display: none;
+    }
 }
 
 .spectrum-badge {

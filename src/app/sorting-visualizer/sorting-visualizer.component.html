@@ -6,17 +6,18 @@
             <span *ngIf="rainbowMode" class="spectrum-badge" role="status">Spectrum unlocked</span>
         </div>
         <div class="legend">
-            <span><i [style.background-color]="colors.unsorted"></i>Unsorted</span>
-            <span><i [style.background-color]="colors.compare"></i>Comparing</span>
-            <span><i [style.background-color]="colors.active"></i>Key / Pivot</span>
-            <span><i [style.background-color]="colors.sorted"></i>Sorted</span>
+            <span><i class="swatch-unsorted" [style.--swatch]="colors.unsorted"></i>Unsorted</span>
+            <span><i class="swatch-compare" [style.--swatch]="colors.compare"></i>Comparing</span>
+            <span><i class="swatch-active" [style.--swatch]="colors.active"></i>Key / Pivot</span>
+            <span><i class="swatch-sorted" [style.--swatch]="colors.sorted"></i>Sorted</span>
         </div>
     </div>
-    <div class="bars" #bars [class.show-labels]="showLabels" [class.dense]="dense">
+    <div class="bars" #bars [class.show-labels]="showLabels" [class.dense]="dense"
+         [class.sorting]="sortService.inProgress" [class.finished]="sortService.alreadySorted">
         <div class="bar" *ngFor="let height of sortService.barHeights; let i = index; trackBy: trackByIndex"
              [style.height.%]="height / sortService.maxHeight * 100"
              [style.--bar-state-color]="sortService.barColors[i]"
-             [style.--rainbow-phase]="i / sortService.barHeights.length"
+             [style.--rainbow-phase]="height / sortService.maxHeight"
              [class.is-comparing]="sortService.barColors[i] === colors.compare"
              [class.is-active]="sortService.barColors[i] === colors.active"
              [class.is-sorted]="sortService.barColors[i] === colors.sorted">
