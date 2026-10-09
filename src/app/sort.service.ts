@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TonePlayer } from './tone-player';
 
 export const BASE = '#7474B0';     // idle, before sorting
 export const UNSORTED = '#c24949'; // not yet in final position
@@ -59,10 +60,19 @@ export class SortService {
   numChanges = 0;
   currentTime = 0;
   isMuted = true;
-  volume = 30;
   stopSorting = false;
-  private audioContext?: AudioContext;
+  private tones = new TonePlayer();
+  private _volume = 30;
   private wake?: () => void;
+
+  get volume() {
+    return this._volume;
+  }
+
+  set volume(value: number) {
+    this._volume = value;
+    this.tones.setVolume(value, this.isMuted);
+  }
 
   // ---------- setup ----------
 
@@ -206,45 +216,15 @@ export class SortService {
 
   toggleMute() {
     this.isMuted = !this.isMuted;
-    // Browsers (Safari especially) only let audio start from a user gesture like this click
-    if (!this.isMuted) this.getAudioContext()?.resume();
-  }
-
-  private getAudioContext() {
-    try {
-      this.audioContext ??= new AudioContext();
-    } catch (error) {
-      console.error('Audio not supported:', error);
-    }
-    return this.audioContext;
+    this.tones.setVolume(this._volume, this.isMuted);
+    if (!this.isMuted) this.tones.unlock();
   }
 
   private tone(index: number) {
     const value = this.barHeights[index];
     if (this.isMuted || value === undefined) return;
-    const ctx = this.getAudioContext();
-    if (!ctx) return;
-    try {
-      if (ctx.state === 'suspended') ctx.resume();
-      const minFrequency = 200;
-      const maxFrequency = 700;
-      const frequency = minFrequency + (value / this.maxHeight) * (maxFrequency - minFrequency);
-      const duration = Math.min(Math.max(this.delay, 30), 120) / 1000;
-      const now = ctx.currentTime;
-      const oscillator = ctx.createOscillator();
-      const gainNode = ctx.createGain();
-      oscillator.type = 'triangle';
-      oscillator.frequency.setValueAtTime(frequency, now);
-      // Quick fade out avoids clicking at the end of each tone
-      gainNode.gain.setValueAtTime(this.volume / 100, now);
-      gainNode.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-      oscillator.connect(gainNode);
-      gainNode.connect(ctx.destination);
-      oscillator.start(now);
-      oscillator.stop(now + duration);
-    } catch (error) {
-      console.error('Failed to play tone:', error);
-    }
+    const length = Math.min(Math.max(this.delay, 40), 150) / 1000;
+    this.tones.play((value - 1) / Math.max(1, this.maxHeight - 1), length);
   }
 
   // Compare two bars: highlight, pause, then clear
